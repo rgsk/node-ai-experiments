@@ -1,0 +1,41 @@
+{
+  "name": "node-ai-experiments",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "dev": "sh ./bin.dev/start.sh",
+    "kill:port": "kill -9 $(lsof -t -i:4001)",
+    "serve": "NODE_PATH=dist nodemon dist/app.js",
+    "start": "NODE_PATH=dist node dist/app.js",
+    "init:prisma": "prisma generate",
+    "studio": "BROWSER=none prisma studio",
+    "migrate": "prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:reset": "prisma migrate reset",
+    "migrate:force-reset": "prisma migrate reset --force",
+    "run:file": "NODE_PATH=src ts-node"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.16.1",
+    "@types/cors": "^2.8.17",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "openai": "^4.52.3",
+    "prisma": "^5.16.1",
+    "puppeteer": "^23.3.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}
