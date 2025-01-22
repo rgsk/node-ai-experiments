@@ -4,11 +4,21 @@ import path from "path";
 import { PDFDocument, rgb } from "pdf-lib";
 // Function to convert Hex to RGB
 const hexToRgb = (hex: string) => {
-  const bigint = parseInt(hex.replace("#", ""), 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  const colorRgb = { r: r / 255, g: g / 255, b: b / 255 }; // Normalize to 0-1 for pdf-lib
+  const cleanHex = hex.replace("#", "");
+  // Handle shorthand hex (e.g., #RGB → #RRGGBB)
+  const fullHex =
+    cleanHex.length === 3
+      ? cleanHex
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : cleanHex;
+
+  const r = parseInt(fullHex.substring(0, 2), 16);
+  const g = parseInt(fullHex.substring(2, 4), 16);
+  const b = parseInt(fullHex.substring(4, 6), 16);
+
+  const colorRgb = { r: r / 255, g: g / 255, b: b / 255 }; // Normalize for pdf-lib
   return rgb(colorRgb.r, colorRgb.g, colorRgb.b);
 };
 
