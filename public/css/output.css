@@ -154,7 +154,7 @@ html,
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Figtree, serif;
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -243,7 +243,7 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: Dancing Script, serif;
   /* 1 */
   font-feature-settings: normal;
   /* 2 */
@@ -554,9 +554,25 @@ video {
   display: none;
 }
 
+.h-\[36px\] {
+  height: 36px;
+}
+
 .bg-\[\#041B01\] {
   --tw-bg-opacity: 1;
   background-color: rgb(4 27 1 / var(--tw-bg-opacity, 1));
+}
+
+.font-mono {
+  font-family: Dancing Script, serif;
+}
+
+.font-sans {
+  font-family: Figtree, serif;
+}
+
+.font-serif {
+  font-family: IBM Plex Sans, serif;
 }
 
 .text-3xl {
@@ -568,31 +584,15 @@ video {
   font-weight: 700;
 }
 
-.text-red-200 {
-  --tw-text-opacity: 1;
-  color: rgb(254 202 202 / var(--tw-text-opacity, 1));
-}
-
-.text-white {
+.text-\[\#FFF\] {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
-.text-red-700 {
-  --tw-text-opacity: 1;
-  color: rgb(185 28 28 / var(--tw-text-opacity, 1));
-}
-
-.text-red-500 {
-  --tw-text-opacity: 1;
-  color: rgb(239 68 68 / var(--tw-text-opacity, 1));
-}
-
-.text-blue-400 {
-  --tw-text-opacity: 1;
-  color: rgb(96 165 250 / var(--tw-text-opacity, 1));
-}
-
 .underline {
   text-decoration-line: underline;
+}
+
+.opacity-\[\.8\] {
+  opacity: .8;
 }

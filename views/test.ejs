@@ -6,15 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
     <link href="/css/output.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Figtree:ital,wght@0,300..900;1,300..900&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h1 class="text-3xl font-bold underline">Hello world!</h1>
+    <h1 class="text-3xl font-bold underline font-sans">Hello world!</h1>
+    <h1 class="text-3xl font-bold underline font-mono">Hello world!</h1>
+    <h1 class="text-3xl font-bold underline font-serif">Hello world!</h1>
 
     <h1><%= message %></h1>
-    <footer class="bg-[#041B01] text-blue-400">
-      rahul
-
-      <img src="/images/outskill-logo.svg" alt="My Image" />
+    <footer class="bg-[#041B01]">
+      <img src="/images/outskill-logo.svg" class="h-[36px]" alt="My Image" />
+      <p class="text-[#FFF] opacity-[.8]">
+        For any support, Please mail to hi@outskill.com. Our Support team will
+        get back to you within 24 hours. The brands and companies that the
+        instructors of Outskill are working or have worked, have no relation
+        whatsoever with Outskill.
+      </p>
     </footer>
   </body>
 </html>
