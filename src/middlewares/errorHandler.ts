@@ -1,13 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { getOptionalProps } from "lib/middlewareProps";
-import { Middlewares } from "middlewares";
+import { Middlewares } from "./middlewaresNamespace";
 
-const errorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const errorHandler = (err: Error, req: Request, res: Response) => {
   const { data } =
     getOptionalProps<Middlewares.ErrorData>(req, Middlewares.Keys.ErrorData) ??
     {};
@@ -15,7 +10,7 @@ const errorHandler = (
   console.log(err);
   console.log(err.message);
   console.log(data);
-  res.status(500).json({ message: err.message, data: data, err });
+  return res.status(500).json({ message: err.message, data: data, err });
 };
 
 export default errorHandler;

@@ -19,6 +19,9 @@ const environmentVarsSchema = z.object({
   DEEPSEEK_API_KEY: z.string(),
   AWS_ACCESS_KEY: z.string(),
   AWS_SECRET_ACCESS_KEY: z.string(),
+  FIREBASE_CLIENT_EMAIL: z.string(),
+  FIREBASE_PRIVATE_KEY: z.string(),
+  FIREBASE_PROJECT_ID: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -29,6 +32,9 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY!,
   AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY!,
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
+  FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL!,
+  FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY!,
+  FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID!,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);

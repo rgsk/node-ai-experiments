@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import environmentVars from "lib/environmentVars";
+import authenticate from "middlewares/authenticate";
 import errorHandler from "middlewares/errorHandler";
 import path from "path";
 import rootRouter from "routers/rootRouter";
@@ -19,7 +20,7 @@ app.get("/pages/test", (req, res) => {
   });
 });
 
-app.use("/", rootRouter);
+app.use("/", authenticate, rootRouter);
 
 app.use(errorHandler);
 
