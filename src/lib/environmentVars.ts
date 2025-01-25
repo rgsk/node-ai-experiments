@@ -16,6 +16,7 @@ const environmentVarsSchema = z.object({
   DATABASE_URL: z.string(),
   NODE_ENV: AppEnvironmentEnum,
   OPENAI_API_KEY: z.string(),
+  DEEPSEEK_API_KEY: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -23,6 +24,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   DATABASE_URL: process.env.DATABASE_URL!,
   NODE_ENV: process.env.NODE_ENV! as AppEnvironment,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
+  DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY!,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);
