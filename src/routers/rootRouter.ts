@@ -3,9 +3,11 @@ import { deepSeekClient } from "lib/deepSeekClient";
 import environmentVars from "lib/environmentVars";
 import openAIClient from "lib/openAIClient";
 import friendsRouter from "./children/friendsRouter";
+import jsonDataRouter from "./children/jsonDataRouter";
 
 const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
+rootRouter.use("/json-data", jsonDataRouter);
 rootRouter.get("/", async (req, res, next) => {
   res.json({
     message: `Server is running on http://localhost:${environmentVars.PORT}`,
