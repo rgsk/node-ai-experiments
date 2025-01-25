@@ -43,7 +43,7 @@ enum AIClient {
   Deepseek = "deepseek",
   OpenAI = "openai",
 }
-const aiClient = AIClient.OpenAI as AIClient.Deepseek | AIClient.OpenAI; // Example usage
+const aiClient = AIClient.Deepseek as AIClient.Deepseek | AIClient.OpenAI; // Example usage
 
 const getClient = () => {
   if (aiClient === AIClient.Deepseek) {

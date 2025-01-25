@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Friend {
-  id    String @id @default(cuid())
+  id    String @id @default(uuid())
   email String @unique
   name  String
 
@@ -23,7 +23,7 @@ model Friend {
 }
 
 model JsonData {
-  id        String    @id @default(cuid())
+  id        String    @id @default(uuid())
   key       String    @unique
   value     Json
   version   String    @default("1")
