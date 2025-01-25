@@ -2,12 +2,14 @@ import { Router } from "express";
 import { deepSeekClient } from "lib/deepSeekClient";
 import environmentVars from "lib/environmentVars";
 import openAIClient from "lib/openAIClient";
+import awsRouter from "./children/awsRouter";
 import friendsRouter from "./children/friendsRouter";
 import jsonDataRouter from "./children/jsonDataRouter";
 
 const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
 rootRouter.use("/json-data", jsonDataRouter);
+rootRouter.use("/aws", awsRouter);
 rootRouter.get("/", async (req, res, next) => {
   res.json({
     message: `Server is running on http://localhost:${environmentVars.PORT}`,
@@ -41,7 +43,7 @@ enum AIClient {
   Deepseek = "deepseek",
   OpenAI = "openai",
 }
-const aiClient = AIClient.Deepseek; // Example usage
+const aiClient = AIClient.OpenAI as AIClient.Deepseek | AIClient.OpenAI; // Example usage
 
 const getClient = () => {
   if (aiClient === AIClient.Deepseek) {
