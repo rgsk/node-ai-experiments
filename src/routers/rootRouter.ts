@@ -6,7 +6,6 @@ import attachUserEmail from "middlewares/attachUserEmail";
 import awsRouter from "./children/awsRouter";
 import friendsRouter from "./children/friendsRouter";
 import jsonDataRouter from "./children/jsonDataRouter";
-
 const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
 rootRouter.use("/json-data", attachUserEmail, jsonDataRouter);
