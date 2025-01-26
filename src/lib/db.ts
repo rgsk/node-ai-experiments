@@ -7,7 +7,9 @@ export const db = new PrismaClient({
     },
   ],
 });
-
+const LOG_POSTGRES_CALLS = false;
 db.$on("query", async (e: any) => {
-  console.log(`${e.query} ${e.params}`);
+  if (LOG_POSTGRES_CALLS) {
+    console.log(`${e.query} ${e.params}`);
+  }
 });
