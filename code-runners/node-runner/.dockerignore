@@ -1,0 +1,4 @@
+# node related
+dist
+node_modules
+.env

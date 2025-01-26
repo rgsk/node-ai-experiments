@@ -1,0 +1,19 @@
+{
+  "name": "node-runner",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "dev": "sh ./bin.dev/start.sh",
+    "serve": "NODE_PATH=dist nodemon dist/app.js",
+    "start": "NODE_PATH=dist node dist/app.js",
+    "run:file": "NODE_PATH=src ts-node"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

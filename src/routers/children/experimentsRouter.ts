@@ -6,18 +6,27 @@ const experimentsRouter = Router();
 // Endpoint to execute Python code
 experimentsRouter.post("/execute-code", async (req, res) => {
   const { code, language } = req.body;
-  // Save the Python code to a temporary file
+  const languageToRunners: Record<string, string> = {
+    node: "node-runner",
+    python: "python-runner",
+    typescript: "node-runner",
+  };
   const mountPath = path.join(
     process.cwd(),
     "code-runners",
-    `${language}-runner`
+    languageToRunners[language]
   );
   const tempFileName = "execute-code-temp-file";
   const tempFileLocalPath = path.join(mountPath, "src", tempFileName);
   fs.writeFileSync(tempFileLocalPath, code);
 
+  const languageToCommands: Record<string, string> = {
+    node: "node",
+    python: "python",
+    typescript: "yarn run:file",
+  };
   // Command to run the Anaconda Docker container and execute the Python script
-  const dockerCommand = `docker run -t -v ${mountPath}:/app python-runner python /app/src/${tempFileName}`;
+  const dockerCommand = `docker run --rm -v ${mountPath}:/app ${languageToRunners[language]} ${languageToCommands[language]} /app/src/${tempFileName}`;
 
   // Execute the Docker command
   exec(dockerCommand, (error, stdout, stderr) => {
