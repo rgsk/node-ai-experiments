@@ -23,7 +23,7 @@ experimentsRouter.post("/execute-code", async (req, res) => {
   const languageToCommands: Record<string, string> = {
     node: "node",
     python: "python",
-    typescript: "yarn run:file",
+    typescript: "yarn --silent run:file",
   };
   // Command to run the Anaconda Docker container and execute the Python script
   const dockerCommand = `docker run --rm -v ${mountPath}:/app ${languageToRunners[language]} ${languageToCommands[language]} /app/src/${tempFileName}`;
