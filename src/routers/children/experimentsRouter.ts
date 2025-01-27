@@ -36,6 +36,13 @@ experimentsRouter.post("/execute-code", async (req, res) => {
   );
   const tempFileName = `temp${fileExtensions[language]}`;
   const tempFileLocalPath = path.join(mountPath, "src", tempFileName);
+  const executableFileName = "temp";
+  const executableFileLocalPath = path.join(
+    mountPath,
+    "src",
+    executableFileName
+  );
+
   fs.writeFileSync(tempFileLocalPath, code);
 
   const languageToCommands: Record<SupportedLangugages, string> = {
@@ -43,7 +50,7 @@ experimentsRouter.post("/execute-code", async (req, res) => {
     javascript: `node /app/src/${tempFileName}`,
     python: `python /app/src/${tempFileName}`,
     typescript: `yarn --silent run:file /app/src/${tempFileName}`,
-    cpp: `bash -c "g++ -o /app/src/temp /app/src/${tempFileName} && /app/src/temp"`,
+    cpp: `bash -c "g++ -o /app/src/${executableFileName} /app/src/${tempFileName} && /app/src/${executableFileName}"`,
   };
   // Command to run the Anaconda Docker container and execute the Python script
   const dockerCommand = `docker run --rm -v ${mountPath}:/app ${languageToRunners[language]} ${languageToCommands[language]}`;
@@ -52,6 +59,10 @@ experimentsRouter.post("/execute-code", async (req, res) => {
   exec(dockerCommand, (error, stdout, stderr) => {
     // Delete the temporary Python file
     fs.unlinkSync(tempFileLocalPath);
+
+    if (fs.existsSync(executableFileLocalPath)) {
+      fs.unlinkSync(executableFileLocalPath);
+    }
 
     if (error) {
       return res.status(500).json({ error: stderr || error.message });
