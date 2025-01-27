@@ -4,16 +4,27 @@ import fs from "fs";
 import path from "path";
 const experimentsRouter = Router();
 // Endpoint to execute Python code
+type SupportedLangugages =
+  | "node"
+  | "javascript"
+  | "python"
+  | "typescript"
+  | "cpp";
 experimentsRouter.post("/execute-code", async (req, res) => {
-  const { code, language } = req.body;
-  const languageToRunners: Record<string, string> = {
+  const { code, language } = req.body as {
+    code: string;
+    language: SupportedLangugages;
+  };
+  const languageToRunners: Record<SupportedLangugages, string> = {
     node: "node-runner",
+    javascript: "node-runner",
     python: "python-runner",
     typescript: "node-runner",
     cpp: "cpp-runner",
   };
-  const fileExtensions: Record<string, string> = {
+  const fileExtensions: Record<SupportedLangugages, string> = {
     node: ".js",
+    javascript: ".js",
     python: ".py",
     typescript: ".ts",
     cpp: ".cpp",
@@ -27,8 +38,9 @@ experimentsRouter.post("/execute-code", async (req, res) => {
   const tempFileLocalPath = path.join(mountPath, "src", tempFileName);
   fs.writeFileSync(tempFileLocalPath, code);
 
-  const languageToCommands: Record<string, string> = {
+  const languageToCommands: Record<SupportedLangugages, string> = {
     node: `node /app/src/${tempFileName}`,
+    javascript: `node /app/src/${tempFileName}`,
     python: `python /app/src/${tempFileName}`,
     typescript: `yarn --silent run:file /app/src/${tempFileName}`,
     cpp: `bash -c "g++ -o /app/src/temp /app/src/${tempFileName} && /app/src/temp"`,
