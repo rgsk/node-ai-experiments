@@ -5,6 +5,8 @@ import { Router } from "express";
 import fs from "fs";
 import ogs from "open-graph-scraper";
 import path from "path";
+import puppeteer from "puppeteer";
+
 const experimentsRouter = Router();
 // Endpoint to execute Python code
 type SupportedLangugages =
@@ -103,6 +105,82 @@ experimentsRouter.get("/meta", async (req, res, next) => {
     return next(err);
   }
 });
+
+async function fetchMetadataUsingPuppeteer(url: string) {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.setUserAgent(userAgent);
+  await page.goto(url, { waitUntil: "domcontentloaded" });
+
+  const meta = await page.evaluate(() => {
+    return {
+      title:
+        // @ts-ignore
+        document.querySelector('meta[property="og:title"]')?.content ||
+        document.title,
+      description:
+        // @ts-ignore
+        document.querySelector('meta[property="og:description"]')?.content ||
+        "",
+      // @ts-ignore
+      image: document.querySelector('meta[property="og:image"]')?.content || "",
+      url:
+        // @ts-ignore
+        document.querySelector('meta[property="og:url"]')?.content ||
+        window.location.href,
+    };
+  });
+
+  await browser.close();
+  return meta;
+}
+
+experimentsRouter.get("/scrape-meta", async (req, res, next) => {
+  const { url } = req.query as { url: string };
+  try {
+    const meta = await fetchMetadataUsingPuppeteer(url);
+    return res.json(meta);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// Route to execute the script
+experimentsRouter.get("/command", (req, res) => {
+  const { url } = req.query;
+
+  // Validate URL input
+  if (!url) {
+    return res.status(400).json({ error: "Missing URL parameter" });
+  }
+
+  // Path to the Bash script
+  const scriptPath = "commands/extract_metadata.sh";
+  // Run the script with the provided URL as an argument
+  exec(`${scriptPath} "${url}"`, (error, stdout, stderr) => {
+    if (error) {
+      console.error("Error executing script:", error);
+      return res.status(500).json({ error: "Failed to execute script" });
+    }
+
+    if (stderr) {
+      console.error("Script stderr:", stderr);
+      return res
+        .status(500)
+        .json({ error: "Error in script execution", stderr });
+    }
+
+    // Send the script output as JSON
+    try {
+      const metadata = JSON.parse(stdout);
+      return res.json(metadata);
+    } catch (parseError) {
+      console.error("Error parsing script output:", parseError);
+      return res.status(500).json({ error: "Failed to parse script output" });
+    }
+  });
+});
+
 experimentsRouter.get("/ogs", async (req, res, next) => {
   const { url } = req.query;
   try {
