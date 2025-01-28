@@ -1,6 +1,9 @@
+import axios from "axios";
+import * as cheerio from "cheerio";
 import { exec } from "child_process";
 import { Router } from "express";
 import fs from "fs";
+import ogs from "open-graph-scraper";
 import path from "path";
 const experimentsRouter = Router();
 // Endpoint to execute Python code
@@ -72,4 +75,48 @@ experimentsRouter.post("/execute-code", async (req, res) => {
     return res.json({ output: stdout });
   });
 });
+
+const userAgent =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";
+
+experimentsRouter.get("/meta", async (req, res, next) => {
+  const { url } = req.query;
+  try {
+    console.log("sending user agent");
+    const { data } = await axios.get(url as string, {
+      headers: {
+        "User-Agent": userAgent,
+      },
+    });
+    const $ = cheerio.load(data);
+
+    const meta = {
+      title:
+        $('meta[property="og:title"]').attr("content") || $("title").text(),
+      description: $('meta[property="og:description"]').attr("content") || "",
+      image: $('meta[property="og:image"]').attr("content") || "",
+      url: $('meta[property="og:url"]').attr("content") || url,
+    };
+
+    return res.json(meta);
+  } catch (err) {
+    return next(err);
+  }
+});
+experimentsRouter.get("/ogs", async (req, res, next) => {
+  const { url } = req.query;
+  try {
+    const data = await ogs({
+      url: url as string,
+      fetchOptions: {
+        headers: { "user-agent": userAgent },
+      },
+    });
+
+    return res.json(data);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export default experimentsRouter;
