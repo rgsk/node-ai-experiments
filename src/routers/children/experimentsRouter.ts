@@ -15,67 +15,73 @@ type SupportedLangugages =
   | "python"
   | "typescript"
   | "cpp";
-experimentsRouter.post("/execute-code", async (req, res) => {
-  const { code, language } = req.body as {
-    code: string;
-    language: SupportedLangugages;
-  };
-  const languageToRunners: Record<SupportedLangugages, string> = {
-    node: "node-runner",
-    javascript: "node-runner",
-    python: "python-runner",
-    typescript: "node-runner",
-    cpp: "cpp-runner",
-  };
-  const fileExtensions: Record<SupportedLangugages, string> = {
-    node: ".js",
-    javascript: ".js",
-    python: ".py",
-    typescript: ".ts",
-    cpp: ".cpp",
-  };
-  const mountPath = path.join(
-    process.cwd(),
-    "code-runners",
-    languageToRunners[language]
-  );
-  const tempFileName = `temp${fileExtensions[language]}`;
-  const tempFileLocalPath = path.join(mountPath, "src", tempFileName);
-  const executableFileName = "temp";
-  const executableFileLocalPath = path.join(
-    mountPath,
-    "src",
-    executableFileName
-  );
-
-  fs.writeFileSync(tempFileLocalPath, code);
-
-  const languageToCommands: Record<SupportedLangugages, string> = {
-    node: `node /app/src/${tempFileName}`,
-    javascript: `node /app/src/${tempFileName}`,
-    python: `python /app/src/${tempFileName}`,
-    typescript: `yarn --silent run:file /app/src/${tempFileName}`,
-    cpp: `bash -c "g++ -o /app/src/${executableFileName} /app/src/${tempFileName} && /app/src/${executableFileName}"`,
-  };
-  // Command to run the Anaconda Docker container and execute the Python script
-  const dockerCommand = `docker run --rm -v ${mountPath}:/app ${languageToRunners[language]} ${languageToCommands[language]}`;
-
-  // Execute the Docker command
-  exec(dockerCommand, (error, stdout, stderr) => {
-    // Delete the temporary Python file
-    fs.unlinkSync(tempFileLocalPath);
-
-    if (fs.existsSync(executableFileLocalPath)) {
-      fs.unlinkSync(executableFileLocalPath);
+experimentsRouter.post("/execute-code", async (req, res, next) => {
+  try {
+    const { code, language } = req.body as {
+      code: string;
+      language: SupportedLangugages;
+    };
+    const languageToRunners: Record<SupportedLangugages, string> = {
+      node: "node-runner",
+      javascript: "node-runner",
+      python: "python-runner",
+      typescript: "node-runner",
+      cpp: "cpp-runner",
+    };
+    const fileExtensions: Record<SupportedLangugages, string> = {
+      node: ".js",
+      javascript: ".js",
+      python: ".py",
+      typescript: ".ts",
+      cpp: ".cpp",
+    };
+    const mountPath = path.join(
+      process.cwd(),
+      "code-runners",
+      languageToRunners[language]
+    );
+    const tempFileName = `temp${fileExtensions[language]}`;
+    // Ensure the "src" directory exists
+    const srcPath = path.join(mountPath, "src");
+    if (!fs.existsSync(srcPath)) {
+      fs.mkdirSync(srcPath, { recursive: true });
     }
 
-    if (error) {
-      return res.status(500).json({ error: stderr || error.message });
-    }
+    const tempFileLocalPath = path.join(srcPath, tempFileName);
+    const executableFileName = "temp";
+    const executableFileLocalPath = path.join(srcPath, executableFileName);
 
-    // Return the output
-    return res.json({ output: stdout });
-  });
+    fs.writeFileSync(tempFileLocalPath, code);
+
+    const languageToCommands: Record<SupportedLangugages, string> = {
+      node: `node /app/src/${tempFileName}`,
+      javascript: `node /app/src/${tempFileName}`,
+      python: `python /app/src/${tempFileName}`,
+      typescript: `yarn --silent run:file /app/src/${tempFileName}`,
+      cpp: `bash -c "g++ -o /app/src/${executableFileName} /app/src/${tempFileName} && /app/src/${executableFileName}"`,
+    };
+    // Command to run the Anaconda Docker container and execute the Python script
+    const dockerCommand = `docker run --rm -v ${mountPath}:/app ${languageToRunners[language]} ${languageToCommands[language]}`;
+
+    // Execute the Docker command
+    exec(dockerCommand, (error, stdout, stderr) => {
+      // Delete the temporary Python file
+      fs.unlinkSync(tempFileLocalPath);
+
+      if (fs.existsSync(executableFileLocalPath)) {
+        fs.unlinkSync(executableFileLocalPath);
+      }
+
+      if (error) {
+        return res.status(500).json({ error: stderr || error.message });
+      }
+
+      // Return the output
+      return res.json({ output: stdout });
+    });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 const userAgent =

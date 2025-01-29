@@ -12,6 +12,7 @@
     "start": "NODE_PATH=dist node dist/app.js",
     "init:prisma": "prisma generate",
     "studio": "BROWSER=none prisma studio",
+    "build-code-runners": "sh code-runners/bin/build.sh",
     "migrate": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
