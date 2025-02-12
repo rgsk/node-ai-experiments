@@ -3,9 +3,12 @@ import { deepSeekClient } from "lib/deepSeekClient";
 import environmentVars from "lib/environmentVars";
 import openAIClient from "lib/openAIClient";
 import attachUserEmail from "middlewares/attachUserEmail";
+import { YoutubeTranscript } from "youtube-transcript";
+import { z } from "zod";
 import awsRouter from "./children/awsRouter";
 import friendsRouter from "./children/friendsRouter";
 import jsonDataRouter from "./children/jsonDataRouter";
+
 const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
 rootRouter.use("/json-data", attachUserEmail, jsonDataRouter);
@@ -113,5 +116,44 @@ export const getTextStreamOpenAI = async function* (messages: any) {
     yield content;
   }
 };
+
+export function extractVideoId(url: string) {
+  // Create a URL object
+  const urlObj = new URL(url);
+
+  // Use URLSearchParams to get the 'v' parameter
+  const params = new URLSearchParams(urlObj.search);
+
+  // Get the 'v' parameter value
+  const v = params.get("v");
+  if (!v) {
+    throw new Error("Invalid YouTube URL");
+  }
+  return v;
+}
+
+function isUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+const ytSchema = z.object({
+  s: z.string(),
+});
+
+rootRouter.get("/youtube-transcript", async (req, res, next) => {
+  try {
+    const { s } = ytSchema.parse(req.query);
+    const videoId = isUrl(s) ? extractVideoId(s) : s;
+    const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+    return res.json(transcript);
+  } catch (err) {
+    return next(err);
+  }
+});
 
 export default rootRouter;
