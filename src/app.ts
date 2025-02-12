@@ -5,6 +5,7 @@ import authenticate from "middlewares/authenticate";
 import errorHandler from "middlewares/errorHandler";
 import path from "path";
 import experimentsRouter from "routers/children/experimentsRouter";
+import youtubeRouter from "routers/children/youtubeRouter";
 import rootRouter from "routers/rootRouter";
 const app = express();
 app.use(express.json());
@@ -20,7 +21,7 @@ app.get("/pages/test", (req, res) => {
     message: "Hello, EJS!",
   });
 });
-
+app.use("/youtube", youtubeRouter);
 app.use("/experiments", experimentsRouter);
 app.use("/", authenticate, rootRouter);
 app.use(errorHandler);
