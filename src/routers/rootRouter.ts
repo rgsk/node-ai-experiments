@@ -3,6 +3,7 @@ import { deepSeekClient } from "lib/deepSeekClient";
 import environmentVars from "lib/environmentVars";
 import openAIClient from "lib/openAIClient";
 import attachUserEmail from "middlewares/attachUserEmail";
+import assistantsRouter from "./children/assistants/assistantsRouter";
 import awsRouter from "./children/awsRouter";
 import friendsRouter from "./children/friendsRouter";
 import jsonDataRouter from "./children/jsonDataRouter";
@@ -11,6 +12,7 @@ const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
 rootRouter.use("/json-data", attachUserEmail, jsonDataRouter);
 rootRouter.use("/aws", awsRouter);
+rootRouter.use("/assistants", assistantsRouter);
 rootRouter.get("/", async (req, res, next) => {
   try {
     return res.json({
