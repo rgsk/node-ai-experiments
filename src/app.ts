@@ -6,6 +6,7 @@ import authenticate from "middlewares/authenticate";
 import errorHandler from "middlewares/errorHandler";
 import path from "path";
 import experimentsRouter from "routers/children/experimentsRouter";
+import gcpRouter from "routers/children/gcpRouter";
 import youtubeRouter from "routers/children/youtubeRouter";
 import rootRouter from "routers/rootRouter";
 import { Server as SocketServer } from "socket.io";
@@ -33,6 +34,7 @@ app.get("/pages/test", (req, res) => {
 });
 app.use("/youtube", youtubeRouter);
 app.use("/experiments", experimentsRouter);
+app.use("/gcp", gcpRouter);
 app.use("/", authenticate, rootRouter);
 app.use(errorHandler);
 
