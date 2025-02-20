@@ -1,11 +1,27 @@
 import { io } from "app";
 import { Router } from "express";
+import fs from "fs";
 import openAIClient from "lib/openAIClient";
+import { upload } from "lib/upload";
 import { MessageContentPartParam } from "openai/resources/beta/threads/messages";
 import { z } from "zod";
 import { eventHandler, EventObject } from "./eventHandler";
-
 const assistantsRouter = Router();
+
+assistantsRouter.get("/threads/:threadId/messages", async (req, res, next) => {
+  try {
+    const { threadId } = req.params;
+    const threadMessages = await openAIClient.beta.threads.messages.list(
+      threadId
+    );
+    const data = threadMessages.data.reverse();
+    // writeFile("sampleMessages.json", JSON.stringify(data));
+    return res.json(data);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export type EmitSocketEvent = (eventName: string, data: any) => void;
 
 // schema for request body
@@ -126,4 +142,101 @@ assistantsRouter.post("/chat", async (req, res, next) => {
     return next(err);
   }
 });
+
+assistantsRouter.post("/threads", async (req, res, next) => {
+  try {
+    const thread = await openAIClient.beta.threads.create();
+    return res.json({ threadId: thread.id });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+assistantsRouter.post(
+  "/threads/:threadId/runs/:runId/cancel",
+  async (req, res, next) => {
+    try {
+      const { threadId, runId } = req.params;
+      const run = await openAIClient.beta.threads.runs.cancel(threadId, runId);
+      return res.json(run);
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+assistantsRouter.post(
+  "/files",
+  upload.single("file") as any,
+  async (req, res, next) => {
+    try {
+      if (req.file) {
+        const filePath = req.file.path;
+        const imageMimeTypes = [
+          "image/gif",
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/webp",
+        ];
+        try {
+          const fileObject = await openAIClient.files.create({
+            file: fs.createReadStream(filePath),
+            purpose: imageMimeTypes.includes(req.file.mimetype)
+              ? "vision"
+              : "assistants",
+          });
+          return res.json(fileObject);
+        } catch (err) {
+          throw err;
+        } finally {
+          fs.unlinkSync(filePath);
+        }
+      } else {
+        throw new Error("No file uploaded");
+      }
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+assistantsRouter.delete("/files/:file_id", async (req, res, next) => {
+  try {
+    const { file_id } = req.params;
+    const fileObject = await openAIClient.files.del(file_id);
+    return res.json(fileObject);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+assistantsRouter.get("/files/:file_id", async (req, res, next) => {
+  try {
+    const { file_id } = req.params;
+    const file = await openAIClient.files.retrieve(file_id);
+    return res.json(file);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+assistantsRouter.get("/files/:file_id/content", async (req, res, next) => {
+  try {
+    const { file_id } = req.params;
+    const fileContent = await openAIClient.files.content(file_id);
+
+    // Collect the buffer content
+    const buffer = Buffer.from(await fileContent.arrayBuffer());
+
+    // Set response headers for file download
+    res.setHeader("Content-Type", "application/octet-stream");
+
+    // Send the buffer as the response
+    return res.send(buffer);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export default assistantsRouter;
