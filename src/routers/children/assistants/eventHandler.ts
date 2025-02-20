@@ -9,7 +9,7 @@ import { EmitSocketEvent } from "./assistantsRouter";
 import getUrlContent from "./tools/getUrlContent";
 import saveUserInfoToMemory from "./tools/saveUserInfoToMemory";
 export type EventObject = {
-  userId: string;
+  userEmail: string;
   emitSocketEvent: EmitSocketEvent;
   req: Request;
   res: Response;
@@ -23,7 +23,7 @@ class EventHandler extends EventEmitter {
   }
   async onEvent(
     event: AssistantStreamEvent,
-    { userId, emitSocketEvent, req, res, next }: EventObject
+    { userEmail, emitSocketEvent, req, res, next }: EventObject
   ) {
     // console.log(event);
     // Retrieve events that are denoted with 'requires_action'
@@ -33,7 +33,7 @@ class EventHandler extends EventEmitter {
         run: event.data,
         runId: event.data.id,
         threadId: event.data.thread_id,
-        userId,
+        userEmail,
         emitSocketEvent,
         req,
         res,
@@ -80,7 +80,7 @@ class EventHandler extends EventEmitter {
     run,
     runId,
     threadId,
-    userId,
+    userEmail,
     emitSocketEvent,
     req,
     res,
@@ -89,7 +89,7 @@ class EventHandler extends EventEmitter {
     run: OpenAI.Beta.Threads.Runs.Run;
     runId: string;
     threadId: string;
-    userId: string;
+    userEmail: string;
     emitSocketEvent: EmitSocketEvent;
     req: Request;
     res: Response;
@@ -127,7 +127,7 @@ class EventHandler extends EventEmitter {
           const { statement } = JSON.parse(args) as { statement: string };
           const output = await saveUserInfoToMemory({
             statement,
-            userId,
+            userEmail,
           });
           // console.log(output);
           toolOutputs.push({
@@ -143,7 +143,7 @@ class EventHandler extends EventEmitter {
         toolOutputs,
         runId,
         threadId,
-        userId,
+        userEmail,
         emitSocketEvent,
         req,
         res,
@@ -156,7 +156,7 @@ class EventHandler extends EventEmitter {
     runId,
     threadId,
     toolOutputs,
-    userId,
+    userEmail,
     emitSocketEvent,
     req,
     res,
@@ -165,7 +165,7 @@ class EventHandler extends EventEmitter {
     toolOutputs: OpenAI.Beta.Threads.Runs.RunSubmitToolOutputsParams.ToolOutput[];
     runId: string;
     threadId: string;
-    userId: string;
+    userEmail: string;
     emitSocketEvent: EmitSocketEvent;
     req: Request;
     res: Response;
@@ -178,7 +178,7 @@ class EventHandler extends EventEmitter {
       { tool_outputs: toolOutputs }
     );
     const eventObject: EventObject = {
-      userId,
+      userEmail,
       emitSocketEvent,
       req,
       res,

@@ -22,7 +22,7 @@ const zodSchemaBulk = z.object({
     })
   ),
 });
-const getPopulatedKey = (key: string, userEmail: string) => {
+export const getPopulatedKey = (key: string, userEmail: string) => {
   return key.replace("$userEmail", userEmail);
 };
 // Route to fetch a single record by key

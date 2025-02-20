@@ -1,10 +1,16 @@
 import { io } from "app";
 import { Router } from "express";
 import fs from "fs";
+import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
+import { Memory } from "lib/typesJsonData";
 import { upload } from "lib/upload";
+import attachUserEmail from "middlewares/attachUserEmail";
+import { Middlewares } from "middlewares/middlewaresNamespace";
 import { MessageContentPartParam } from "openai/resources/beta/threads/messages";
 import { z } from "zod";
+import { getPopulatedKey } from "../jsonDataRouter";
+import { jsonDataService } from "../jsonDataService";
 import { eventHandler, EventObject } from "./eventHandler";
 const assistantsRouter = Router();
 
@@ -29,7 +35,6 @@ const requestBodySchema = z.object({
   threadId: z.string(),
   assistantId: z.string(),
   userMessage: z.string(),
-  userId: z.string(),
   userContextString: z.string().optional(),
   secondaryMessages: z.array(z.string()).optional(),
   socketId: z.string().optional(),
@@ -50,15 +55,18 @@ const requestBodySchema = z.object({
   attachFilesToCodeInterpreter: z.boolean().optional(),
 });
 
-assistantsRouter.post("/chat", async (req, res, next) => {
+assistantsRouter.post("/chat", attachUserEmail, async (req, res, next) => {
   try {
+    const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      req,
+      Middlewares.Keys.AttachUserEmail
+    );
     const {
       threadId,
       assistantId,
       userMessage,
       secondaryMessages,
       userContextString,
-      userId,
       socketId,
       attachments,
       imageFileIds,
@@ -86,8 +94,12 @@ assistantsRouter.post("/chat", async (req, res, next) => {
         type: "text",
         text: m,
       })) ?? [];
-    // const memories = await db.memory.findMany({ where: { userId } });
-    const statements: string[] = [];
+    const key = `reactAIExperiments/users/$userEmail/memories`;
+    const jsonData = await jsonDataService.findByKey<Memory[]>(
+      getPopulatedKey(key, userEmail)
+    );
+    const memories = jsonData?.value ?? [];
+    const statements = memories.map((m) => m.statement);
     const memoryInstruction = `
               Following memory statements are gathered from previous conversations with the user, 
               try to incorporate them into the conversation context to provide a more personalized response.
@@ -129,7 +141,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       eventHandler as any
     );
     const eventObject: EventObject = {
-      userId,
+      userEmail,
       emitSocketEvent,
       req,
       res,
