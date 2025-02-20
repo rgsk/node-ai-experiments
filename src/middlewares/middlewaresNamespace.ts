@@ -13,6 +13,7 @@ export namespace Middlewares {
     userEmail: string;
   };
   export type ErrorData = {
-    data: any;
+    data?: any;
+    status?: number;
   };
 }

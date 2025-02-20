@@ -3,9 +3,12 @@ import * as cheerio from "cheerio";
 import { exec } from "child_process";
 import { Router } from "express";
 import fs from "fs";
+import { upload } from "lib/upload";
+import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
 import path from "path";
 import puppeteer from "puppeteer";
+import { z } from "zod";
 
 const experimentsRouter = Router();
 // Endpoint to execute Python code
@@ -83,6 +86,38 @@ experimentsRouter.post("/execute-code", async (req, res, next) => {
     return next(err);
   }
 });
+const ocrSchema = z.object({
+  imageUrl: z.string(),
+});
+experimentsRouter.get("/ocr", async (req, res, next) => {
+  try {
+    const { imageUrl } = ocrSchema.parse(req.query);
+    const text = await tesseract.recognize(imageUrl);
+    return res.json({
+      text,
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+experimentsRouter.post(
+  "/ocr/file",
+  upload.single("file") as any,
+  async (req, res, next) => {
+    try {
+      if (!req.file) throw new Error("No file uploaded");
+      const file = req.file;
+      const text = await tesseract.recognize(file.path);
+      return res.json({
+        text,
+      });
+    } catch (err) {
+      return next(err);
+    } finally {
+      if (req.file?.path) fs.unlinkSync(req.file?.path);
+    }
+  }
+);
 
 const userAgent =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";

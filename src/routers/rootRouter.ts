@@ -12,9 +12,13 @@ rootRouter.use("/friends", friendsRouter);
 rootRouter.use("/json-data", attachUserEmail, jsonDataRouter);
 rootRouter.use("/aws", awsRouter);
 rootRouter.get("/", async (req, res, next) => {
-  res.json({
-    message: `Server is running on http://localhost:${environmentVars.PORT}`,
-  });
+  try {
+    return res.json({
+      message: `Server is running on http://localhost:${environmentVars.PORT}`,
+    });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 // An endpoint which would work with the client code above - it returns
