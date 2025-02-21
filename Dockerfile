@@ -1,6 +1,7 @@
 FROM node:18.19-slim
 
 RUN apt-get update -y && apt-get install -y openssl && apt-get install -y fontconfig
+RUN apt-get install tesseract-ocr -y
 
 WORKDIR /app
 

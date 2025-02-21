@@ -1,1 +1,2 @@
+yarn studio &
 yarn start
