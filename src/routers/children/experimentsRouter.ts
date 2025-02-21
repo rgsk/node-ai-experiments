@@ -3,6 +3,7 @@ import * as cheerio from "cheerio";
 import { exec } from "child_process";
 import { Router } from "express";
 import fs from "fs";
+import environmentVars from "lib/environmentVars";
 import { upload } from "lib/upload";
 import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
@@ -39,13 +40,17 @@ experimentsRouter.post("/execute-code", async (req, res, next) => {
       cpp: ".cpp",
     };
     const mountPath = path.join(
-      process.cwd(),
+      environmentVars.HOST_DIR,
       "code-runners",
       languageToRunners[language]
     );
     const tempFileName = `temp${fileExtensions[language]}`;
     // Ensure the "src" directory exists
-    const srcPath = path.join(mountPath, "src");
+    const srcPath = path.join(
+      "code-runners",
+      languageToRunners[language],
+      "src"
+    );
     if (!fs.existsSync(srcPath)) {
       fs.mkdirSync(srcPath, { recursive: true });
     }

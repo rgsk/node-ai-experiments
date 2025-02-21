@@ -19,6 +19,7 @@ const environmentVarsSchema = z.object({
   DEEPSEEK_API_KEY: z.string(),
   AWS_ACCESS_KEY: z.string(),
   AWS_SECRET_ACCESS_KEY: z.string(),
+  HOST_DIR: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -29,6 +30,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY!,
   AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY!,
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
+  HOST_DIR: process.env.HOST_DIR ?? process.cwd(),
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);
