@@ -1,0 +1,1 @@
+docker logs node-ai-experiments --follow

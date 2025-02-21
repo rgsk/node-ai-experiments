@@ -1,0 +1,1 @@
+docker exec -it node-ai-experiments bash
