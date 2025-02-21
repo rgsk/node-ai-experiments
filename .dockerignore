@@ -1,6 +1,3 @@
-# non-docker
-**/credentials-*.**
-
 # node related
 **/dist
 **/node_modules
