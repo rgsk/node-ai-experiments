@@ -3,6 +3,7 @@ import * as cheerio from "cheerio";
 import { exec } from "child_process";
 import { Router } from "express";
 import fs from "fs";
+import { JSDOM } from "jsdom";
 import environmentVars from "lib/environmentVars";
 import { upload } from "lib/upload";
 import tesseract from "node-tesseract-ocr";
@@ -130,13 +131,14 @@ const userAgent =
 experimentsRouter.get("/meta", async (req, res, next) => {
   const { url } = req.query;
   try {
-    console.log("sending user agent");
     const { data } = await axios.get(url as string, {
       headers: {
         "User-Agent": userAgent,
       },
     });
     const $ = cheerio.load(data);
+    const dom = new JSDOM(data);
+    const bodyTextContent = dom.window.document.body.textContent?.trim() || "";
 
     const meta = {
       title:
@@ -144,8 +146,8 @@ experimentsRouter.get("/meta", async (req, res, next) => {
       description: $('meta[property="og:description"]').attr("content") || "",
       image: $('meta[property="og:image"]').attr("content") || "",
       url: $('meta[property="og:url"]').attr("content") || url,
+      bodyTextContent,
     };
-
     return res.json(meta);
   } catch (err) {
     return next(err);
