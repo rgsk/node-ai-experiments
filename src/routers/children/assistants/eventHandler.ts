@@ -2,15 +2,18 @@ import { EventEmitter } from "events";
 import { NextFunction, Request, Response } from "express";
 import { addProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
+import { Persona } from "lib/typesJsonData";
 import { Middlewares } from "middlewares/middlewaresNamespace";
 import { OpenAI } from "openai";
 import { AssistantStreamEvent } from "openai/resources/beta/assistants";
 import { EmitSocketEvent } from "./assistantsRouter";
+import getRelevantDocs from "./tools/getRelevantDocs";
 import getUrlContent from "./tools/getUrlContent";
 import saveUserInfoToMemory from "./tools/saveUserInfoToMemory";
 export type EventObject = {
   userEmail: string;
   emitSocketEvent: EmitSocketEvent;
+  persona?: Persona;
   req: Request;
   res: Response;
   next: NextFunction;
@@ -23,7 +26,7 @@ class EventHandler extends EventEmitter {
   }
   async onEvent(
     event: AssistantStreamEvent,
-    { userEmail, emitSocketEvent, req, res, next }: EventObject
+    { userEmail, emitSocketEvent, persona, req, res, next }: EventObject
   ) {
     // console.log(event);
     // Retrieve events that are denoted with 'requires_action'
@@ -35,6 +38,7 @@ class EventHandler extends EventEmitter {
         threadId: event.data.thread_id,
         userEmail,
         emitSocketEvent,
+        persona,
         req,
         res,
         next,
@@ -82,6 +86,7 @@ class EventHandler extends EventEmitter {
     threadId,
     userEmail,
     emitSocketEvent,
+    persona,
     req,
     res,
     next,
@@ -91,6 +96,7 @@ class EventHandler extends EventEmitter {
     threadId: string;
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
+    persona?: Persona;
     req: Request;
     res: Response;
     next: NextFunction;
@@ -110,6 +116,18 @@ class EventHandler extends EventEmitter {
           const result = {
             tool_call_id: toolCall.id,
             output: "0.06",
+          };
+          toolOutputs.push(result);
+        } else if (toolCall.function.name === "getRelevantDocs") {
+          if (!persona) {
+            throw new Error("persona not found");
+          }
+          const args = toolCall.function.arguments;
+          const { query } = JSON.parse(args) as { query: string };
+          const relevantDocs = await getRelevantDocs({ query, persona });
+          const result = {
+            tool_call_id: toolCall.id,
+            output: JSON.stringify(relevantDocs),
           };
           toolOutputs.push(result);
         } else if (toolCall.function.name === "getUrlContent") {
@@ -145,6 +163,7 @@ class EventHandler extends EventEmitter {
         threadId,
         userEmail,
         emitSocketEvent,
+        persona,
         req,
         res,
         next,
@@ -158,6 +177,7 @@ class EventHandler extends EventEmitter {
     toolOutputs,
     userEmail,
     emitSocketEvent,
+    persona,
     req,
     res,
     next,
@@ -167,6 +187,7 @@ class EventHandler extends EventEmitter {
     threadId: string;
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
+    persona?: Persona;
     req: Request;
     res: Response;
     next: NextFunction;
@@ -180,6 +201,7 @@ class EventHandler extends EventEmitter {
     const eventObject: EventObject = {
       userEmail,
       emitSocketEvent,
+      persona,
       req,
       res,
       next,

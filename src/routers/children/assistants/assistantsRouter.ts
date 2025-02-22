@@ -3,7 +3,7 @@ import { Router } from "express";
 import fs from "fs";
 import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
-import { Memory } from "lib/typesJsonData";
+import { Memory, Persona } from "lib/typesJsonData";
 import { upload } from "lib/upload";
 import attachUserEmail from "middlewares/attachUserEmail";
 import { Middlewares } from "middlewares/middlewaresNamespace";
@@ -36,6 +36,7 @@ const requestBodySchema = z.object({
   assistantId: z.string(),
   userMessage: z.string(),
   userContextString: z.string().optional(),
+  personaId: z.string().optional(),
   secondaryMessages: z.array(z.string()).optional(),
   socketId: z.string().optional(),
   attachments: z
@@ -66,6 +67,7 @@ assistantsRouter.post("/chat", attachUserEmail, async (req, res, next) => {
       assistantId,
       userMessage,
       secondaryMessages,
+      personaId,
       userContextString,
       socketId,
       attachments,
@@ -94,12 +96,35 @@ assistantsRouter.post("/chat", attachUserEmail, async (req, res, next) => {
         type: "text",
         text: m,
       })) ?? [];
-    const key = `reactAIExperiments/users/$userEmail/memories`;
-    const jsonData = await jsonDataService.findByKey<Memory[]>(
-      getPopulatedKey(key, userEmail)
-    );
-    const memories = jsonData?.value ?? [];
-    const statements = memories.map((m) => m.statement);
+    let persona: Persona | undefined = undefined;
+    if (personaId) {
+      const result = await jsonDataService.findByKey<Persona>(
+        getPopulatedKey(
+          `reactAIExperiments/users/$userEmail/personas/${personaId}`,
+          userEmail
+        )
+      );
+      persona = result?.value;
+      if (!persona) {
+        throw new Error("persona not found");
+      }
+    }
+    const personaInstruction = `
+      user is interacting persona with following personality
+      <persona>${JSON.stringify(persona)}</persona>
+      you have to respond on persona's behalf
+
+      additionally since, user interacting with this persona, getRelevantDocs tool becomes important
+      so make sure to pass user query to that tool and fetch the relevant docs and respond accordingly
+    `;
+    const { value: memories } =
+      (await jsonDataService.findByKey<Memory[]>(
+        getPopulatedKey(
+          `reactAIExperiments/users/$userEmail/memories`,
+          userEmail
+        )
+      )) ?? {};
+    const statements = memories?.map((m) => m.statement) ?? [];
     const memoryInstruction = `
               Following memory statements are gathered from previous conversations with the user, 
               try to incorporate them into the conversation context to provide a more personalized response.
@@ -128,7 +153,11 @@ assistantsRouter.post("/chat", attachUserEmail, async (req, res, next) => {
     });
 
     emitSocketEvent("userMessage.created", { message });
-    const additional_instructions = [userContextString, memoryInstruction]
+    const additional_instructions = [
+      userContextString,
+      memoryInstruction,
+      persona && personaInstruction,
+    ]
       .filter(Boolean)
       ?.join("\n--------------\n");
 
@@ -143,6 +172,7 @@ assistantsRouter.post("/chat", attachUserEmail, async (req, res, next) => {
     const eventObject: EventObject = {
       userEmail,
       emitSocketEvent,
+      persona,
       req,
       res,
       next,

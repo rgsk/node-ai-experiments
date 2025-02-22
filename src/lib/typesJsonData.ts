@@ -21,3 +21,16 @@ export type Memory = {
   statement: string;
   createdAt: ISODateString;
 };
+
+export type Persona = {
+  id: string;
+  name: string;
+  collectionName: string;
+  description: string;
+  instructions: string;
+};
+export type Website = {
+  source: string;
+  url: string;
+  embedded: boolean;
+};

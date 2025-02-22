@@ -1,0 +1,16 @@
+{
+  "name": "getRelevantDocs",
+  "description": "When you are acting as persona, this tool helps you to get the relevant docs to respond, for this persona data from various sources is collected like websites, pdfs, image texts. When you run this function, you get the relevant texts, which you can use as context to answer user query. This function performs RAG on texts of all those data sources.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "A query based on which docs will be fetched."
+      }
+    },
+    "additionalProperties": false,
+    "required": ["query"]
+  }
+}
