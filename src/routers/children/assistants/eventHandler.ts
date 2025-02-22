@@ -119,17 +119,24 @@ class EventHandler extends EventEmitter {
           };
           toolOutputs.push(result);
         } else if (toolCall.function.name === "getRelevantDocs") {
-          if (!persona) {
-            throw new Error("persona not found");
+          if (persona) {
+            const args = toolCall.function.arguments;
+            const { query } = JSON.parse(args) as { query: string };
+            // console.log({ query });
+            const relevantDocs = await getRelevantDocs({ query, persona });
+            const result = {
+              tool_call_id: toolCall.id,
+              output: JSON.stringify(relevantDocs),
+            };
+            toolOutputs.push(result);
+          } else {
+            // console.log("no relevant docs");
+            const result = {
+              tool_call_id: toolCall.id,
+              output: "no relevant docs",
+            };
+            toolOutputs.push(result);
           }
-          const args = toolCall.function.arguments;
-          const { query } = JSON.parse(args) as { query: string };
-          const relevantDocs = await getRelevantDocs({ query, persona });
-          const result = {
-            tool_call_id: toolCall.id,
-            output: JSON.stringify(relevantDocs),
-          };
-          toolOutputs.push(result);
         } else if (toolCall.function.name === "getUrlContent") {
           const args = toolCall.function.arguments;
           const { url } = JSON.parse(args) as { url: string };
