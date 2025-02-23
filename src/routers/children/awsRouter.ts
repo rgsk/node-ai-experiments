@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPresignedUrl, getUploadURL } from "lib/s3Utils";
+import { deleteS3Url, getPresignedUrl, getUploadURL } from "lib/s3Utils";
 import { z } from "zod";
 
 const awsRouter = Router();
@@ -29,6 +29,18 @@ awsRouter.get("/download-url", async (req, res, next) => {
     return res.json({
       url: presignedUrl,
     });
+  } catch (err) {
+    return next(err);
+  }
+});
+const deleteS3UrlSchema = z.object({
+  url: z.string(),
+});
+awsRouter.delete("/s3-url", async (req, res, next) => {
+  try {
+    const { url } = deleteS3UrlSchema.parse(req.body);
+    const result = await deleteS3Url(url);
+    return res.json(result);
   } catch (err) {
     return next(err);
   }

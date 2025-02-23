@@ -1,4 +1,8 @@
-import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { secondsInDay, secondsInHour } from "date-fns/constants";
 import s3Client, { s3ClientBuckets } from "lib/s3Client";
@@ -65,3 +69,24 @@ export const getPresignedUrl = async (url: string) => {
   });
   return presignedUrl;
 };
+
+export async function deleteObject({
+  bucket,
+  key,
+}: {
+  bucket: string;
+  key: string;
+}) {
+  const command = new DeleteObjectCommand({
+    Bucket: bucket,
+    Key: key,
+  });
+
+  return s3Client.send(command);
+}
+
+export async function deleteS3Url(url: string) {
+  const urlWithoutQueryParams = url.split("?")[0];
+  const { bucket, key } = decomposeS3Url(urlWithoutQueryParams);
+  return deleteObject({ bucket, key });
+}
