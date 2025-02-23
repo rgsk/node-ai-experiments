@@ -21,6 +21,12 @@ export type Memory = {
   statement: string;
   createdAt: ISODateString;
 };
+export type Conversation = {
+  id: string | undefined;
+  threadId: string;
+  title: string;
+  createdAt: ISODateString;
+};
 
 export type Persona = {
   id: string;
@@ -29,8 +35,9 @@ export type Persona = {
   description: string;
   instructions: string;
 };
-export type Website = {
+export type PersonaKnowledgeItem = {
   source: string;
   url: string;
+  type: "website" | "youtube" | "image" | "file";
   embedded: boolean;
 };

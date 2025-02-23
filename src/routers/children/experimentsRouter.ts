@@ -11,6 +11,7 @@ import ogs from "open-graph-scraper";
 import path from "path";
 import puppeteer from "puppeteer";
 import { z } from "zod";
+import getUrlContent from "./assistants/tools/getUrlContent";
 
 const experimentsRouter = Router();
 // Endpoint to execute Python code
@@ -124,6 +125,18 @@ experimentsRouter.post(
     }
   }
 );
+const urlContentSchema = z.object({
+  url: z.string(),
+});
+experimentsRouter.get("/url-content", async (req, res, next) => {
+  try {
+    const { url } = urlContentSchema.parse(req.query);
+    const content = await getUrlContent(url);
+    return res.send(content);
+  } catch (err) {
+    return next(err);
+  }
+});
 
 const userAgent =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";

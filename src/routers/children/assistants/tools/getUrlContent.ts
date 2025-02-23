@@ -3,6 +3,8 @@ import { JSDOM } from "jsdom";
 import getGoogleDocData from "lib/gcp/getGoogleDocData";
 import getGoogleSheetData from "lib/gcp/getGoogleSheetData";
 import pdf from "pdf-parse";
+import { extractVideoId } from "routers/children/youtubeRouter";
+import { YoutubeTranscript } from "youtube-transcript";
 
 // Function to determine if the URL is a PDF, ignoring query parameters and fragments
 const isPDF = (url: string): boolean => {
@@ -84,6 +86,23 @@ function checkIsGoogleSheet(url: string): boolean {
   }
 }
 
+function checkIsYoutubeVideo(url: string): boolean {
+  try {
+    // Parse the URL
+    const parsedUrl = new URL(url);
+
+    // Check if the host belongs to YouTube
+    const isYouTubeHost = parsedUrl.hostname === "www.youtube.com";
+    // Check if there's a video ID in the "v" query param
+    const hasVideoId = parsedUrl.searchParams.has("v");
+
+    return isYouTubeHost && hasVideoId;
+  } catch (error) {
+    // If URL parsing fails, return false
+    return false;
+  }
+}
+
 function extractGoogleDocId(url: string): string | null {
   try {
     // Create a URL object
@@ -137,25 +156,43 @@ const fetchGoogleDoc = async (url: string) => {
     return getGoogleDocData({ documentId });
   }
 };
+const getPageTitle = async (url: string) => {
+  const response = await axios.get(url);
+  const html = response.data;
+
+  // Load the HTML into jsdom
+  const dom = new JSDOM(html);
+  // Get the page title
+  const pageTitle = dom.window.document.title;
+  return pageTitle;
+};
 const fetchGoogleSheet = async (url: string) => {
   const sheetId = extractGoogleSheetId(url);
   if (sheetId) {
-    const response = await axios.get(url);
-    const html = response.data;
-
-    // Load the HTML into jsdom
-    const dom = new JSDOM(html);
-    // Get the page title
-    const pageTitle = dom.window.document.title;
+    const pageTitle = await getPageTitle(url);
     const content = await getGoogleSheetData({
       spreadsheetId: sheetId,
     });
     return `Page Title: ${pageTitle}\nPage Content:\n${content}`;
   }
 };
-export type UrlContentType = "pdf" | "google_doc" | "google_sheet" | "web_page";
+const fetchYoutubeTranscript = async (url: string) => {
+  const videoId = extractVideoId(url);
+  const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+  const lines = transcript.map((i) => `${i.offset}-${i.text}`);
+  const content = lines.join("");
+  const pageTitle = await getPageTitle(url);
+  return `Youtube Video Title: ${pageTitle}\nTranscript:\n${content}`;
+};
+export type UrlContentType =
+  | "pdf"
+  | "google_doc"
+  | "google_sheet"
+  | "web_page"
+  | "youtube_video";
 export const getUrlContentType = (url: string): UrlContentType => {
   if (isPDF(url)) return "pdf";
+  if (checkIsYoutubeVideo(url)) return "youtube_video";
   if (checkIsGoogleDoc(url)) return "google_doc";
   if (checkIsGoogleSheet(url)) return "google_sheet";
   return "web_page";
@@ -171,6 +208,8 @@ const getUrlContent = async (url: string) => {
       ? fetchGoogleDoc(url)
       : contentType === "google_sheet"
       ? fetchGoogleSheet(url)
+      : contentType === "youtube_video"
+      ? fetchYoutubeTranscript(url)
       : fetchWebPage(url));
 
     if (content) {
