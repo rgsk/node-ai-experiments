@@ -38,7 +38,7 @@ const deleteS3UrlSchema = z.object({
 });
 awsRouter.delete("/s3-url", async (req, res, next) => {
   try {
-    const { url } = deleteS3UrlSchema.parse(req.body);
+    const { url } = deleteS3UrlSchema.parse(req.query);
     const result = await deleteS3Url(url);
     return res.json(result);
   } catch (err) {
