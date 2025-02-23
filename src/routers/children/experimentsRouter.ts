@@ -125,13 +125,27 @@ experimentsRouter.post(
     }
   }
 );
+
+const UrlContentTypeEnum = z.enum([
+  "pdf",
+  "google_doc",
+  "google_sheet",
+  "web_page",
+  "youtube_video",
+  "image",
+]);
+
+export type UrlContentType = z.infer<typeof UrlContentTypeEnum>;
+
 const urlContentSchema = z.object({
   url: z.string(),
+  type: UrlContentTypeEnum.optional(),
 });
+
 experimentsRouter.get("/url-content", async (req, res, next) => {
   try {
-    const { url } = urlContentSchema.parse(req.query);
-    const content = await getUrlContent(url);
+    const { url, type } = urlContentSchema.parse(req.query);
+    const content = await getUrlContent(url, type);
     return res.send(content);
   } catch (err) {
     return next(err);

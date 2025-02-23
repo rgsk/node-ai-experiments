@@ -2,7 +2,10 @@ import axios from "axios";
 import { JSDOM } from "jsdom";
 import getGoogleDocData from "lib/gcp/getGoogleDocData";
 import getGoogleSheetData from "lib/gcp/getGoogleSheetData";
+import openAIClient from "lib/openAIClient";
+import tesseract from "node-tesseract-ocr";
 import pdf from "pdf-parse";
+import { UrlContentType } from "routers/children/experimentsRouter";
 import { extractVideoId } from "routers/children/youtubeRouter";
 import { YoutubeTranscript } from "youtube-transcript";
 
@@ -184,12 +187,38 @@ const fetchYoutubeTranscript = async (url: string) => {
   const pageTitle = await getPageTitle(url);
   return `Youtube Video Title: ${pageTitle}\nTranscript:\n${content}`;
 };
-export type UrlContentType =
-  | "pdf"
-  | "google_doc"
-  | "google_sheet"
-  | "web_page"
-  | "youtube_video";
+const getImageDescription = async (imageUrl: string) => {
+  const response = await openAIClient.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "Describe what's present in this image, you don't need to identify individuals, just describe what's present",
+          },
+          {
+            type: "image_url",
+            image_url: {
+              url: imageUrl,
+            },
+          },
+        ],
+      },
+    ],
+  });
+  return response.choices[0].message.content;
+};
+const fetchImage = async (url: string) => {
+  const [imageDescription, imageOCR] = await Promise.all([
+    getImageDescription(url),
+    tesseract.recognize(url),
+  ]);
+
+  return `Image Description:\n${imageDescription}\nImage OCR:\n${imageOCR}`;
+};
+
 export const getUrlContentType = (url: string): UrlContentType => {
   if (isPDF(url)) return "pdf";
   if (checkIsYoutubeVideo(url)) return "youtube_video";
@@ -198,9 +227,9 @@ export const getUrlContentType = (url: string): UrlContentType => {
   return "web_page";
 };
 // Main function to fetch content based on file type
-const getUrlContent = async (url: string) => {
+const getUrlContent = async (url: string, type?: UrlContentType) => {
   let output: string;
-  const contentType = getUrlContentType(url);
+  const contentType = type ?? getUrlContentType(url);
   try {
     const content = await (contentType === "pdf"
       ? fetchPDF(url)
@@ -210,6 +239,8 @@ const getUrlContent = async (url: string) => {
       ? fetchGoogleSheet(url)
       : contentType === "youtube_video"
       ? fetchYoutubeTranscript(url)
+      : contentType === "image"
+      ? fetchImage(url)
       : fetchWebPage(url));
 
     if (content) {
