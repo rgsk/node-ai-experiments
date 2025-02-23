@@ -22,6 +22,16 @@ const isPDF = (url: string): boolean => {
   }
 };
 
+function isImageUrl(url: string): boolean {
+  // Define common image file extensions.
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
+  // Convert the URL to lowercase to ensure the check is case-insensitive.
+  const lowerUrl = url.split("?")[0].toLowerCase();
+
+  // Check if the URL ends with any of the defined image extensions.
+  return imageExtensions.some((extension) => lowerUrl.endsWith(extension));
+}
+
 // Function to fetch and extract text from a webpage
 const fetchWebPage = async (url: string): Promise<string> => {
   try {
@@ -221,6 +231,7 @@ const fetchImage = async (url: string) => {
 
 export const getUrlContentType = (url: string): UrlContentType => {
   if (isPDF(url)) return "pdf";
+  if (isImageUrl(url)) return "image";
   if (checkIsYoutubeVideo(url)) return "youtube_video";
   if (checkIsGoogleDoc(url)) return "google_doc";
   if (checkIsGoogleSheet(url)) return "google_sheet";
