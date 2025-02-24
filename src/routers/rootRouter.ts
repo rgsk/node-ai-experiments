@@ -170,14 +170,25 @@ rootRouter.post("/deduct-credits", async (req, res, next) => {
     if (!creditDetails) {
       throw new Error(`creditDetails for userEmail - ${userEmail} not found`);
     }
+    const deductionAmount = 1;
+    if (creditDetails.balance < deductionAmount) {
+      return res.json({
+        isAllowed: false,
+        creditsBalance: creditDetails.balance,
+      });
+    }
     const result = await jsonDataService.createOrUpdate<CreditDetails>({
       key: `reactAIExperiments/admin/public/creditDetails/${userEmail}`,
       value: {
         ...creditDetails,
-        balance: creditDetails.balance - 1,
+        balance: creditDetails.balance - deductionAmount,
       },
     });
-    return res.json(result);
+    const updatedCreditDetails = result.value;
+    return res.json({
+      isAllowed: true,
+      creditsBalance: updatedCreditDetails.balance,
+    });
   } catch (err) {
     return next(err);
   }
