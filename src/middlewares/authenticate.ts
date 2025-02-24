@@ -25,8 +25,13 @@ const authenticate = async (
     const idToken = queryToken || authorizationHeader?.split(" ")[1];
     if (idToken) {
       const { decodedIdToken } = await verifyToken(idToken);
+      const userEmail = decodedIdToken.email;
+      if (!userEmail) {
+        throw new Error("userEmail not found");
+      }
       const props: Middlewares.Authenticate = {
         decodedIdToken,
+        userEmail,
       };
       addProps(req, props, Middlewares.Keys.Authenticate);
       return next();

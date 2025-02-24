@@ -33,9 +33,9 @@ jsonDataRouter.get(
   checkAdminOperation({ keySource: "query", operationType: "read" }),
   async (req, res, next) => {
     try {
-      const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      const { userEmail } = getProps<Middlewares.Authenticate>(
         req,
-        Middlewares.Keys.AttachUserEmail
+        Middlewares.Keys.Authenticate
       );
       const { key } = zodSchemaKey.parse(req.query);
       const jsonData = await jsonDataService.findByKey(
@@ -54,9 +54,9 @@ jsonDataRouter.get(
   checkAdminOperation({ keySource: "query", operationType: "read" }),
   async (req, res, next) => {
     try {
-      const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      const { userEmail } = getProps<Middlewares.Authenticate>(
         req,
-        Middlewares.Keys.AttachUserEmail
+        Middlewares.Keys.Authenticate
       );
       const { key } = zodSchemaKey.parse(req.query);
       const jsonDataArray = await jsonDataService.findByKeyLike(
@@ -75,9 +75,9 @@ jsonDataRouter.post(
   checkAdminOperation({ keySource: "body", operationType: "write" }),
   async (req, res, next) => {
     try {
-      const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      const { userEmail } = getProps<Middlewares.Authenticate>(
         req,
-        Middlewares.Keys.AttachUserEmail
+        Middlewares.Keys.Authenticate
       );
       const { key, value, version, expireAt } = req.body;
       const jsonData = await jsonDataService.createOrUpdate({
@@ -103,9 +103,9 @@ jsonDataRouter.post(
   }),
   async (req, res, next) => {
     try {
-      const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      const { userEmail } = getProps<Middlewares.Authenticate>(
         req,
-        Middlewares.Keys.AttachUserEmail
+        Middlewares.Keys.Authenticate
       );
       const { data } = zodSchemaBulk.parse(req.body);
 
@@ -134,9 +134,9 @@ jsonDataRouter.delete(
   checkAdminOperation({ keySource: "query", operationType: "write" }),
   async (req, res, next) => {
     try {
-      const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      const { userEmail } = getProps<Middlewares.Authenticate>(
         req,
-        Middlewares.Keys.AttachUserEmail
+        Middlewares.Keys.Authenticate
       );
       const { key } = zodSchemaKey.parse(req.query);
       const jsonData = await jsonDataService.deleteByKey(
@@ -155,9 +155,9 @@ jsonDataRouter.delete(
   checkAdminOperation({ keySource: "query", operationType: "write" }),
   async (req, res, next) => {
     try {
-      const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      const { userEmail } = getProps<Middlewares.Authenticate>(
         req,
-        Middlewares.Keys.AttachUserEmail
+        Middlewares.Keys.Authenticate
       );
       const { key } = zodSchemaKey.parse(req.query);
       const deletedCount = await jsonDataService.deleteByKeyLike(

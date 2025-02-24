@@ -5,7 +5,6 @@ import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
 import { Memory, Persona } from "lib/typesJsonData";
 import { upload } from "lib/upload";
-import attachUserEmail from "middlewares/attachUserEmail";
 import { Middlewares } from "middlewares/middlewaresNamespace";
 import { MessageContentPartParam } from "openai/resources/beta/threads/messages";
 import { z } from "zod";
@@ -56,11 +55,11 @@ const requestBodySchema = z.object({
   attachFilesToCodeInterpreter: z.boolean().optional(),
 });
 
-assistantsRouter.post("/chat", attachUserEmail, async (req, res, next) => {
+assistantsRouter.post("/chat", async (req, res, next) => {
   try {
-    const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+    const { userEmail } = getProps<Middlewares.Authenticate>(
       req,
-      Middlewares.Keys.AttachUserEmail
+      Middlewares.Keys.Authenticate
     );
     const {
       threadId,

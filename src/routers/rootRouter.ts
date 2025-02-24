@@ -1,18 +1,25 @@
 import { Router } from "express";
 import { deepSeekClient } from "lib/deepSeekClient";
 import environmentVars from "lib/environmentVars";
+import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
-import attachUserEmail from "middlewares/attachUserEmail";
+import { CreditDetails } from "lib/typesJsonData";
+import adminRequired from "middlewares/adminRequired";
+import { Middlewares } from "middlewares/middlewaresNamespace";
+import { v4 } from "uuid";
+import adminRouter from "./children/adminRouter";
 import assistantsRouter from "./children/assistants/assistantsRouter";
 import awsRouter from "./children/awsRouter";
 import friendsRouter from "./children/friendsRouter";
 import jsonDataRouter from "./children/jsonDataRouter";
+import { jsonDataService } from "./children/jsonDataService";
 
 const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
-rootRouter.use("/json-data", attachUserEmail, jsonDataRouter);
+rootRouter.use("/json-data", jsonDataRouter);
 rootRouter.use("/aws", awsRouter);
 rootRouter.use("/assistants", assistantsRouter);
+rootRouter.use("/admin", adminRequired, adminRouter);
 rootRouter.get("/", async (req, res, next) => {
   try {
     return res.json({
@@ -120,5 +127,59 @@ export const getTextStreamOpenAI = async function* (messages: any) {
     yield content;
   }
 };
+rootRouter.post("/initialize-credits", async (req, res, next) => {
+  try {
+    const { userEmail } = getProps<Middlewares.Authenticate>(
+      req,
+      Middlewares.Keys.Authenticate
+    );
 
+    const { value: creditDetails } =
+      (await jsonDataService.findByKey<CreditDetails>(
+        `reactAIExperiments/admin/public/creditDetails/${userEmail}`
+      )) ?? {};
+    if (creditDetails) {
+      throw new Error(
+        `creditDetails for userEmail - ${userEmail} already exist`
+      );
+    }
+    const initialFreeCreditBalance = 10;
+    const result = await jsonDataService.createOrUpdate<CreditDetails>({
+      key: `reactAIExperiments/admin/public/creditDetails/${userEmail}`,
+      value: {
+        id: v4(),
+        userEmail: userEmail,
+        balance: initialFreeCreditBalance,
+      },
+    });
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
+rootRouter.post("/deduct-credits", async (req, res, next) => {
+  try {
+    const { userEmail } = getProps<Middlewares.Authenticate>(
+      req,
+      Middlewares.Keys.Authenticate
+    );
+    const { value: creditDetails } =
+      (await jsonDataService.findByKey<CreditDetails>(
+        `reactAIExperiments/admin/public/creditDetails/${userEmail}`
+      )) ?? {};
+    if (!creditDetails) {
+      throw new Error(`creditDetails for userEmail - ${userEmail} not found`);
+    }
+    const result = await jsonDataService.createOrUpdate<CreditDetails>({
+      key: `reactAIExperiments/admin/public/creditDetails/${userEmail}`,
+      value: {
+        ...creditDetails,
+        balance: creditDetails.balance - 1,
+      },
+    });
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
 export default rootRouter;

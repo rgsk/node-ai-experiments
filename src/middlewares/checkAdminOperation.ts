@@ -3,7 +3,7 @@ import { getProps } from "lib/middlewareProps";
 import { z } from "zod";
 import { Middlewares } from "./middlewaresNamespace";
 
-const checkIsAdmin = (userEmail: string) => {
+export const checkIsAdmin = (userEmail: string) => {
   return userEmail === "rahulguptasde@gmail.com";
 };
 
@@ -19,9 +19,9 @@ const checkAdminOperation =
   }) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { userEmail } = getProps<Middlewares.AttachUserEmail>(
+      const { userEmail } = getProps<Middlewares.Authenticate>(
         req,
-        Middlewares.Keys.AttachUserEmail
+        Middlewares.Keys.Authenticate
       );
       const isAdmin = checkIsAdmin(userEmail);
       if (isAdmin) {

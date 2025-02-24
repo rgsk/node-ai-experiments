@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { addProps, getProps } from "lib/middlewareProps";
+import { getProps } from "lib/middlewareProps";
+import { checkIsAdmin } from "./checkAdminOperation";
 import { Middlewares } from "./middlewaresNamespace";
 
-const attachUserEmail = async (
+const adminRequired = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,18 +14,17 @@ const attachUserEmail = async (
       Middlewares.Keys.Authenticate
     );
     const userEmail = decodedIdToken.email;
-    if (userEmail) {
-      const props: Middlewares.AttachUserEmail = {
-        userEmail,
-      };
-      addProps(req, props, Middlewares.Keys.AttachUserEmail);
+    if (!userEmail) {
+      throw new Error("User email is missing or invalid");
+    }
+    if (checkIsAdmin(userEmail)) {
       return next();
     } else {
-      throw new Error("User email is missing or invalid");
+      throw new Error("User must be admin to perform this operation");
     }
   } catch (err) {
     return next(err);
   }
 };
 
-export default attachUserEmail;
+export default adminRequired;

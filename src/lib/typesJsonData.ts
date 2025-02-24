@@ -14,6 +14,7 @@ export type UserData = {
   id: string;
   name: string;
   email: string;
+  avatarUrl: string;
   createdAt: ISODateString;
 };
 export type Memory = {
@@ -35,9 +36,31 @@ export type Persona = {
   description: string;
   instructions: string;
 };
-export type PersonaKnowledgeItem = {
+
+interface BasePersonaKnowledgeItem {
+  id: string;
   source: string;
   url: string;
-  type: "website" | "youtube" | "image" | "file";
   embedded: boolean;
+}
+
+export type PersonaKnowledgeItem = BasePersonaKnowledgeItem &
+  (
+    | {
+        type: "website";
+        metadata: {};
+      }
+    | {
+        type: "file";
+        metadata: {
+          filename: string;
+          filetype: string;
+        };
+      }
+  );
+
+export type CreditDetails = {
+  id: string;
+  userEmail: string;
+  balance: number;
 };
