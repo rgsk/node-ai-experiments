@@ -1,11 +1,17 @@
-import aiService from "lib/aiService";
+import { jsonDataService } from "routers/children/jsonDataService";
 
 const practice = async () => {
-  console.log("practice");
-  const result = await aiService.getRelevantDocs({
-    query: "software",
-    collectionName: "8ee917e6-f9e5-4d0c-bb46-a36e50911aa1",
+  await jsonDataService.createOrUpdate({
+    key: "admin/public/counter",
+    value: {
+      count: 10,
+    },
   });
-  console.log(result);
+  await jsonDataService.createOrUpdate({
+    key: "admin/person",
+    value: {
+      name: "rahul",
+    },
+  });
 };
 practice();
