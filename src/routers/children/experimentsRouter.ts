@@ -271,5 +271,22 @@ experimentsRouter.get("/ogs", async (req, res, next) => {
     return next(err);
   }
 });
+const fileDownloadUrlSchema = z.object({
+  url: z.string(),
+  filename: z.string(),
+});
+experimentsRouter.get("/file-download-url", async (req, res, next) => {
+  try {
+    const { url, filename } = fileDownloadUrlSchema.parse(req.query);
+    const response = await axios.get(url, { responseType: "stream" });
 
+    // Set headers to force download
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+    // Pipe the response to the client
+    return response.data.pipe(res);
+  } catch (err) {
+    return next(err);
+  }
+});
 export default experimentsRouter;
