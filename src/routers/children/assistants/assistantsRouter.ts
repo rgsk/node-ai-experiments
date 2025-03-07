@@ -111,6 +111,24 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       })) ?? [];
     const mcpClient = await getMcpClient();
 
+    const message = await openAIClient.beta.threads.messages.create(threadId, {
+      role: "user",
+      content: [
+        ...imageFilesContent,
+        {
+          type: "text",
+          text: userMessage,
+        },
+        ...secondaryTextMessages,
+      ],
+      attachments: attachments,
+      metadata: {
+        ...imageUrls,
+      },
+    });
+
+    emitSocketEvent("userMessage.created", { message });
+
     let personaInstruction = "";
     if (personaId) {
       const result = await mcpClient.getPrompt({
@@ -132,23 +150,6 @@ assistantsRouter.post("/chat", async (req, res, next) => {
     });
     memoryInstruction = result.messages[0].content.text as string;
 
-    const message = await openAIClient.beta.threads.messages.create(threadId, {
-      role: "user",
-      content: [
-        ...imageFilesContent,
-        {
-          type: "text",
-          text: userMessage,
-        },
-        ...secondaryTextMessages,
-      ],
-      attachments: attachments,
-      metadata: {
-        ...imageUrls,
-      },
-    });
-
-    emitSocketEvent("userMessage.created", { message });
     const additional_instructions = [
       userContextString,
       memoryInstruction,
