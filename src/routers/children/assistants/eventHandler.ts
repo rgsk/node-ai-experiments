@@ -145,8 +145,11 @@ class EventHandler extends EventEmitter {
               {
                 data: {
                   source: "tool call error",
-                  toolCallFunctionName: toolCall.function.name,
                   matchingToolPassedType: matchingToolPassed?.type,
+                  toolCallFunctionName: toolCall.function.name,
+                  toolCallFunctionArguments: JSON.parse(
+                    toolCall.function.arguments
+                  ),
                 },
               },
               Middlewares.Keys.ErrorData
