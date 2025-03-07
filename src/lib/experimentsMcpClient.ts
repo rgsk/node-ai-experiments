@@ -21,5 +21,6 @@ const experimentsMcpClient = new Client(
 
 (async () => {
   await experimentsMcpClient.connect(transport);
+  console.log("mcp connection successful");
 })();
 export default experimentsMcpClient;
