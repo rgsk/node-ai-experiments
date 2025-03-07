@@ -2,8 +2,8 @@ import { io } from "app";
 import { Router } from "express";
 import fs from "fs";
 import composioToolset from "lib/composioToolset";
-import { schemaToTools } from "lib/generalUtils";
 import mcpClient from "lib/mcpClient";
+import mcpSchemaToOpenAITools from "lib/mcpSchemaToOpenAITools";
 import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
 import { Memory, Persona } from "lib/typesJsonData";
@@ -169,12 +169,19 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       apps: ["googlesheets"],
     });
     const mcpToolsSchema = await mcpClient.listTools();
-    const mcpOpenAITools = schemaToTools(mcpToolsSchema);
-    // writeFile("basic.json", JSON.stringify(mcpOpenAITools));
+    const mcpOpenAITools = mcpSchemaToOpenAITools(mcpToolsSchema);
+    // writeFile("basic.json", JSON.stringify({ mcpToolsSchema, mcpOpenAITools }));
 
-    const composioToolsFunctionNames = composioTools.map(
-      (tool) => tool.function.name
-    );
+    const toolsPassed = [
+      ...composioTools.map((tool) => ({
+        name: tool.function.name,
+        type: "composio",
+      })),
+      ...mcpOpenAITools.map((tool: any) => ({
+        name: tool.function.name,
+        type: "mcp",
+      })),
+    ];
     const stream = openAIClient.beta.threads.runs.stream(
       threadId,
       {
@@ -188,7 +195,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       userEmail,
       emitSocketEvent,
       persona,
-      composioToolsFunctionNames,
+      toolsPassed,
       req,
       res,
       next,

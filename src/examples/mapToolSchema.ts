@@ -1,4 +1,4 @@
-import { schemaToTools } from "lib/generalUtils";
+import mcpSchemaToOpenAITools from "lib/mcpSchemaToOpenAITools";
 
 const sampleInputSchema = {
   tools: [
@@ -14,7 +14,7 @@ const sampleInputSchema = {
             description:
               "A concise statement that captures the information to be saved (e.g., 'User plans to start an AI & robotics company', 'User likes sci-fi movies', 'User works at Google').",
           },
-          userEmail: { type: "string" },
+          userEmail: { type: "string", format: "email" },
         },
         required: ["statement", "userEmail"],
         additionalProperties: false,
@@ -27,7 +27,7 @@ const sampleInputSchema = {
 const practice = async () => {
   //   const tools = await mcpClient.listTools();
   //   console.log(tools);
-  const tool = schemaToTools(sampleInputSchema);
+  const tool = mcpSchemaToOpenAITools(sampleInputSchema);
   //   console.log(tool);
   //   console.log(JSON.stringify(tool, null, 2));
   console.dir(tool, { depth: null });

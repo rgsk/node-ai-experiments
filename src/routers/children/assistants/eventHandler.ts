@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import { NextFunction, Request, Response } from "express";
 import composioToolset from "lib/composioToolset";
+import mcpClient from "lib/mcpClient";
 import { addProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
 import { Persona } from "lib/typesJsonData";
@@ -11,11 +12,12 @@ import { EmitSocketEvent } from "./assistantsRouter";
 import getRelevantDocs from "./tools/getRelevantDocs";
 import getUrlContent from "./tools/getUrlContent";
 import saveUserInfoToMemory from "./tools/saveUserInfoToMemory";
+type ToolsPassed = { name: string; type: "mcp" | "composio" }[];
 export type EventObject = {
   userEmail: string;
   emitSocketEvent: EmitSocketEvent;
   persona?: Persona;
-  composioToolsFunctionNames: string[];
+  toolsPassed: ToolsPassed;
   req: Request;
   res: Response;
   next: NextFunction;
@@ -32,7 +34,7 @@ class EventHandler extends EventEmitter {
       userEmail,
       emitSocketEvent,
       persona,
-      composioToolsFunctionNames,
+      toolsPassed,
       req,
       res,
       next,
@@ -49,7 +51,7 @@ class EventHandler extends EventEmitter {
         userEmail,
         emitSocketEvent,
         persona,
-        composioToolsFunctionNames,
+        toolsPassed,
         req,
         res,
         next,
@@ -98,7 +100,7 @@ class EventHandler extends EventEmitter {
     userEmail,
     emitSocketEvent,
     persona,
-    composioToolsFunctionNames,
+    toolsPassed,
     req,
     res,
     next,
@@ -109,7 +111,7 @@ class EventHandler extends EventEmitter {
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
     persona?: Persona;
-    composioToolsFunctionNames: string[];
+    toolsPassed: ToolsPassed;
     req: Request;
     res: Response;
     next: NextFunction;
@@ -119,8 +121,25 @@ class EventHandler extends EventEmitter {
         [];
       for (const toolCall of run.required_action.submit_tool_outputs
         .tool_calls) {
-        if (composioToolsFunctionNames.includes(toolCall.function.name)) {
-          const output = await composioToolset.executeToolCall(toolCall);
+        const matchingToolPassed = toolsPassed.find(
+          (tool) => tool.name === toolCall.function.name
+        );
+        if (matchingToolPassed) {
+          let output = "";
+          if (matchingToolPassed.type === "composio") {
+            output = await composioToolset.executeToolCall(toolCall);
+          } else if (matchingToolPassed.type === "mcp") {
+            const value = await mcpClient.callTool({
+              name: toolCall.function.name,
+              arguments: JSON.parse(toolCall.function.arguments),
+            });
+            output = JSON.stringify(value);
+          } else {
+            throw new Error(
+              `Unknown ToolPassed type: ${matchingToolPassed.type}`
+            );
+          }
+          // console.log({ output });
           const result = {
             tool_call_id: toolCall.id,
             output: output,
@@ -191,7 +210,7 @@ class EventHandler extends EventEmitter {
         userEmail,
         emitSocketEvent,
         persona,
-        composioToolsFunctionNames,
+        toolsPassed,
         req,
         res,
         next,
@@ -206,7 +225,7 @@ class EventHandler extends EventEmitter {
     userEmail,
     emitSocketEvent,
     persona,
-    composioToolsFunctionNames,
+    toolsPassed,
     req,
     res,
     next,
@@ -217,7 +236,7 @@ class EventHandler extends EventEmitter {
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
     persona?: Persona;
-    composioToolsFunctionNames: string[];
+    toolsPassed: ToolsPassed;
     req: Request;
     res: Response;
     next: NextFunction;
@@ -232,7 +251,7 @@ class EventHandler extends EventEmitter {
       userEmail,
       emitSocketEvent,
       persona,
-      composioToolsFunctionNames,
+      toolsPassed,
       req,
       res,
       next,
