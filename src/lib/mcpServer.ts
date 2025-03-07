@@ -17,7 +17,7 @@ server.tool(
       description:
         "A concise statement that captures the information to be saved (e.g., 'User plans to start an AI & robotics company', 'User likes sci-fi movies', 'User works at Google').",
     }),
-    userEmail: z.string(),
+    userEmail: z.string().email(),
   },
   async ({ statement, userEmail }) => {
     const result = await saveUserInfoToMemory({ statement, userEmail });
