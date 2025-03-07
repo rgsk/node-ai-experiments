@@ -3,13 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { OpenAI } from "openai";
 import { AssistantStreamEvent } from "openai/resources/beta/assistants.js";
 import composioToolset from "../../../lib/composioToolset.js";
-import experimentsMcpClient from "../../../lib/experimentsMcpClient.js";
 import { addProps } from "../../../lib/middlewareProps.js";
 import openAIClient from "../../../lib/openAIClient.js";
 import { Middlewares } from "../../../middlewares/middlewaresNamespace.js";
-import { EmitSocketEvent } from "./assistantsRouter.js";
-import getUrlContent from "./tools/getUrlContent.js";
-import saveUserInfoToMemory from "./tools/saveUserInfoToMemory.js";
+import { EmitSocketEvent, getMcpClient } from "./assistantsRouter.js";
+
 type ToolsPassed = { name: string; type: "mcp" | "composio" }[];
 export type EventObject = {
   userEmail: string;
@@ -68,7 +66,7 @@ class EventHandler extends EventEmitter {
         { data: { source: "thread.run.failed", ...lastError } },
         Middlewares.Keys.ErrorData
       );
-      next(new Error(lastError?.message ?? "Unknown error"));
+      return next(lastError);
     } else if (event.event === "thread.run.completed") {
       res.json({ message: "thread.run.completed", run: event.data });
     } else if (event.event === "thread.run.cancelled") {
@@ -107,66 +105,69 @@ class EventHandler extends EventEmitter {
         [];
       for (const toolCall of run.required_action.submit_tool_outputs
         .tool_calls) {
-        const matchingToolPassed = toolsPassed.find(
-          (tool) => tool.name === toolCall.function.name
-        );
-        if (matchingToolPassed) {
-          let output = "";
-          if (matchingToolPassed.type === "composio") {
-            output = await composioToolset.executeToolCall(toolCall);
-          } else if (matchingToolPassed.type === "mcp") {
-            const value = await experimentsMcpClient.callTool({
-              name: toolCall.function.name,
-              arguments: JSON.parse(toolCall.function.arguments),
-            });
-            output = JSON.stringify(value);
+        try {
+          const matchingToolPassed = toolsPassed.find(
+            (tool) => tool.name === toolCall.function.name
+          );
+          if (matchingToolPassed) {
+            let output = "";
+            if (matchingToolPassed.type === "composio") {
+              output = await composioToolset.executeToolCall(toolCall);
+            } else if (matchingToolPassed.type === "mcp") {
+              const mcpClient = await getMcpClient();
+              const value = await mcpClient.callTool({
+                name: toolCall.function.name,
+                arguments: JSON.parse(toolCall.function.arguments),
+              });
+              output = JSON.stringify(value);
+            } else {
+              throw new Error(
+                `Unknown ToolPassed type: ${matchingToolPassed.type}`
+              );
+            }
+            // console.log({ output });
+            const result = {
+              tool_call_id: toolCall.id,
+              output: output,
+            };
+            toolOutputs.push(result);
           } else {
-            throw new Error(
-              `Unknown ToolPassed type: ${matchingToolPassed.type}`
-            );
+            throw new Error("Unknown function name: " + toolCall.function.name);
           }
-          // console.log({ output });
-          const result = {
-            tool_call_id: toolCall.id,
-            output: output,
-          };
-          toolOutputs.push(result);
-        } else if (toolCall.function.name === "getCurrentTemperature") {
-          const result = {
-            tool_call_id: toolCall.id,
-            output: "100",
-          };
-          toolOutputs.push(result);
-        } else if (toolCall.function.name === "getRainProbability") {
-          const result = {
-            tool_call_id: toolCall.id,
-            output: "0.06",
-          };
-          toolOutputs.push(result);
-        } else if (toolCall.function.name === "getUrlContent") {
-          const args = toolCall.function.arguments;
-          const { url } = JSON.parse(args) as { url: string };
-          const output = await getUrlContent(url);
-          // console.log(output);
-          const result = {
-            tool_call_id: toolCall.id,
-            output: output,
-          };
-          toolOutputs.push(result);
-        } else if (toolCall.function.name === "saveUserInfoToMemory") {
-          const args = toolCall.function.arguments;
-          const { statement } = JSON.parse(args) as { statement: string };
-          const output = await saveUserInfoToMemory({
-            statement,
-            userEmail,
-          });
-          // console.log(output);
-          toolOutputs.push({
-            tool_call_id: toolCall.id,
-            output: output,
-          });
-        } else {
-          throw new Error("Unknown function name: " + toolCall.function.name);
+        } catch (err: any) {
+          try {
+            const run = await openAIClient.beta.threads.runs.cancel(
+              threadId,
+              runId
+            );
+            addProps<Middlewares.ErrorData>(
+              req,
+              {
+                data: {
+                  source: "tool call error",
+                  toolCallFunctionName: toolCall.function.name,
+                },
+              },
+              Middlewares.Keys.ErrorData
+            );
+            return next({
+              code: "tool_call_error",
+              message: err.message,
+              err: err,
+            });
+          } catch (err) {
+            addProps<Middlewares.ErrorData>(
+              req,
+              {
+                data: {
+                  source: "cancelling run failed",
+                  toolCallFunctionName: toolCall.function.name,
+                },
+              },
+              Middlewares.Keys.ErrorData
+            );
+            return next(err);
+          }
         }
       }
       // Submit all the tool outputs at the same time

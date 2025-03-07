@@ -1,10 +1,12 @@
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { Router } from "express";
 import fs from "fs";
 import { MessageContentPartParam } from "openai/resources/beta/threads/messages";
 import { z } from "zod";
 import { io } from "../../../app.js";
 import composioToolset from "../../../lib/composioToolset.js";
-import experimentsMcpClient from "../../../lib/experimentsMcpClient.js";
+import environmentVars from "../../../lib/environmentVars.js";
 import mcpSchemaToOpenAITools from "../../../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../../../lib/middlewareProps.js";
 import openAIClient from "../../../lib/openAIClient.js";
@@ -55,7 +57,18 @@ const requestBodySchema = z.object({
   imageUrls: z.record(z.string()).optional(),
   attachFilesToCodeInterpreter: z.boolean().optional(),
 });
+export const getMcpClient = async () => {
+  const mcpTransport = new SSEClientTransport(
+    new URL(environmentVars.MCP_AI_EXPERIMENTS_SERVER + "/sse")
+  );
 
+  const mcpClient = new Client({
+    name: "example-client",
+    version: "1.0.0",
+  });
+  await mcpClient.connect(mcpTransport);
+  return mcpClient;
+};
 assistantsRouter.post("/chat", async (req, res, next) => {
   try {
     const { userEmail } = getProps<Middlewares.Authenticate>(
@@ -96,9 +109,11 @@ assistantsRouter.post("/chat", async (req, res, next) => {
         type: "text",
         text: m,
       })) ?? [];
+    const mcpClient = await getMcpClient();
+
     let personaInstruction = "";
     if (personaId) {
-      const result = await experimentsMcpClient.getPrompt({
+      const result = await mcpClient.getPrompt({
         name: "persona",
         arguments: {
           personaId,
@@ -109,7 +124,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
     }
 
     let memoryInstruction = "";
-    const result = await experimentsMcpClient.getPrompt({
+    const result = await mcpClient.getPrompt({
       name: "memory",
       arguments: {
         userEmail,
@@ -143,9 +158,9 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       .filter(Boolean)
       ?.join("\n--------------\n");
     const composioTools = await composioToolset.getTools({
-      apps: ["googlesheets"],
+      apps: [],
     });
-    const mcpToolsSchema = await experimentsMcpClient.listTools();
+    const mcpToolsSchema = await mcpClient.listTools();
     const mcpOpenAITools = mcpSchemaToOpenAITools(mcpToolsSchema);
     // writeFile("basic.json", JSON.stringify({ mcpToolsSchema, mcpOpenAITools }));
 

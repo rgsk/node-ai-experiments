@@ -18,5 +18,6 @@ const experimentsMcpClient = new Client(
     },
   }
 );
+export type McpClient = typeof experimentsMcpClient;
 
 export default experimentsMcpClient;

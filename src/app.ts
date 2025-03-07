@@ -4,9 +4,6 @@ import { createServer } from "http";
 import { Server as SocketServer } from "socket.io";
 import tsconfigPaths from "tsconfig-paths";
 import environmentVars from "./lib/environmentVars.js";
-import experimentsMcpClient, {
-  experimentsMcpTransport,
-} from "./lib/experimentsMcpClient.js";
 import authenticate from "./middlewares/authenticate.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import experimentsRouter from "./routers/children/experimentsRouter.js";
@@ -44,10 +41,6 @@ app.use(errorHandler);
 
 const PORT = environmentVars.PORT;
 // Start the server
-(async () => {
-  await experimentsMcpClient.connect(experimentsMcpTransport);
-  console.log("mcp connection successful");
-  httpServer.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-})();
+httpServer.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
