@@ -6,17 +6,14 @@ import composioToolset from "../../../lib/composioToolset.js";
 import experimentsMcpClient from "../../../lib/experimentsMcpClient.js";
 import { addProps } from "../../../lib/middlewareProps.js";
 import openAIClient from "../../../lib/openAIClient.js";
-import { Persona } from "../../../lib/typesJsonData.js";
 import { Middlewares } from "../../../middlewares/middlewaresNamespace.js";
 import { EmitSocketEvent } from "./assistantsRouter.js";
-import getRelevantDocs from "./tools/getRelevantDocs.js";
 import getUrlContent from "./tools/getUrlContent.js";
 import saveUserInfoToMemory from "./tools/saveUserInfoToMemory.js";
 type ToolsPassed = { name: string; type: "mcp" | "composio" }[];
 export type EventObject = {
   userEmail: string;
   emitSocketEvent: EmitSocketEvent;
-  persona?: Persona;
   toolsPassed: ToolsPassed;
   req: Request;
   res: Response;
@@ -30,15 +27,7 @@ class EventHandler extends EventEmitter {
   }
   async onEvent(
     event: AssistantStreamEvent,
-    {
-      userEmail,
-      emitSocketEvent,
-      persona,
-      toolsPassed,
-      req,
-      res,
-      next,
-    }: EventObject
+    { userEmail, emitSocketEvent, toolsPassed, req, res, next }: EventObject
   ) {
     // console.log(event);
     // Retrieve events that are denoted with 'requires_action'
@@ -50,7 +39,6 @@ class EventHandler extends EventEmitter {
         threadId: event.data.thread_id,
         userEmail,
         emitSocketEvent,
-        persona,
         toolsPassed,
         req,
         res,
@@ -99,7 +87,6 @@ class EventHandler extends EventEmitter {
     threadId,
     userEmail,
     emitSocketEvent,
-    persona,
     toolsPassed,
     req,
     res,
@@ -110,7 +97,6 @@ class EventHandler extends EventEmitter {
     threadId: string;
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
-    persona?: Persona;
     toolsPassed: ToolsPassed;
     req: Request;
     res: Response;
@@ -157,25 +143,6 @@ class EventHandler extends EventEmitter {
             output: "0.06",
           };
           toolOutputs.push(result);
-        } else if (toolCall.function.name === "getRelevantDocs") {
-          if (persona) {
-            const args = toolCall.function.arguments;
-            const { query } = JSON.parse(args) as { query: string };
-            // console.log({ query });
-            const relevantDocs = await getRelevantDocs({ query, persona });
-            const result = {
-              tool_call_id: toolCall.id,
-              output: JSON.stringify(relevantDocs),
-            };
-            toolOutputs.push(result);
-          } else {
-            // console.log("no relevant docs");
-            const result = {
-              tool_call_id: toolCall.id,
-              output: "no relevant docs",
-            };
-            toolOutputs.push(result);
-          }
         } else if (toolCall.function.name === "getUrlContent") {
           const args = toolCall.function.arguments;
           const { url } = JSON.parse(args) as { url: string };
@@ -209,7 +176,6 @@ class EventHandler extends EventEmitter {
         threadId,
         userEmail,
         emitSocketEvent,
-        persona,
         toolsPassed,
         req,
         res,
@@ -224,7 +190,6 @@ class EventHandler extends EventEmitter {
     toolOutputs,
     userEmail,
     emitSocketEvent,
-    persona,
     toolsPassed,
     req,
     res,
@@ -235,7 +200,6 @@ class EventHandler extends EventEmitter {
     threadId: string;
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
-    persona?: Persona;
     toolsPassed: ToolsPassed;
     req: Request;
     res: Response;
@@ -250,7 +214,6 @@ class EventHandler extends EventEmitter {
     const eventObject: EventObject = {
       userEmail,
       emitSocketEvent,
-      persona,
       toolsPassed,
       req,
       res,

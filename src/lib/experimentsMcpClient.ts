@@ -1,7 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import environmentVars from "./environmentVars.js";
-const transport = new SSEClientTransport(
+export const experimentsMcpTransport = new SSEClientTransport(
   new URL(environmentVars.MCP_AI_EXPERIMENTS_SERVER + "/sse")
 );
 
@@ -19,8 +19,4 @@ const experimentsMcpClient = new Client(
   }
 );
 
-(async () => {
-  await experimentsMcpClient.connect(transport);
-  console.log("mcp connection successful");
-})();
 export default experimentsMcpClient;

@@ -5,15 +5,11 @@ import { z } from "zod";
 import { io } from "../../../app.js";
 import composioToolset from "../../../lib/composioToolset.js";
 import experimentsMcpClient from "../../../lib/experimentsMcpClient.js";
-import { html } from "../../../lib/generalUtils.js";
 import mcpSchemaToOpenAITools from "../../../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../../../lib/middlewareProps.js";
 import openAIClient from "../../../lib/openAIClient.js";
-import { Persona } from "../../../lib/typesJsonData.js";
 import { upload } from "../../../lib/upload.js";
 import { Middlewares } from "../../../middlewares/middlewaresNamespace.js";
-import { getPopulatedKey } from "../jsonDataRouter.js";
-import { jsonDataService } from "../jsonDataService.js";
 import { eventHandler, EventObject } from "./eventHandler.js";
 
 const assistantsRouter = Router();
@@ -100,42 +96,26 @@ assistantsRouter.post("/chat", async (req, res, next) => {
         type: "text",
         text: m,
       })) ?? [];
-    let persona: Persona | undefined = undefined;
+    let personaInstruction = "";
     if (personaId) {
-      const result = await jsonDataService.findByKey<Persona>(
-        getPopulatedKey(
-          `reactAIExperiments/users/$userEmail/personas/${personaId}`,
-          userEmail
-        )
-      );
-      persona = result?.value;
-      if (!persona) {
-        throw new Error("persona not found");
-      }
+      const result = await experimentsMcpClient.getPrompt({
+        name: "persona",
+        arguments: {
+          personaId,
+          userEmail,
+        },
+      });
+      personaInstruction = result.messages[0].content.text as string;
     }
-    const personaInstruction = `
-      user is interacting persona with following personality
-      <persona>${JSON.stringify(persona)}</persona>
-      you have to respond on persona's behalf
 
-      additionally since, user interacting with this persona, getRelevantDocs tool becomes important
-      so make sure to pass user query to that tool and fetch the relevant docs and respond accordingly
-    `;
-
-    const memoriesResult = await experimentsMcpClient.readResource({
-      uri: `users://${userEmail}/memories`,
+    let memoryInstruction = "";
+    const result = await experimentsMcpClient.getPrompt({
+      name: "memory",
+      arguments: {
+        userEmail,
+      },
     });
-    const statements = memoriesResult.contents[0].text;
-    // console.log(statements);
-    const memoryInstruction = html`
-      Following memory statements are gathered from previous conversations with
-      the user, try to incorporate them into the conversation context to provide
-      a more personalized response.
-      <statements> ${statements} </statements>
-
-      additionally, if user has revealed something new about himself in the
-      conversation so far, save that statement in the memory
-    `;
+    memoryInstruction = result.messages[0].content.text as string;
 
     const message = await openAIClient.beta.threads.messages.create(threadId, {
       role: "user",
@@ -157,7 +137,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
     const additional_instructions = [
       userContextString,
       memoryInstruction,
-      persona && personaInstruction,
+      personaInstruction,
       `userEmail: ${userEmail}`,
     ]
       .filter(Boolean)
@@ -191,7 +171,6 @@ assistantsRouter.post("/chat", async (req, res, next) => {
     const eventObject: EventObject = {
       userEmail,
       emitSocketEvent,
-      persona,
       toolsPassed,
       req,
       res,
