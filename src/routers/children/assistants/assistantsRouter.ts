@@ -2,7 +2,7 @@ import { io } from "app";
 import { Router } from "express";
 import fs from "fs";
 import composioToolset from "lib/composioToolset";
-import mcpClient from "lib/mcpClient";
+import experimentsMcpClient from "lib/experimentsMcpClient";
 import mcpSchemaToOpenAITools from "lib/mcpSchemaToOpenAITools";
 import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
@@ -168,7 +168,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
     const composioTools = await composioToolset.getTools({
       apps: ["googlesheets"],
     });
-    const mcpToolsSchema = await mcpClient.listTools();
+    const mcpToolsSchema = await experimentsMcpClient.listTools();
     const mcpOpenAITools = mcpSchemaToOpenAITools(mcpToolsSchema);
     // writeFile("basic.json", JSON.stringify({ mcpToolsSchema, mcpOpenAITools }));
 

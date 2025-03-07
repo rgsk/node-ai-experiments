@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { NextFunction, Request, Response } from "express";
 import composioToolset from "lib/composioToolset";
-import mcpClient from "lib/mcpClient";
+import experimentsMcpClient from "lib/experimentsMcpClient";
 import { addProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
 import { Persona } from "lib/typesJsonData";
@@ -129,7 +129,7 @@ class EventHandler extends EventEmitter {
           if (matchingToolPassed.type === "composio") {
             output = await composioToolset.executeToolCall(toolCall);
           } else if (matchingToolPassed.type === "mcp") {
-            const value = await mcpClient.callTool({
+            const value = await experimentsMcpClient.callTool({
               name: toolCall.function.name,
               arguments: JSON.parse(toolCall.function.arguments),
             });
