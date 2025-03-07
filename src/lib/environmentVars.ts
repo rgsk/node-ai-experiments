@@ -42,5 +42,4 @@ const fields: z.infer<typeof environmentVarsSchema> = {
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);
-console.log({ environmentVars });
 export default environmentVars;
