@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "dev": "sh ./bin.dev/start.sh",
     "kill:port": "kill -9 $(lsof -t -i:4001)",
-    "serve": "NODE_PATH=dist nodemon dist/app.js",
+    "serve": "NODE_PATH=dist nodemon --ignore code-runners dist/app.js",
     "start": "NODE_PATH=dist node dist/app.js",
     "init:prisma": "prisma generate",
     "studio": "BROWSER=none prisma studio",
