@@ -1,1 +1,34 @@
-{"mcpToolsSchema":{"tools":[{"name":"saveUserInfoToMemory","description":"Save any information the user reveals about themselves during conversations — this includes their preferences, interests, goals, plans, likes/dislikes, personality traits, or anything relevant that can help personalize future conversations.","inputSchema":{"type":"object","properties":{"statement":{"type":"string","description":"A concise statement that captures the information to be saved (e.g., 'User plans to start an AI & robotics company', 'User likes sci-fi movies', 'User works at Google')."},"userEmail":{"type":"string","format":"email"}},"required":["statement","userEmail"],"additionalProperties":false,"$schema":"http://json-schema.org/draft-07/schema#"}}]},"mcpOpenAITools":[{"type":"function","function":{"name":"saveUserInfoToMemory","description":"Save any information the user reveals about themselves during conversations — this includes their preferences, interests, goals, plans, likes/dislikes, personality traits, or anything relevant that can help personalize future conversations.","parameters":{"type":"object","properties":{"statement":{"type":"string","description":"A concise statement that captures the information to be saved (e.g., 'User plans to start an AI & robotics company', 'User likes sci-fi movies', 'User works at Google')."},"userEmail":{"type":"string"}},"required":["statement","userEmail"],"additionalProperties":false},"strict":true}}]}
+[
+  {
+    "id": "5d820a44-6266-4141-8f19-16033e4a5339",
+    "metadata": { "source": "website:https://tashapais.com/" },
+    "page_content": "Page Title: Tasha Pais\nPage Content: Home\n            Projects\n            Art\n            Blog\n            Books\n        \n        \n            \n                \n            \n            \n                Tasha Pais\n                tdp74 at rutgers dot edu\n                I'm graduating this May with degrees in Computer Science and Cognitive Neuroscience from Rutgers University. I'm fortunate to be advised by Kostas Bekris",
+    "type": "Document"
+  },
+  {
+    "id": "7c265e5c-78d5-409a-8c46-5ab89e5ce156",
+    "metadata": { "source": "website:https://tashapais.com/" },
+    "page_content": "Extending Semantic Abstraction of 2D VLMs for Efficient Search of Hidden Objects  \n                \n                    \n                        Tasha Pais*,  Nikhilesh Belulkar*,  Huy Ha",
+    "type": "Document"
+  },
+  {
+    "id": "0d691e36-12c1-47d8-a2fa-553ee09d37e5",
+    "metadata": { "source": "website:https://tashapais.com/" },
+    "page_content": "Active Exploration: Scaling Up Tactile Sensing Algorithm for Category Level Classification\n                \n                    \n                        Tasha Pais*,  Nikhilesh Belulkar*,  Jingxi Xu\n                        July 2023    \n                        Github",
+    "type": "Document"
+  },
+  {
+    "id": "9c0c4d4f-90a0-4387-a2ba-efaaa2b0dcde",
+    "metadata": { "source": "website:https://tashapais.com/" },
+    "page_content": "Research\n             \n                \n                     \n                    \n                    Revolving-View 3D Object Completion Using Text-Conditioned Inpainting \n                \n                    \n                        Tasha Pais, Shiyang Lu, Kostas Bekris",
+    "type": "Document"
+  },
+  {
+    "id": "743cb313-c576-4e72-89e2-2e1a43eba9e7",
+    "metadata": {
+      "source": "website:https://portfolio-nine-nu-87.vercel.app/"
+    },
+    "page_content": "Page Title: Rahul Gupta\nPage Content: Rahul GuptaI design and code beautifully simple things, and I love what I do.Contact me - rahulguptacs1@gmail.comHi, I’m Rahul. Nice to meet you.I am a Bcom Graduate, who stumbled upon coding in my 2nd year of college, I started learning Python, then Javascript, which led me to Web Development, since then I am really enjoying it, its a dream come true, I feel fortunate that I get to do everyday what I truly love.Intro VideoBelow video explains projects I have done. Note: You can check comments  for timestamp for specific projects",
+    "type": "Document"
+  }
+]

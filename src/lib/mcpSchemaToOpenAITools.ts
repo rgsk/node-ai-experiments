@@ -28,7 +28,7 @@ function mcpSchemaToOpenAITools(inputSchema: any) {
         name: tool.name,
         description: tool.description || `Execute the ${tool.name} function`,
         parameters: cleanedSchema,
-        strict: true,
+        strict: false,
       },
     };
   });
