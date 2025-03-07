@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { generateChapters } from "lib/youtube";
 import { YoutubeTranscript } from "youtube-transcript";
 import { z } from "zod";
+import { generateChapters } from "../../lib/youtube.js";
 
 const youtubeRouter = Router();
 export function extractVideoId(url: string) {

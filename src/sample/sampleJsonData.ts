@@ -1,4 +1,5 @@
-import { jsonDataService } from "routers/children/jsonDataService";
+import { jsonDataService } from "../routers/children/jsonDataService.js";
+
 type Details = {
   count: number;
 };

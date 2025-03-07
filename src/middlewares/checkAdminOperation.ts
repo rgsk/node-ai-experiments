@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { getProps } from "lib/middlewareProps";
 import { z } from "zod";
-import { Middlewares } from "./middlewaresNamespace";
+import { getProps } from "../lib/middlewareProps.js";
+import { Middlewares } from "./middlewaresNamespace.js";
 
 export const checkIsAdmin = (userEmail: string) => {
   return userEmail === "rahulguptasde@gmail.com";

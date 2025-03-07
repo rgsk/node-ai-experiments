@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import getGoogleAuth from "./getGoogleAuth";
+import getGoogleAuth from "./getGoogleAuth.js";
 const getFirstTabName = async ({
   spreadsheetId,
   auth,

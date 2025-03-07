@@ -1,5 +1,5 @@
-import openAIClient from "lib/openAIClient";
 import { YoutubeTranscript } from "youtube-transcript";
+import openAIClient from "./openAIClient.js";
 
 interface SummaryItem {
   offset: number;

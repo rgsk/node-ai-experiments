@@ -1,9 +1,8 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
-import environmentVars from "./environmentVars";
-console.log(environmentVars.MCP_AI_EXPERIMENTS_SERVER);
+import environmentVars from "./environmentVars.js";
 const transport = new SSEClientTransport(
-  new URL(environmentVars.MCP_AI_EXPERIMENTS_SERVER)
+  new URL(environmentVars.MCP_AI_EXPERIMENTS_SERVER + "/sse")
 );
 
 const experimentsMcpClient = new Client(

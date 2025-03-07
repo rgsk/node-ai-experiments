@@ -1,15 +1,19 @@
 import cors from "cors";
 import express from "express";
 import { createServer } from "http";
-import environmentVars from "lib/environmentVars";
-import authenticate from "middlewares/authenticate";
-import errorHandler from "middlewares/errorHandler";
-import path from "path";
-import experimentsRouter from "routers/children/experimentsRouter";
-import gcpRouter from "routers/children/gcpRouter";
-import youtubeRouter from "routers/children/youtubeRouter";
-import rootRouter from "routers/rootRouter";
 import { Server as SocketServer } from "socket.io";
+import tsconfigPaths from "tsconfig-paths";
+import environmentVars from "./lib/environmentVars.js";
+import authenticate from "./middlewares/authenticate.js";
+import errorHandler from "./middlewares/errorHandler.js";
+import experimentsRouter from "./routers/children/experimentsRouter.js";
+import gcpRouter from "./routers/children/gcpRouter.js";
+import youtubeRouter from "./routers/children/youtubeRouter.js";
+import rootRouter from "./routers/rootRouter.js";
+tsconfigPaths.register({
+  baseUrl: "dist", // or wherever your compiled files are located
+  paths: [] as any,
+});
 const app = express();
 
 const httpServer = createServer(app);
@@ -21,9 +25,6 @@ export const io = new SocketServer(httpServer, {
 });
 app.use(express.json());
 app.use(cors());
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "../views"));
-app.use(express.static(path.join(__dirname, "../public")));
 
 // Define a route to render the EJS template
 app.get("/pages/test", (req, res) => {

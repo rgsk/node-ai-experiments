@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import saveUserInfoToMemory from "routers/children/assistants/tools/saveUserInfoToMemory";
 import { z } from "zod";
+import saveUserInfoToMemory from "../routers/children/assistants/tools/saveUserInfoToMemory.js";
 
 // Create an MCP server
 const server = new McpServer({

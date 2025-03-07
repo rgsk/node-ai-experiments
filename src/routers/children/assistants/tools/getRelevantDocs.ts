@@ -1,5 +1,5 @@
-import aiService from "lib/aiService";
-import { Persona } from "lib/typesJsonData";
+import aiService from "../../../../lib/aiService.js";
+import { Persona } from "../../../../lib/typesJsonData.js";
 
 const getRelevantDocs = async ({
   query,

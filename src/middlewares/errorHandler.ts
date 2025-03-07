@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { getOptionalProps } from "lib/middlewareProps";
-import { Middlewares } from "./middlewaresNamespace";
+import { getOptionalProps } from "../lib/middlewareProps.js";
+import { Middlewares } from "./middlewaresNamespace.js";
 
 const errorHandler = (
   err: Error,

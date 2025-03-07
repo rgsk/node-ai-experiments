@@ -1,7 +1,7 @@
-import { Memory } from "lib/typesJsonData";
-import { getPopulatedKey } from "routers/children/jsonDataRouter";
-import { jsonDataService } from "routers/children/jsonDataService";
 import { v4 } from "uuid";
+import { Memory } from "../../../../lib/typesJsonData.js";
+import { getPopulatedKey } from "../../../../routers/children/jsonDataRouter.js";
+import { jsonDataService } from "../../../../routers/children/jsonDataService.js";
 
 const saveUserInfoToMemory = async ({
   statement,

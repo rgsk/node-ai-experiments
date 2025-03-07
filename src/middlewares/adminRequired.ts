@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { getProps } from "lib/middlewareProps";
-import { checkIsAdmin } from "./checkAdminOperation";
-import { Middlewares } from "./middlewaresNamespace";
+import { getProps } from "../lib/middlewareProps.js";
+import { checkIsAdmin } from "./checkAdminOperation.js";
+import { Middlewares } from "./middlewaresNamespace.js";
 
 const adminRequired = async (
   req: Request,

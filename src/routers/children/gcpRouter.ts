@@ -1,8 +1,8 @@
 import { Router } from "express";
-import getGoogleDocData from "lib/gcp/getGoogleDocData";
-import getGoogleSheetData from "lib/gcp/getGoogleSheetData";
-import updateGoogleSheet from "lib/gcp/updateGoogleSheet";
 import { z } from "zod";
+import getGoogleDocData from "../../lib/gcp/getGoogleDocData.js";
+import getGoogleSheetData from "../../lib/gcp/getGoogleSheetData.js";
+import updateGoogleSheet from "../../lib/gcp/updateGoogleSheet.js";
 const gcpRouter = Router();
 const googleDocQuerySchema = z.object({
   documentId: z.string(),

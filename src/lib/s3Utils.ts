@@ -5,7 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { secondsInDay, secondsInHour } from "date-fns/constants";
-import s3Client, { s3ClientBuckets } from "lib/s3Client";
+import s3Client, { s3ClientBuckets } from "../lib/s3Client.js";
 
 export async function getUploadURL({ key }: { key: string }) {
   const bucket = s3ClientBuckets.main;

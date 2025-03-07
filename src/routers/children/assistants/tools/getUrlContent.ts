@@ -1,13 +1,12 @@
 import axios from "axios";
 import { JSDOM } from "jsdom";
-import getGoogleDocData from "lib/gcp/getGoogleDocData";
-import getGoogleSheetData from "lib/gcp/getGoogleSheetData";
-import openAIClient from "lib/openAIClient";
 import tesseract from "node-tesseract-ocr";
-import pdf from "pdf-parse";
-import { UrlContentType } from "routers/children/experimentsRouter";
-import { extractVideoId } from "routers/children/youtubeRouter";
 import { YoutubeTranscript } from "youtube-transcript";
+import getGoogleDocData from "../../../../lib/gcp/getGoogleDocData.js";
+import getGoogleSheetData from "../../../../lib/gcp/getGoogleSheetData.js";
+import openAIClient from "../../../../lib/openAIClient.js";
+import { UrlContentType } from "../../experimentsRouter.js";
+import { extractVideoId } from "../../youtubeRouter.js";
 
 // Function to determine if the URL is a PDF, ignoring query parameters and fragments
 const isPDF = (url: string): boolean => {
@@ -60,8 +59,9 @@ const fetchPDF = async (url: string): Promise<string> => {
     const pdfBuffer = response.data;
 
     // Parse the PDF content
-    const data = await pdf(pdfBuffer);
-    return data.text; // Extract the text from the PDF
+    // const data = await pdf(pdfBuffer);
+    // return data.text; // Extract the text from the PDF
+    return "";
   } catch (error) {
     throw new Error(`Failed to fetch PDF content: ${error}`);
   }

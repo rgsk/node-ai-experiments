@@ -1,5 +1,5 @@
 import { JsonData } from "@prisma/client";
-import { db } from "lib/db";
+import { db } from "../../lib/db.js";
 type JsonDataValue<T> = Omit<JsonData, "value"> & { value: T };
 export const jsonDataService = {
   async findByKey<T>(key: string) {

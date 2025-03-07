@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { verifyToken } from "lib/authUtils";
-import environmentVars from "lib/environmentVars";
-import { addProps } from "lib/middlewareProps";
-import { Middlewares } from "./middlewaresNamespace";
+import { verifyToken } from "../lib/authUtils.js";
+import environmentVars from "../lib/environmentVars.js";
+import { addProps } from "../lib/middlewareProps.js";
+import { Middlewares } from "./middlewaresNamespace.js";
 
 const authenticate = async (
   req: Request,

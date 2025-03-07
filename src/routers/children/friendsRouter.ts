@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { db } from "lib/db";
 import { z } from "zod";
+import { db } from "../../lib/db.js";
 
 const friendsRouter = Router();
 friendsRouter.get("/", async (req, res, next) => {

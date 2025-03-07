@@ -1,4 +1,4 @@
-import { encodeQueryParams } from "./generalUtils";
+import { encodeQueryParams } from "./generalUtils.js";
 
 describe("encodeQueryParams", () => {
   test("should return an empty string for an empty params object", () => {

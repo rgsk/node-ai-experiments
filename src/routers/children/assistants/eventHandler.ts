@@ -1,17 +1,17 @@
 import { EventEmitter } from "events";
 import { NextFunction, Request, Response } from "express";
-import composioToolset from "lib/composioToolset";
-import experimentsMcpClient from "lib/experimentsMcpClient";
-import { addProps } from "lib/middlewareProps";
-import openAIClient from "lib/openAIClient";
-import { Persona } from "lib/typesJsonData";
-import { Middlewares } from "middlewares/middlewaresNamespace";
 import { OpenAI } from "openai";
-import { AssistantStreamEvent } from "openai/resources/beta/assistants";
-import { EmitSocketEvent } from "./assistantsRouter";
-import getRelevantDocs from "./tools/getRelevantDocs";
-import getUrlContent from "./tools/getUrlContent";
-import saveUserInfoToMemory from "./tools/saveUserInfoToMemory";
+import { AssistantStreamEvent } from "openai/resources/beta/assistants.js";
+import composioToolset from "../../../lib/composioToolset.js";
+import experimentsMcpClient from "../../../lib/experimentsMcpClient.js";
+import { addProps } from "../../../lib/middlewareProps.js";
+import openAIClient from "../../../lib/openAIClient.js";
+import { Persona } from "../../../lib/typesJsonData.js";
+import { Middlewares } from "../../../middlewares/middlewaresNamespace.js";
+import { EmitSocketEvent } from "./assistantsRouter.js";
+import getRelevantDocs from "./tools/getRelevantDocs.js";
+import getUrlContent from "./tools/getUrlContent.js";
+import saveUserInfoToMemory from "./tools/saveUserInfoToMemory.js";
 type ToolsPassed = { name: string; type: "mcp" | "composio" }[];
 export type EventObject = {
   userEmail: string;

@@ -1,4 +1,4 @@
-import { verifyToken } from "lib/authUtils";
+import { verifyToken } from "../lib/authUtils.js";
 
 export namespace Middlewares {
   export enum Keys {

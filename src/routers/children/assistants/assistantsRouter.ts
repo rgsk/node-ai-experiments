@@ -1,19 +1,19 @@
-import { io } from "app";
 import { Router } from "express";
 import fs from "fs";
-import composioToolset from "lib/composioToolset";
-import experimentsMcpClient from "lib/experimentsMcpClient";
-import mcpSchemaToOpenAITools from "lib/mcpSchemaToOpenAITools";
-import { getProps } from "lib/middlewareProps";
-import openAIClient from "lib/openAIClient";
-import { Memory, Persona } from "lib/typesJsonData";
-import { upload } from "lib/upload";
-import { Middlewares } from "middlewares/middlewaresNamespace";
 import { MessageContentPartParam } from "openai/resources/beta/threads/messages";
 import { z } from "zod";
-import { getPopulatedKey } from "../jsonDataRouter";
-import { jsonDataService } from "../jsonDataService";
-import { eventHandler, EventObject } from "./eventHandler";
+import { io } from "../../../app.js";
+import composioToolset from "../../../lib/composioToolset.js";
+import experimentsMcpClient from "../../../lib/experimentsMcpClient.js";
+import mcpSchemaToOpenAITools from "../../../lib/mcpSchemaToOpenAITools.js";
+import { getProps } from "../../../lib/middlewareProps.js";
+import openAIClient from "../../../lib/openAIClient.js";
+import { Memory, Persona } from "../../../lib/typesJsonData.js";
+import { upload } from "../../../lib/upload.js";
+import { Middlewares } from "../../../middlewares/middlewaresNamespace.js";
+import { getPopulatedKey } from "../jsonDataRouter.js";
+import { jsonDataService } from "../jsonDataService.js";
+import { eventHandler, EventObject } from "./eventHandler.js";
 
 const assistantsRouter = Router();
 

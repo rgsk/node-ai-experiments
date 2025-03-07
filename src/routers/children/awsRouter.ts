@@ -1,6 +1,10 @@
 import { Router } from "express";
-import { deleteS3Url, getPresignedUrl, getUploadURL } from "lib/s3Utils";
 import { z } from "zod";
+import {
+  deleteS3Url,
+  getPresignedUrl,
+  getUploadURL,
+} from "../../lib/s3Utils.js";
 
 const awsRouter = Router();
 

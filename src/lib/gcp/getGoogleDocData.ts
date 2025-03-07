@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import getGoogleAuth from "./getGoogleAuth";
+import getGoogleAuth from "./getGoogleAuth.js";
 
 const getGoogleDocData = async ({ documentId }: { documentId: string }) => {
   const auth = await getGoogleAuth();

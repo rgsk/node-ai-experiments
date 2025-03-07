@@ -4,14 +4,14 @@ import { exec } from "child_process";
 import { Router } from "express";
 import fs from "fs";
 import { JSDOM } from "jsdom";
-import environmentVars from "lib/environmentVars";
-import { upload } from "lib/upload";
 import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
 import path from "path";
 import puppeteer from "puppeteer";
 import { z } from "zod";
-import getUrlContent from "./assistants/tools/getUrlContent";
+import environmentVars from "../../lib/environmentVars.js";
+import { upload } from "../../lib/upload.js";
+import getUrlContent from "./assistants/tools/getUrlContent.js";
 
 const experimentsRouter = Router();
 // Endpoint to execute Python code

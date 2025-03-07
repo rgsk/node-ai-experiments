@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { getProps } from "lib/middlewareProps";
-import checkAdminOperation from "middlewares/checkAdminOperation";
-import { Middlewares } from "middlewares/middlewaresNamespace";
 import { z } from "zod";
-import { jsonDataService } from "./jsonDataService";
+import { getProps } from "../../lib/middlewareProps.js";
+import checkAdminOperation from "../../middlewares/checkAdminOperation.js";
+import { Middlewares } from "../../middlewares/middlewaresNamespace.js";
+import { jsonDataService } from "./jsonDataService.js";
 
 const jsonDataRouter = Router();
 

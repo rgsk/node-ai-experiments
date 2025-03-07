@@ -1,7 +1,6 @@
-const fs = require("fs");
-const { google } = require("googleapis");
-const path = require("path");
-const readline = require("readline");
+import fs from "fs";
+import { google } from "googleapis";
+import readline from "readline";
 
 // If modifying these scopes, delete token.json.
 const SCOPES = [
@@ -88,4 +87,4 @@ const getGoogleAuth = async () => {
   });
 };
 
-module.exports = getGoogleAuth;
+export default getGoogleAuth;

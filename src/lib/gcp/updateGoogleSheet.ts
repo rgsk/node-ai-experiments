@@ -1,8 +1,8 @@
 import { google } from "googleapis";
-import getGoogleAuth from "./getGoogleAuth";
+import getGoogleAuth from "./getGoogleAuth.js";
 
 const updateGoogleSheet = async ({
-  spreadsheetId,
+  spreadsheetId, 
   range,
   values,
 }: {
