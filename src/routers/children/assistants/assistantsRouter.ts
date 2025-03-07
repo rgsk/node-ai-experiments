@@ -2,6 +2,8 @@ import { io } from "app";
 import { Router } from "express";
 import fs from "fs";
 import composioToolset from "lib/composioToolset";
+import { schemaToTools } from "lib/generalUtils";
+import mcpClient from "lib/mcpClient";
 import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
 import { Memory, Persona } from "lib/typesJsonData";
@@ -126,6 +128,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
         )
       )) ?? {};
     const statements = memories?.map((m) => m.statement) ?? [];
+    // console.log(statements);
     const memoryInstruction = `
               Following memory statements are gathered from previous conversations with the user, 
               try to incorporate them into the conversation context to provide a more personalized response.
@@ -158,12 +161,17 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       userContextString,
       memoryInstruction,
       persona && personaInstruction,
+      `userEmail: ${userEmail}`,
     ]
       .filter(Boolean)
       ?.join("\n--------------\n");
     const composioTools = await composioToolset.getTools({
       apps: ["googlesheets"],
     });
+    const mcpToolsSchema = await mcpClient.listTools();
+    const mcpOpenAITools = schemaToTools(mcpToolsSchema);
+    // writeFile("basic.json", JSON.stringify(mcpOpenAITools));
+
     const composioToolsFunctionNames = composioTools.map(
       (tool) => tool.function.name
     );
@@ -172,7 +180,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       {
         assistant_id: assistantId,
         additional_instructions: additional_instructions,
-        tools: [...composioTools],
+        tools: [...composioTools, ...mcpOpenAITools],
       },
       eventHandler as any
     );

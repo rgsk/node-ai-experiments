@@ -11,6 +11,7 @@ const saveUserInfoToMemory = async ({
   userEmail: string;
 }) => {
   try {
+    console.log({ statement, userEmail });
     const key = `reactAIExperiments/users/$userEmail/memories`;
     const jsonData = await jsonDataService.findByKey<Memory[]>(
       getPopulatedKey(key, userEmail)

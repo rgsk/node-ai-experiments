@@ -1,10 +1,12 @@
 import composioToolset from "lib/composioToolset";
+import { writeFile } from "lib/generalUtils";
 import openAIClient from "lib/openAIClient";
 const practice = async () => {
   const tools = await composioToolset.getTools({
     apps: ["googlesheets"],
   });
   console.log(tools);
+  writeFile("basic.json", JSON.stringify(tools));
   const completion = await openAIClient.chat.completions.create({
     model: "gpt-4o",
     messages: [
