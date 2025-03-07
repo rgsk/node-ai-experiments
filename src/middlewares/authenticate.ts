@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "lib/authUtils";
+import environmentVars from "lib/environmentVars";
 import { addProps } from "lib/middlewareProps";
 import { Middlewares } from "./middlewaresNamespace";
 
@@ -9,9 +10,22 @@ const authenticate = async (
   next: NextFunction
 ) => {
   try {
+    const secretsAllowed = [environmentVars.MCP_SECRET];
+    const apiSecret = req.header("Authorization"); // TODO: needs to be different header
+    if (apiSecret) {
+      if (secretsAllowed.includes(apiSecret)) {
+        // TODO: don't pass dummy props
+        const props: Middlewares.Authenticate = {
+          decodedIdToken: {} as any,
+          userEmail: "",
+        };
+        addProps(req, props, Middlewares.Keys.Authenticate);
+        return next();
+      }
+    }
+
     const queryToken = req.query["token"];
     const authorizationHeader = req.header("Authorization");
-
     if (queryToken) {
       if (typeof queryToken !== "string") {
         throw new Error("query token must be string");

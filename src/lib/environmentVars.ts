@@ -22,6 +22,7 @@ const environmentVarsSchema = z.object({
   COMPOSIO_API_KEY: z.string(),
   HOST_DIR: z.string(),
   PYTHON_EXPERIMENTS_SERVER_URL: z.string(),
+  MCP_SECRET: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -35,6 +36,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY!,
   PYTHON_EXPERIMENTS_SERVER_URL: process.env.PYTHON_EXPERIMENTS_SERVER_URL!,
   HOST_DIR: process.env.HOST_DIR ?? process.cwd(),
+  MCP_SECRET: process.env.MCP_SECRET!,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);
