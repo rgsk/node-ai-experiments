@@ -19,7 +19,8 @@
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset",
     "migrate:force-reset": "prisma migrate reset --force",
-    "run:file": "NODE_PATH=src ts-node",
+    "run-file": "NODE_PATH=src ts-node",
+    "run-js-file": " NODE_PATH=dist node",
     "watch:file": "NODE_PATH=src ts-node-dev --respawn --transpile-only",
     "refresh:chrome": "osascript -e 'tell application \"Google Chrome\" to reload active tab of front window'",
     "watch:file:refresh:chrome": "nodemon -w views/test.ejs --exec \"yarn run:file src/examples/modifyPdf.ts && yarn refresh:chrome\""

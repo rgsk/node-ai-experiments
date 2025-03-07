@@ -128,7 +128,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
         )
       )) ?? {};
     const statements = memories?.map((m) => m.statement) ?? [];
-    // console.log(statements);
+    console.log(statements);
     const memoryInstruction = `
               Following memory statements are gathered from previous conversations with the user, 
               try to incorporate them into the conversation context to provide a more personalized response.
