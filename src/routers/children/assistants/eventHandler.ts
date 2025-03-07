@@ -105,10 +105,10 @@ class EventHandler extends EventEmitter {
         [];
       for (const toolCall of run.required_action.submit_tool_outputs
         .tool_calls) {
+        const matchingToolPassed = toolsPassed.find(
+          (tool) => tool.name === toolCall.function.name
+        );
         try {
-          const matchingToolPassed = toolsPassed.find(
-            (tool) => tool.name === toolCall.function.name
-          );
           if (matchingToolPassed) {
             let output = "";
             if (matchingToolPassed.type === "composio") {
@@ -146,6 +146,7 @@ class EventHandler extends EventEmitter {
                 data: {
                   source: "tool call error",
                   toolCallFunctionName: toolCall.function.name,
+                  matchingToolPassedType: matchingToolPassed?.type,
                 },
               },
               Middlewares.Keys.ErrorData
