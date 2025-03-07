@@ -1,5 +1,6 @@
 import { EventEmitter } from "events";
 import { NextFunction, Request, Response } from "express";
+import composioToolset from "lib/composioToolset";
 import { addProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
 import { Persona } from "lib/typesJsonData";
@@ -14,6 +15,7 @@ export type EventObject = {
   userEmail: string;
   emitSocketEvent: EmitSocketEvent;
   persona?: Persona;
+  composioToolsFunctionNames: string[];
   req: Request;
   res: Response;
   next: NextFunction;
@@ -26,7 +28,15 @@ class EventHandler extends EventEmitter {
   }
   async onEvent(
     event: AssistantStreamEvent,
-    { userEmail, emitSocketEvent, persona, req, res, next }: EventObject
+    {
+      userEmail,
+      emitSocketEvent,
+      persona,
+      composioToolsFunctionNames,
+      req,
+      res,
+      next,
+    }: EventObject
   ) {
     // console.log(event);
     // Retrieve events that are denoted with 'requires_action'
@@ -39,6 +49,7 @@ class EventHandler extends EventEmitter {
         userEmail,
         emitSocketEvent,
         persona,
+        composioToolsFunctionNames,
         req,
         res,
         next,
@@ -87,6 +98,7 @@ class EventHandler extends EventEmitter {
     userEmail,
     emitSocketEvent,
     persona,
+    composioToolsFunctionNames,
     req,
     res,
     next,
@@ -97,6 +109,7 @@ class EventHandler extends EventEmitter {
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
     persona?: Persona;
+    composioToolsFunctionNames: string[];
     req: Request;
     res: Response;
     next: NextFunction;
@@ -106,7 +119,14 @@ class EventHandler extends EventEmitter {
         [];
       for (const toolCall of run.required_action.submit_tool_outputs
         .tool_calls) {
-        if (toolCall.function.name === "getCurrentTemperature") {
+        if (composioToolsFunctionNames.includes(toolCall.function.name)) {
+          const output = await composioToolset.executeToolCall(toolCall);
+          const result = {
+            tool_call_id: toolCall.id,
+            output: output,
+          };
+          toolOutputs.push(result);
+        } else if (toolCall.function.name === "getCurrentTemperature") {
           const result = {
             tool_call_id: toolCall.id,
             output: "100",
@@ -171,6 +191,7 @@ class EventHandler extends EventEmitter {
         userEmail,
         emitSocketEvent,
         persona,
+        composioToolsFunctionNames,
         req,
         res,
         next,
@@ -185,6 +206,7 @@ class EventHandler extends EventEmitter {
     userEmail,
     emitSocketEvent,
     persona,
+    composioToolsFunctionNames,
     req,
     res,
     next,
@@ -195,6 +217,7 @@ class EventHandler extends EventEmitter {
     userEmail: string;
     emitSocketEvent: EmitSocketEvent;
     persona?: Persona;
+    composioToolsFunctionNames: string[];
     req: Request;
     res: Response;
     next: NextFunction;
@@ -209,6 +232,7 @@ class EventHandler extends EventEmitter {
       userEmail,
       emitSocketEvent,
       persona,
+      composioToolsFunctionNames,
       req,
       res,
       next,

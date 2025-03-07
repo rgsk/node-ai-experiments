@@ -1,6 +1,7 @@
 import { io } from "app";
 import { Router } from "express";
 import fs from "fs";
+import composioToolset from "lib/composioToolset";
 import { getProps } from "lib/middlewareProps";
 import openAIClient from "lib/openAIClient";
 import { Memory, Persona } from "lib/typesJsonData";
@@ -11,6 +12,7 @@ import { z } from "zod";
 import { getPopulatedKey } from "../jsonDataRouter";
 import { jsonDataService } from "../jsonDataService";
 import { eventHandler, EventObject } from "./eventHandler";
+
 const assistantsRouter = Router();
 
 assistantsRouter.get("/threads/:threadId/messages", async (req, res, next) => {
@@ -159,12 +161,18 @@ assistantsRouter.post("/chat", async (req, res, next) => {
     ]
       .filter(Boolean)
       ?.join("\n--------------\n");
-
+    const composioTools = await composioToolset.getTools({
+      apps: ["googlesheets"],
+    });
+    const composioToolsFunctionNames = composioTools.map(
+      (tool) => tool.function.name
+    );
     const stream = openAIClient.beta.threads.runs.stream(
       threadId,
       {
         assistant_id: assistantId,
         additional_instructions: additional_instructions,
+        tools: [...composioTools],
       },
       eventHandler as any
     );
@@ -172,6 +180,7 @@ assistantsRouter.post("/chat", async (req, res, next) => {
       userEmail,
       emitSocketEvent,
       persona,
+      composioToolsFunctionNames,
       req,
       res,
       next,

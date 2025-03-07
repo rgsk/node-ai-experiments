@@ -19,6 +19,7 @@ const environmentVarsSchema = z.object({
   DEEPSEEK_API_KEY: z.string(),
   AWS_ACCESS_KEY: z.string(),
   AWS_SECRET_ACCESS_KEY: z.string(),
+  COMPOSIO_API_KEY: z.string(),
   HOST_DIR: z.string(),
   PYTHON_EXPERIMENTS_SERVER_URL: z.string(),
 });
@@ -31,6 +32,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY!,
   AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY!,
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
+  COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY!,
   PYTHON_EXPERIMENTS_SERVER_URL: process.env.PYTHON_EXPERIMENTS_SERVER_URL!,
   HOST_DIR: process.env.HOST_DIR ?? process.cwd(),
 };
