@@ -11,7 +11,8 @@ const authenticate = async (
 ) => {
   try {
     const secretsAllowed = [environmentVars.MCP_SECRET];
-    const apiSecret = req.header("Authorization"); // TODO: needs to be different header
+    const apiSecret = req.header("X-API-SECRET");
+    // console.log({ apiSecret });
     if (apiSecret) {
       if (secretsAllowed.includes(apiSecret)) {
         // TODO: don't pass dummy props
