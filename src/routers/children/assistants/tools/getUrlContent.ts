@@ -1,6 +1,8 @@
 import axios from "axios";
 import { JSDOM } from "jsdom";
 import tesseract from "node-tesseract-ocr";
+// @ts-ignore
+import pdf from "pdf-parse/lib/pdf-parse.js";
 import { YoutubeTranscript } from "youtube-transcript";
 import getGoogleDocData from "../../../../lib/gcp/getGoogleDocData.js";
 import getGoogleSheetData from "../../../../lib/gcp/getGoogleSheetData.js";
@@ -59,9 +61,8 @@ const fetchPDF = async (url: string): Promise<string> => {
     const pdfBuffer = response.data;
 
     // Parse the PDF content
-    // const data = await pdf(pdfBuffer);
-    // return data.text; // Extract the text from the PDF
-    return "";
+    const data = await pdf(pdfBuffer);
+    return data.text; // Extract the text from the PDF
   } catch (error) {
     throw new Error(`Failed to fetch PDF content: ${error}`);
   }
