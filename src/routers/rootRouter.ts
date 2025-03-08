@@ -129,46 +129,39 @@ rootRouter.get("/tools", async (req, res, next) => {
   }
 });
 
+const executeTool = async (toolCall: any) => {
+  const { composioTools, mcpOpenAITools } = await getTextStreamTools();
+
+  let output = "";
+  if (
+    composioTools.some((tool) => tool.function.name === toolCall.function.name)
+  ) {
+    output = await composioToolset.executeToolCall({
+      ...toolCall,
+      function: {
+        ...toolCall.function,
+        arguments: JSON.stringify(toolCall.function.arguments),
+      },
+    });
+  } else if (
+    mcpOpenAITools.some(
+      (tool: any) => tool.function.name === toolCall.function.name
+    )
+  ) {
+    const value = await mcpClient.callTool({
+      name: toolCall.function.name,
+      arguments: toolCall.function.arguments,
+    });
+    output = JSON.stringify(value);
+  } else {
+    throw new Error("Unknown function name: " + toolCall.function.name);
+  }
+  return output;
+};
+
 rootRouter.post("/execute-tool", async (req, res, next) => {
   try {
-    const { composioTools, mcpOpenAITools } = await getTextStreamTools();
-    const { toolCall } = req.body as {
-      toolCall: {
-        index: number;
-        id: string;
-        type: "function";
-        function: {
-          name: string;
-          arguments: any;
-        };
-      };
-    };
-    let output = "";
-    if (
-      composioTools.some(
-        (tool) => tool.function.name === toolCall.function.name
-      )
-    ) {
-      output = await composioToolset.executeToolCall({
-        ...toolCall,
-        function: {
-          ...toolCall.function,
-          arguments: JSON.stringify(toolCall.function.arguments),
-        },
-      });
-    } else if (
-      mcpOpenAITools.some(
-        (tool: any) => tool.function.name === toolCall.function.name
-      )
-    ) {
-      const value = await mcpClient.callTool({
-        name: toolCall.function.name,
-        arguments: toolCall.function.arguments,
-      });
-      output = JSON.stringify(value);
-    } else {
-      throw new Error("Unknown function name: " + toolCall.function.name);
-    }
+    const output = await executeTool(req.body.toolCall);
     return res.json({ output: output });
   } catch (err) {
     return next(err);
@@ -256,12 +249,18 @@ export const handleStream = async ({
           savedToolCalls[idx].function.arguments = parsedArgs;
           const toolCall = {
             ...savedToolCalls[idx],
-            variant: "serverSideRequiresPermission",
+            variant: "serverSide",
           };
           toolCalls.push(toolCall);
           emitSocketEvent("toolCall", toolCall);
-          // Optionally, mark this tool call as emitted so you don't re-emit it.
-          // For example, you could delete toolCallAccumulators[idx] or set a flag.
+          if (toolCall.variant === "serverSide") {
+            executeTool(toolCall).then((output) => {
+              emitSocketEvent("toolCallOutput", {
+                toolCall,
+                toolCallOutput: output,
+              });
+            });
+          }
         } catch (e) {
           // JSON.parse failed: likely the tool call arguments are not complete yet.
           // Continue accumulating.
