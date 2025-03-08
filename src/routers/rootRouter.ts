@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { v4 } from "uuid";
+import { io } from "../app.js";
 import composioToolset from "../lib/composioToolset.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
@@ -11,6 +12,7 @@ import adminRequired from "../middlewares/adminRequired.js";
 import { Middlewares } from "../middlewares/middlewaresNamespace.js";
 import adminRouter from "./children/adminRouter.js";
 import assistantsRouter, {
+  EmitSocketEvent,
   getMcpClient,
 } from "./children/assistants/assistantsRouter.js";
 import awsRouter from "./children/awsRouter.js";
@@ -168,8 +170,28 @@ rootRouter.post("/execute-tool", async (req, res, next) => {
 
 rootRouter.post("/text", async (req, res, next) => {
   try {
-    const { messages } = req.body;
-    const textStream = getTextStreamOpenAI(messages);
+    let { messages, socketId } = req.body;
+    const socket = socketId ? io.sockets.sockets.get(socketId) : undefined;
+    const emitSocketEvent: EmitSocketEvent = (eventName: string, data: any) => {
+      if (socket) {
+        socket.emit(eventName, data);
+      }
+    };
+    const { composioTools, mcpOpenAITools } = await getTextStreamTools();
+    const tools = [...composioTools, ...mcpOpenAITools];
+    messages = messages.map((m: any) => {
+      if (m.tool_calls) {
+        for (let tc of m.tool_calls) {
+          tc.function.arguments = JSON.stringify(tc.function.arguments);
+        }
+      }
+      return m;
+    });
+    const textStream = getTextStreamOpenAI({
+      messages,
+      tools,
+      emitSocketEvent,
+    });
     for await (const chunk of textStream) {
       res.write(chunk);
     }
@@ -179,31 +201,15 @@ rootRouter.post("/text", async (req, res, next) => {
   }
 });
 
-export const getTextStreamOpenAI = async function* (messages: any) {
-  const { composioTools, mcpOpenAITools } = await getTextStreamTools();
-  const tools = [...composioTools, ...mcpOpenAITools];
-  messages = messages.map((m: any) => {
-    if (m.tool_calls) {
-      for (let tc of m.tool_calls) {
-        tc.function.arguments = JSON.stringify(tc.function.arguments);
-      }
-    }
-    return m;
-  });
-  const stream = await getClient().chat.completions.create({
-    messages: messages,
-    model: getModel(),
-    stream: true,
-    tools: tools,
-  });
-  for await (const part of stream) {
-    const delta = part.choices[0].delta;
-    yield JSON.stringify(delta);
-  }
-};
-
-export const getTextStreamOpenAI123 = async function* (messages: any) {
-  const tools = await composioToolset.getTools({ apps: ["googlesheets"] });
+export const getTextStreamOpenAI = async function* ({
+  messages,
+  tools,
+  emitSocketEvent,
+}: {
+  messages: any;
+  tools: any;
+  emitSocketEvent: EmitSocketEvent;
+}) {
   const stream = await getClient().chat.completions.create({
     messages: messages,
     model: getModel(),
@@ -248,7 +254,9 @@ export const getTextStreamOpenAI123 = async function* (messages: any) {
 
   // After the stream ends, update each saved tool call with the complete combined arguments.
   for (const idx in savedToolCalls) {
-    savedToolCalls[idx].function.arguments = toolCallAccumulators[idx];
+    savedToolCalls[idx].function.arguments = JSON.parse(
+      toolCallAccumulators[idx]
+    );
   }
 
   // Save the final tool calls somewhere, here we simply log them,
@@ -257,7 +265,27 @@ export const getTextStreamOpenAI123 = async function* (messages: any) {
   const toolCallsToExecute = Object.values(savedToolCalls);
 
   // Optionally, yield the complete tool call information as a JSON string.
-  yield JSON.stringify({ toolCallsToExecute });
+  // yield "toolCallsToExecute:" + JSON.stringify(toolCallsToExecute);
+  emitSocketEvent("toolCallsToExecute", toolCallsToExecute);
+};
+
+export const getTextStreamOpenAIEmitDelta = async function* ({
+  messages,
+  tools,
+}: {
+  messages: any;
+  tools: any;
+}) {
+  const stream = await getClient().chat.completions.create({
+    messages: messages,
+    model: getModel(),
+    stream: true,
+    tools: tools,
+  });
+  for await (const part of stream) {
+    const delta = part.choices[0].delta;
+    yield JSON.stringify(delta);
+  }
 };
 
 rootRouter.post("/initialize-credits", async (req, res, next) => {
