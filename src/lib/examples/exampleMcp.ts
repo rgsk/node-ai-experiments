@@ -1,6 +1,6 @@
 import experimentsMcpClient, {
   experimentsMcpTransport,
-} from "../lib/experimentsMcpClient.js";
+} from "../experimentsMcpClient.js";
 
 const practice = async () => {
   await experimentsMcpClient.connect(experimentsMcpTransport);

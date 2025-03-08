@@ -1,34 +1,51 @@
 [
-  {
-    "id": "5d820a44-6266-4141-8f19-16033e4a5339",
-    "metadata": { "source": "website:https://tashapais.com/" },
-    "page_content": "Page Title: Tasha Pais\nPage Content: Home\n            Projects\n            Art\n            Blog\n            Books\n        \n        \n            \n                \n            \n            \n                Tasha Pais\n                tdp74 at rutgers dot edu\n                I'm graduating this May with degrees in Computer Science and Cognitive Neuroscience from Rutgers University. I'm fortunate to be advised by Kostas Bekris",
-    "type": "Document"
-  },
-  {
-    "id": "7c265e5c-78d5-409a-8c46-5ab89e5ce156",
-    "metadata": { "source": "website:https://tashapais.com/" },
-    "page_content": "Extending Semantic Abstraction of 2D VLMs for Efficient Search of Hidden Objects  \n                \n                    \n                        Tasha Pais*,  Nikhilesh Belulkar*,  Huy Ha",
-    "type": "Document"
-  },
-  {
-    "id": "0d691e36-12c1-47d8-a2fa-553ee09d37e5",
-    "metadata": { "source": "website:https://tashapais.com/" },
-    "page_content": "Active Exploration: Scaling Up Tactile Sensing Algorithm for Category Level Classification\n                \n                    \n                        Tasha Pais*,  Nikhilesh Belulkar*,  Jingxi Xu\n                        July 2023    \n                        Github",
-    "type": "Document"
-  },
-  {
-    "id": "9c0c4d4f-90a0-4387-a2ba-efaaa2b0dcde",
-    "metadata": { "source": "website:https://tashapais.com/" },
-    "page_content": "Research\n             \n                \n                     \n                    \n                    Revolving-View 3D Object Completion Using Text-Conditioned Inpainting \n                \n                    \n                        Tasha Pais, Shiyang Lu, Kostas Bekris",
-    "type": "Document"
-  },
-  {
-    "id": "743cb313-c576-4e72-89e2-2e1a43eba9e7",
-    "metadata": {
-      "source": "website:https://portfolio-nine-nu-87.vercel.app/"
+    {
+        "role": "user",
+        "content": "fetch the details in this google sheet - https://docs.google.com/spreadsheets/d/1cq2PIO46rZo9QWPwfIg167HdkJgeCpBX9RrK3dgy20g/edit?gid=0#gid=0"
     },
-    "page_content": "Page Title: Rahul Gupta\nPage Content: Rahul GuptaI design and code beautifully simple things, and I love what I do.Contact me - rahulguptacs1@gmail.comHi, I’m Rahul. Nice to meet you.I am a Bcom Graduate, who stumbled upon coding in my 2nd year of college, I started learning Python, then Javascript, which led me to Web Development, since then I am really enjoying it, its a dream come true, I feel fortunate that I get to do everyday what I truly love.Intro VideoBelow video explains projects I have done. Note: You can check comments  for timestamp for specific projects",
-    "type": "Document"
-  }
+    {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+            {
+                "id": "call_QFMjzQmRQxo7cRAEK1MNnx5Z",
+                "type": "function",
+                "function": {
+                    "name": "GOOGLESHEETS_GET_SPREADSHEET_INFO",
+                    "arguments": "{\"spreadsheet_id\":\"1cq2PIO46rZo9QWPwfIg167HdkJgeCpBX9RrK3dgy20g\"}"
+                }
+            }
+        ],
+        "refusal": null
+    },
+    {
+        "role": "tool",
+        "content": "{\"data\":{\"response_data\":{\"spreadsheetId\":\"1cq2PIO46rZo9QWPwfIg167HdkJgeCpBX9RrK3dgy20g\",\"properties\":{\"title\":\"Expenses Sheet\",\"locale\":\"en_US\",\"autoRecalc\":\"ON_CHANGE\",\"timeZone\":\"Asia/Calcutta\",\"defaultFormat\":{\"backgroundColor\":{\"red\":1,\"green\":1,\"blue\":1},\"padding\":{\"top\":2,\"right\":3,\"bottom\":2,\"left\":3},\"verticalAlignment\":\"BOTTOM\",\"wrapStrategy\":\"OVERFLOW_CELL\",\"textFormat\":{\"foregroundColor\":{},\"fontFamily\":\"arial,sans,sans-serif\",\"fontSize\":10,\"bold\":false,\"italic\":false,\"strikethrough\":false,\"underline\":false,\"foregroundColorStyle\":{\"rgbColor\":{}}},\"backgroundColorStyle\":{\"rgbColor\":{\"red\":1,\"green\":1,\"blue\":1}}},\"spreadsheetTheme\":{\"primaryFontFamily\":\"Arial\",\"themeColors\":[{\"colorType\":\"TEXT\",\"color\":{\"rgbColor\":{}}},{\"colorType\":\"BACKGROUND\",\"color\":{\"rgbColor\":{\"red\":1,\"green\":1,\"blue\":1}}},{\"colorType\":\"ACCENT1\",\"color\":{\"rgbColor\":{\"red\":0.25882354,\"green\":0.52156866,\"blue\":0.95686275}}},{\"colorType\":\"ACCENT2\",\"color\":{\"rgbColor\":{\"red\":0.91764706,\"green\":0.2627451,\"blue\":0.20784314}}},{\"colorType\":\"ACCENT3\",\"color\":{\"rgbColor\":{\"red\":0.9843137,\"green\":0.7372549,\"blue\":0.015686275}}},{\"colorType\":\"ACCENT4\",\"color\":{\"rgbColor\":{\"red\":0.20392157,\"green\":0.65882355,\"blue\":0.3254902}}},{\"colorType\":\"ACCENT5\",\"color\":{\"rgbColor\":{\"red\":1,\"green\":0.42745098,\"blue\":0.003921569}}},{\"colorType\":\"ACCENT6\",\"color\":{\"rgbColor\":{\"red\":0.27450982,\"green\":0.7411765,\"blue\":0.7764706}}},{\"colorType\":\"LINK\",\"color\":{\"rgbColor\":{\"red\":0.06666667,\"green\":0.33333334,\"blue\":0.8}}}]}},\"sheets\":[{\"properties\":{\"sheetId\":0,\"title\":\"Sheet1\",\"index\":0,\"sheetType\":\"GRID\",\"gridProperties\":{\"rowCount\":1002,\"columnCount\":26}}},{\"properties\":{\"sheetId\":535500488,\"title\":\"Sheet2\",\"index\":1,\"sheetType\":\"GRID\",\"gridProperties\":{\"rowCount\":1000,\"columnCount\":26}}}],\"spreadsheetUrl\":\"https://docs.google.com/spreadsheets/d/1cq2PIO46rZo9QWPwfIg167HdkJgeCpBX9RrK3dgy20g/edit\"}},\"error\":null,\"successfull\":true,\"successful\":true}",
+        "tool_call_id": "call_QFMjzQmRQxo7cRAEK1MNnx5Z"
+    },
+    {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+            {
+                "id": "call_XwQeCuOZGN5lXryi6KDvL1pr",
+                "type": "function",
+                "function": {
+                    "name": "GOOGLESHEETS_BATCH_GET",
+                    "arguments": "{\"spreadsheet_id\":\"1cq2PIO46rZo9QWPwfIg167HdkJgeCpBX9RrK3dgy20g\",\"ranges\":[\"Sheet1\",\"Sheet2\"]}"
+                }
+            }
+        ],
+        "refusal": null
+    },
+    {
+        "role": "tool",
+        "content": "{\"data\":{\"spreadsheet_data\":{\"spreadsheetId\":\"1cq2PIO46rZo9QWPwfIg167HdkJgeCpBX9RrK3dgy20g\",\"valueRanges\":[{\"range\":\"Sheet1!A1:Z1002\",\"majorDimension\":\"ROWS\",\"values\":[[],[\"\",\"Expense Name\",\"\",\"\",\"\",\"Amount\"],[\"\",\"Uber Trip - Noida to Bhiwadi\",\"\",\"\",\"\",\"2590\"],[\"\",\"Tolls to Driver\",\"\",\"\",\"\",\"780\"],[\"\",\"Pizza Breakfast\",\"\",\"\",\"\",\"291\"],[\"\",\"Lunch in Expo\",\"\",\"\",\"\",\"400\"],[\"\",\"Water Bottles\",\"\",\"\",\"\",\"40\"],[\"\",\"Tea\",\"\",\"\",\"\",\"40\"],[\"\",\"Auto Rikshaw Expo to Hotel\",\"\",\"\",\"\",\"100\"],[\"\",\"Boiled Eggs\",\"\",\"\",\"\",\"60\"],[\"\",\"Egg Rolls \",\"\",\"\",\"\",\"150\"],[\"\",\"Hotel\",\"\",\"\",\"\",\"1211\"],[\"\",\"Soap\",\"\",\"\",\"\",\"40\"],[\"\",\"Breakfast Sunday Morning\",\"\",\"\",\"\",\"251\"],[\"\",\"Snacks\",\"\",\"\",\"\",\"130\"],[\"\",\"Auto \",\"\",\"\",\"\",\"100\"],[\"\",\"Lunch\",\"\",\"\",\"\",\"150\"],[\"\",\"Water Bottle\",\"\",\"\",\"\",\"20\"],[\"\",\"Tea\",\"\",\"\",\"\",\"40\"],[\"\",\"Taxi to Noida\",\"\",\"\",\"\",\"3000\"],[\"\",\"Ride to home\",\"\",\"\",\"\",\"41\"],[\"\",\"Total\",\"\",\"\",\"\",\"9434\"],[],[\"\",\"Amount Given\",\"\",\"\",\"\",\"8000\"],[\"\",\"Reimbursement\",\"\",\"\",\"\",\"1434\"],[\"\",\"Amount belonging to Lal and Aksh, 100 + 100\",\"\",\"\",\"\",\"200\"],[\"What is the meaning of life?\",\"Amount due to Rahul Gupta\",\"\",\"\",\"\",\"1234\"],[],[],[],[],[\"\",\"Drive Link for G-Pay Transactions\",\"\",\"https://drive.google.com/drive/folders/1aX9z5lbUawsyXI6G0QeeQoPdIIjMwZd8?usp=sharing\"],[\"\",\"\",\"\",\"Rahul Gupta\",\"24\"]]},{\"range\":\"Sheet2!A1:Z1000\",\"majorDimension\":\"ROWS\",\"values\":[[],[],[],[],[],[],[\"\",\"Sex\",\"Male\"]]}]}},\"error\":null,\"successfull\":true,\"successful\":true}",
+        "tool_call_id": "call_XwQeCuOZGN5lXryi6KDvL1pr"
+    },
+    {
+        "role": "assistant",
+        "content": "The Google Sheets document titled \"Expenses Sheet\" contains data in two sheets: \"Sheet1\" and \"Sheet2\". Below are the details from both sheets:\n\n### Sheet1:\nThis sheet appears to be an expense report with the following entries:\n\n|   | Expense Name                                |   |   |   | Amount |\n|---|---------------------------------------------|---|---|---|--------|\n|   | Uber Trip - Noida to Bhiwadi                |   |   |   | 2590   |\n|   | Tolls to Driver                             |   |   |   | 780    |\n|   | Pizza Breakfast                             |   |   |   | 291    |\n|   | Lunch in Expo                               |   |   |   | 400    |\n|   | Water Bottles                               |   |   |   | 40     |\n|   | Tea                                         |   |   |   | 40     |\n|   | Auto Rikshaw Expo to Hotel                  |   |   |   | 100    |\n|   | Boiled Eggs                                 |   |   |   | 60     |\n|   | Egg Rolls                                   |   |   |   | 150    |\n|   | Hotel                                       |   |   |   | 1211   |\n|   | Soap                                        |   |   |   | 40     |\n|   | Breakfast Sunday Morning                    |   |   |   | 251    |\n|   | Snacks                                      |   |   |   | 130    |\n|   | Auto                                        |   |   |   | 100    |\n|   | Lunch                                       |   |   |   | 150    |\n|   | Water Bottle                                |   |   |   | 20     |\n|   | Tea                                         |   |   |   | 40     |\n|   | Taxi to Noida                               |   |   |   | 3000   |\n|   | Ride to home                                |   |   |   | 41     |\n|   | Total                                       |   |   |   | 9434   |\n|   | Amount Given                                |   |   |   | 8000   |\n|   | Reimbursement                               |   |   |   | 1434   |\n|   | Amount belonging to Lal and Aksh, 100 + 100 |   |   |   | 200    |\n| What is the meaning of life? | Amount due to Rahul Gupta |   |   |   | 1234   |\n|   | Drive Link for G-Pay Transactions           |   |   |   | [Link](https://drive.google.com/drive/folders/1aX9z5lbUawsyXI6G0QeeQoPdIIjMwZd8?usp=sharing) |\n|   |                                             |   |   | Rahul Gupta | 24   |\n\n### Sheet2:\nThis sheet has very limited content, potentially for testing or draft purposes:\n\n|   |   |   |   |   |   |\n|---|---|---|---|---|---|\n|   | Sex | Male |\n\nIf you need more detailed analysis or further actions on this data, feel free to ask!",
+        "refusal": null
+    }
 ]
