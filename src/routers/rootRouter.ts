@@ -182,6 +182,14 @@ rootRouter.post("/text", async (req, res, next) => {
 export const getTextStreamOpenAI = async function* (messages: any) {
   const { composioTools, mcpOpenAITools } = await getTextStreamTools();
   const tools = [...composioTools, ...mcpOpenAITools];
+  messages = messages.map((m: any) => {
+    if (m.tool_calls) {
+      for (let tc of m.tool_calls) {
+        tc.function.arguments = JSON.stringify(tc.function.arguments);
+      }
+    }
+    return m;
+  });
   const stream = await getClient().chat.completions.create({
     messages: messages,
     model: getModel(),
