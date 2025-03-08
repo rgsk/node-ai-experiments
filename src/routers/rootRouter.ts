@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { v4 } from "uuid";
+import composioToolset from "../lib/composioToolset.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
 import { getProps } from "../lib/middlewareProps.js";
@@ -116,17 +117,64 @@ rootRouter.post("/text", async (req, res, next) => {
   }
 });
 
-export const getTextStreamOpenAI = async function* (messages: any) {
+export const getTextStreamOpenAI123 = async function* (messages: any) {
+  const tools = await composioToolset.getTools({ apps: ["googlesheets"] });
   const stream = await getClient().chat.completions.create({
     messages: messages,
     model: getModel(),
     stream: true,
+    tools: tools,
   });
+
+  // Object to accumulate the tool call arguments for each index.
+  const toolCallAccumulators: any = {};
+  // Object to store the full tool call objects (saved once when first received).
+  const savedToolCalls: any = {};
+
   for await (const part of stream) {
-    const content = part.choices[0].delta.content ?? "";
-    yield content;
+    const delta = part.choices[0].delta;
+
+    // Check if this delta contains tool calls.
+    if (delta.tool_calls) {
+      for (const toolCall of delta.tool_calls) {
+        const idx = toolCall.index;
+        // Save the complete tool call object the first time it appears.
+        if (!savedToolCalls[idx]) {
+          savedToolCalls[idx] = toolCall;
+        }
+        // Initialize the accumulator for arguments if not already set.
+        if (!toolCallAccumulators[idx]) {
+          toolCallAccumulators[idx] = "";
+        }
+        // Append the current chunk of arguments.
+        toolCallAccumulators[idx] += toolCall.function!.arguments;
+        console.log(
+          `Accumulated arguments for index ${idx}: ${toolCallAccumulators[idx]}`
+        );
+      }
+    }
+
+    // Yield any text content from this delta.
+    const content = delta.content ?? "";
+    if (content) {
+      yield content;
+    }
   }
+
+  // After the stream ends, update each saved tool call with the complete combined arguments.
+  for (const idx in savedToolCalls) {
+    savedToolCalls[idx].function.arguments = toolCallAccumulators[idx];
+  }
+
+  // Save the final tool calls somewhere, here we simply log them,
+  // but you could store them in a database, a file, or any other storage.
+  console.log("Final saved tool calls:", savedToolCalls);
+  const toolCallsToExecute = Object.values(savedToolCalls);
+
+  // Optionally, yield the complete tool call information as a JSON string.
+  yield JSON.stringify({ toolCallsToExecute });
 };
+
 rootRouter.post("/initialize-credits", async (req, res, next) => {
   try {
     const { userEmail } = getProps<Middlewares.Authenticate>(
