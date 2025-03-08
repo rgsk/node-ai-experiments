@@ -3,13 +3,16 @@ import { v4 } from "uuid";
 import composioToolset from "../lib/composioToolset.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
+import mcpSchemaToOpenAITools from "../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../lib/middlewareProps.js";
 import openAIClient from "../lib/openAIClient.js";
 import { CreditDetails } from "../lib/typesJsonData.js";
 import adminRequired from "../middlewares/adminRequired.js";
 import { Middlewares } from "../middlewares/middlewaresNamespace.js";
 import adminRouter from "./children/adminRouter.js";
-import assistantsRouter from "./children/assistants/assistantsRouter.js";
+import assistantsRouter, {
+  getMcpClient,
+} from "./children/assistants/assistantsRouter.js";
 import awsRouter from "./children/awsRouter.js";
 import friendsRouter from "./children/friendsRouter.js";
 import jsonDataRouter from "./children/jsonDataRouter.js";
@@ -104,6 +107,65 @@ rootRouter.post("/json-completion", async (req, res, next) => {
   }
 });
 
+const getTextStreamTools = async () => {
+  const mcpClient = await getMcpClient();
+  const composioTools = await composioToolset.getTools({
+    apps: ["googlesheets"],
+    // apps: [],
+  });
+  const mcpToolsSchema = await mcpClient.listTools();
+  const mcpOpenAITools = mcpSchemaToOpenAITools(mcpToolsSchema);
+  // const mcpOpenAITools: any = [];
+  return { composioTools, mcpOpenAITools };
+};
+
+rootRouter.post("/execute-tool", async (req, res, next) => {
+  try {
+    const { composioTools, mcpOpenAITools } = await getTextStreamTools();
+    const { toolCall } = req.body as {
+      toolCall: {
+        index: number;
+        id: string;
+        type: "function";
+        function: {
+          name: string;
+          arguments: any;
+        };
+      };
+    };
+    let output = "";
+    if (
+      composioTools.some(
+        (tool) => tool.function.name === toolCall.function.name
+      )
+    ) {
+      output = await composioToolset.executeToolCall({
+        ...toolCall,
+        function: {
+          ...toolCall.function,
+          arguments: JSON.stringify(toolCall.function.arguments),
+        },
+      });
+    } else if (
+      mcpOpenAITools.some(
+        (tool: any) => tool.function.name === toolCall.function.name
+      )
+    ) {
+      const mcpClient = await getMcpClient();
+      const value = await mcpClient.callTool({
+        name: toolCall.function.name,
+        arguments: toolCall.function.arguments,
+      });
+      output = JSON.stringify(value);
+    } else {
+      throw new Error("Unknown function name: " + toolCall.function.name);
+    }
+    return res.json({ output: output });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 rootRouter.post("/text", async (req, res, next) => {
   try {
     const { messages } = req.body;
@@ -116,6 +178,21 @@ rootRouter.post("/text", async (req, res, next) => {
     return next(err);
   }
 });
+
+export const getTextStreamOpenAI = async function* (messages: any) {
+  const { composioTools, mcpOpenAITools } = await getTextStreamTools();
+  const tools = [...composioTools, ...mcpOpenAITools];
+  const stream = await getClient().chat.completions.create({
+    messages: messages,
+    model: getModel(),
+    stream: true,
+    tools: tools,
+  });
+  for await (const part of stream) {
+    const delta = part.choices[0].delta;
+    yield JSON.stringify(delta);
+  }
+};
 
 export const getTextStreamOpenAI123 = async function* (messages: any) {
   const tools = await composioToolset.getTools({ apps: ["googlesheets"] });
