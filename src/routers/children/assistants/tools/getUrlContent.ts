@@ -6,8 +6,8 @@ import pdf from "pdf-parse/lib/pdf-parse.js";
 import { YoutubeTranscript } from "youtube-transcript";
 import getGoogleDocData from "../../../../lib/gcp/getGoogleDocData.js";
 import getGoogleSheetData from "../../../../lib/gcp/getGoogleSheetData.js";
+import { UrlContentType } from "../../../../lib/mcpServer.js";
 import openAIClient from "../../../../lib/openAIClient.js";
-import { UrlContentType } from "../../experimentsRouter.js";
 import { extractVideoId } from "../../youtubeRouter.js";
 
 // Function to determine if the URL is a PDF, ignoring query parameters and fragments

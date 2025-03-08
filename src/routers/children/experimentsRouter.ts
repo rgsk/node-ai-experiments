@@ -6,129 +6,25 @@ import fs from "fs";
 import { JSDOM } from "jsdom";
 import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
-import path from "path";
 import puppeteer from "puppeteer";
 import { z } from "zod";
-import environmentVars from "../../lib/environmentVars.js";
+import { executeCodeSchema, UrlContentTypeEnum } from "../../lib/mcpServer.js";
 import { upload } from "../../lib/upload.js";
+import executeCode from "./assistants/tools/executeCode.js";
 import getUrlContent from "./assistants/tools/getUrlContent.js";
 
 const experimentsRouter = Router();
 // Endpoint to execute Python code
-type SupportedLangugages =
-  | "node"
-  | "javascript"
-  | "python"
-  | "typescript"
-  | "cpp";
 
-function wrapLastLineInPrint(codeStr: string): string {
-  const lines = codeStr.split("\n");
-  if (lines.length === 0) return codeStr;
-
-  // Find the last non-empty line
-  let lastNonEmptyIndex = -1;
-  for (let i = lines.length - 1; i >= 0; i--) {
-    if (lines[i].trim() !== "") {
-      lastNonEmptyIndex = i;
-      break;
-    }
-  }
-
-  if (lastNonEmptyIndex === -1) return codeStr; // All lines are empty
-
-  const lastLine = lines[lastNonEmptyIndex];
-  const strippedLine = lastLine.trim();
-
-  // Skip if already a print statement or empty/comment
-  if (
-    strippedLine.startsWith("print(") ||
-    strippedLine === "" ||
-    strippedLine.startsWith("#")
-  ) {
-    return codeStr;
-  }
-
-  // Capture leading whitespace (preserve indentation)
-  const leadingWhitespace = lastLine.match(/^\s*/)?.[0] || "";
-
-  // Wrap in print() while preserving whitespace
-  lines[lastNonEmptyIndex] = `${leadingWhitespace}print(${strippedLine})`;
-
-  return lines.join("\n");
-}
-
+const executeCodeBodySchema = z.object(executeCodeSchema);
 experimentsRouter.post("/execute-code", async (req, res, next) => {
   try {
-    let { code, language } = req.body as {
-      code: string;
-      language: SupportedLangugages;
-    };
-    if (language === "python") {
-      code = wrapLastLineInPrint(code);
+    const { code, language } = executeCodeBodySchema.parse(req.body);
+    if (language === "unknown") {
+      throw new Error("This programming language is not supported");
     }
-    const languageToRunners: Record<SupportedLangugages, string> = {
-      node: "node-runner",
-      javascript: "node-runner",
-      python: "python-runner",
-      typescript: "node-runner",
-      cpp: "cpp-runner",
-    };
-    const fileExtensions: Record<SupportedLangugages, string> = {
-      node: ".js",
-      javascript: ".js",
-      python: ".py",
-      typescript: ".ts",
-      cpp: ".cpp",
-    };
-    const mountPath = path.join(
-      environmentVars.HOST_DIR,
-      "code-runners",
-      languageToRunners[language]
-    );
-    const tempFileName = `temp${fileExtensions[language]}`;
-    // Ensure the "src" directory exists
-    const srcPath = path.join(
-      "code-runners",
-      languageToRunners[language],
-      "src"
-    );
-    if (!fs.existsSync(srcPath)) {
-      fs.mkdirSync(srcPath, { recursive: true });
-    }
-
-    const tempFileLocalPath = path.join(srcPath, tempFileName);
-    const executableFileName = "temp";
-    const executableFileLocalPath = path.join(srcPath, executableFileName);
-
-    fs.writeFileSync(tempFileLocalPath, code);
-
-    const languageToCommands: Record<SupportedLangugages, string> = {
-      node: `node /app/src/${tempFileName}`,
-      javascript: `node /app/src/${tempFileName}`,
-      python: `python /app/src/${tempFileName}`,
-      typescript: `yarn --silent run:file /app/src/${tempFileName}`,
-      cpp: `bash -c "g++ -o /app/src/${executableFileName} /app/src/${tempFileName} && /app/src/${executableFileName}"`,
-    };
-    // Command to run the Anaconda Docker container and execute the Python script
-    const dockerCommand = `docker run --rm -v ${mountPath}:/app ${languageToRunners[language]} ${languageToCommands[language]}`;
-
-    // Execute the Docker command
-    exec(dockerCommand, (error, stdout, stderr) => {
-      // Delete the temporary Python file
-      fs.unlinkSync(tempFileLocalPath);
-
-      if (fs.existsSync(executableFileLocalPath)) {
-        fs.unlinkSync(executableFileLocalPath);
-      }
-
-      if (error) {
-        return res.status(500).json({ error: stderr || error.message });
-      }
-
-      // Return the output
-      return res.json({ output: stdout });
-    });
+    const result = await executeCode({ code, language });
+    return res.json(result);
   } catch (err) {
     return next(err);
   }
@@ -165,17 +61,6 @@ experimentsRouter.post(
     }
   }
 );
-
-const UrlContentTypeEnum = z.enum([
-  "pdf",
-  "google_doc",
-  "google_sheet",
-  "web_page",
-  "youtube_video",
-  "image",
-]);
-
-export type UrlContentType = z.infer<typeof UrlContentTypeEnum>;
 
 const urlContentSchema = z.object({
   url: z.string(),

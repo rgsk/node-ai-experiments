@@ -4,6 +4,8 @@ import { io } from "../app.js";
 import composioToolset from "../lib/composioToolset.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
+import experimentsMcpClient from "../lib/experimentsMcpClient.js";
+import mcpClient from "../lib/mcpClient.js";
 import mcpSchemaToOpenAITools from "../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../lib/middlewareProps.js";
 import openAIClient from "../lib/openAIClient.js";
@@ -13,7 +15,6 @@ import { Middlewares } from "../middlewares/middlewaresNamespace.js";
 import adminRouter from "./children/adminRouter.js";
 import assistantsRouter, {
   EmitSocketEvent,
-  getMcpClient,
 } from "./children/assistants/assistantsRouter.js";
 import awsRouter from "./children/awsRouter.js";
 import friendsRouter from "./children/friendsRouter.js";
@@ -110,7 +111,6 @@ rootRouter.post("/json-completion", async (req, res, next) => {
 });
 
 const getTextStreamTools = async () => {
-  const mcpClient = await getMcpClient();
   const composioTools = await composioToolset.getTools({
     apps: ["googlesheets"],
     // apps: [],
@@ -153,8 +153,7 @@ rootRouter.post("/execute-tool", async (req, res, next) => {
         (tool: any) => tool.function.name === toolCall.function.name
       )
     ) {
-      const mcpClient = await getMcpClient();
-      const value = await mcpClient.callTool({
+      const value = await experimentsMcpClient.callTool({
         name: toolCall.function.name,
         arguments: toolCall.function.arguments,
       });
@@ -187,21 +186,19 @@ rootRouter.post("/text", async (req, res, next) => {
       }
       return m;
     });
-    const textStream = getTextStreamOpenAI({
+    await handleStream({
       messages,
       tools,
       emitSocketEvent,
     });
-    for await (const chunk of textStream) {
-      res.write(chunk);
-    }
-    return res.end();
+
+    return res.json({ message: "complete" });
   } catch (err) {
     return next(err);
   }
 });
 
-export const getTextStreamOpenAI = async function* ({
+export const handleStream = async ({
   messages,
   tools,
   emitSocketEvent,
@@ -209,7 +206,7 @@ export const getTextStreamOpenAI = async function* ({
   messages: any;
   tools: any;
   emitSocketEvent: EmitSocketEvent;
-}) {
+}) => {
   const stream = await getClient().chat.completions.create({
     messages: messages,
     model: getModel(),
@@ -248,7 +245,7 @@ export const getTextStreamOpenAI = async function* ({
     // Yield any text content from this delta.
     const content = delta.content ?? "";
     if (content) {
-      yield content;
+      emitSocketEvent("chunk", content);
     }
   }
 

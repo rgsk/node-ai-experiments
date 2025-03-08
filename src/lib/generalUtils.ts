@@ -38,7 +38,13 @@ export const writeFile = async (filePath: string, data: string) => {
     throw new Error(`Error writing file: ${error.message}`);
   }
 };
-
+export const appendFile = async (filePath: string, data: string) => {
+  try {
+    await fs.promises.appendFile(filePath, data);
+  } catch (error: any) {
+    throw new Error(`Error appending file: ${error.message}`);
+  }
+};
 export function html(strings: any, ...values: any) {
   let result = "";
   for (let i = 0; i < strings.length; i++) {

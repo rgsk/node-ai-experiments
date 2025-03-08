@@ -19,5 +19,7 @@ const experimentsMcpClient = new Client(
   }
 );
 export type McpClient = typeof experimentsMcpClient;
-
+(async () => {
+  await experimentsMcpClient.connect(experimentsMcpTransport);
+})();
 export default experimentsMcpClient;
