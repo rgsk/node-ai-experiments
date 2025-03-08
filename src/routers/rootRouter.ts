@@ -4,7 +4,6 @@ import { io } from "../app.js";
 import composioToolset from "../lib/composioToolset.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
-import experimentsMcpClient from "../lib/experimentsMcpClient.js";
 import mcpClient from "../lib/mcpClient.js";
 import mcpSchemaToOpenAITools from "../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../lib/middlewareProps.js";
@@ -121,6 +120,15 @@ const getTextStreamTools = async () => {
   return { composioTools, mcpOpenAITools };
 };
 
+rootRouter.get("/tools", async (req, res, next) => {
+  try {
+    const { composioTools, mcpOpenAITools } = await getTextStreamTools();
+    return res.json({ composioTools, mcpOpenAITools });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 rootRouter.post("/execute-tool", async (req, res, next) => {
   try {
     const { composioTools, mcpOpenAITools } = await getTextStreamTools();
@@ -153,7 +161,7 @@ rootRouter.post("/execute-tool", async (req, res, next) => {
         (tool: any) => tool.function.name === toolCall.function.name
       )
     ) {
-      const value = await experimentsMcpClient.callTool({
+      const value = await mcpClient.callTool({
         name: toolCall.function.name,
         arguments: toolCall.function.arguments,
       });
@@ -186,13 +194,13 @@ rootRouter.post("/text", async (req, res, next) => {
       }
       return m;
     });
-    await handleStream({
+    const { toolCalls } = await handleStream({
       messages,
       tools,
       emitSocketEvent,
     });
 
-    return res.json({ message: "complete" });
+    return res.json({ toolCalls });
   } catch (err) {
     return next(err);
   }
@@ -219,6 +227,8 @@ export const handleStream = async ({
   // Object to store the full tool call objects (saved once when first received).
   const savedToolCalls: any = {};
 
+  const toolCalls: any = [];
+
   for await (const part of stream) {
     const delta = part.choices[0].delta;
     if (delta.content) {
@@ -244,7 +254,12 @@ export const handleStream = async ({
           const parsedArgs = JSON.parse(toolCallAccumulators[idx]);
           // If parsing is successful, emit the complete tool call immediately.
           savedToolCalls[idx].function.arguments = parsedArgs;
-          emitSocketEvent("tool_call", savedToolCalls[idx]);
+          const toolCall = {
+            ...savedToolCalls[idx],
+            variant: "serverSideRequiresPermission",
+          };
+          toolCalls.push(toolCall);
+          emitSocketEvent("toolCall", toolCall);
           // Optionally, mark this tool call as emitted so you don't re-emit it.
           // For example, you could delete toolCallAccumulators[idx] or set a flag.
         } catch (e) {
@@ -254,6 +269,10 @@ export const handleStream = async ({
       }
     }
   }
+
+  return {
+    toolCalls,
+  };
 };
 
 export const getTextStreamOpenAIEmitDelta = async function* ({
