@@ -221,11 +221,13 @@ export const handleStream = async ({
 
   for await (const part of stream) {
     const delta = part.choices[0].delta;
-
-    // Check if this delta contains tool calls.
+    if (delta.content) {
+      emitSocketEvent("content", delta.content);
+    }
     if (delta.tool_calls) {
       for (const toolCall of delta.tool_calls) {
         const idx = toolCall.index;
+
         // Save the complete tool call object the first time it appears.
         if (!savedToolCalls[idx]) {
           savedToolCalls[idx] = toolCall;
@@ -236,34 +238,22 @@ export const handleStream = async ({
         }
         // Append the current chunk of arguments.
         toolCallAccumulators[idx] += toolCall.function!.arguments;
-        console.log(
-          `Accumulated arguments for index ${idx}: ${toolCallAccumulators[idx]}`
-        );
+
+        // Attempt to parse the accumulated arguments.
+        try {
+          const parsedArgs = JSON.parse(toolCallAccumulators[idx]);
+          // If parsing is successful, emit the complete tool call immediately.
+          savedToolCalls[idx].function.arguments = parsedArgs;
+          emitSocketEvent("tool_call", savedToolCalls[idx]);
+          // Optionally, mark this tool call as emitted so you don't re-emit it.
+          // For example, you could delete toolCallAccumulators[idx] or set a flag.
+        } catch (e) {
+          // JSON.parse failed: likely the tool call arguments are not complete yet.
+          // Continue accumulating.
+        }
       }
     }
-
-    // Yield any text content from this delta.
-    const content = delta.content ?? "";
-    if (content) {
-      emitSocketEvent("chunk", content);
-    }
   }
-
-  // After the stream ends, update each saved tool call with the complete combined arguments.
-  for (const idx in savedToolCalls) {
-    savedToolCalls[idx].function.arguments = JSON.parse(
-      toolCallAccumulators[idx]
-    );
-  }
-
-  // Save the final tool calls somewhere, here we simply log them,
-  // but you could store them in a database, a file, or any other storage.
-  console.log("Final saved tool calls:", savedToolCalls);
-  const toolCallsToExecute = Object.values(savedToolCalls);
-
-  // Optionally, yield the complete tool call information as a JSON string.
-  // yield "toolCallsToExecute:" + JSON.stringify(toolCallsToExecute);
-  emitSocketEvent("toolCallsToExecute", toolCallsToExecute);
 };
 
 export const getTextStreamOpenAIEmitDelta = async function* ({
