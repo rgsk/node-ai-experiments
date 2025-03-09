@@ -1,4 +1,6 @@
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 export const encodeQueryParams = (
   params: Record<
     string,
@@ -55,3 +57,5 @@ export function html(strings: any, ...values: any) {
   }
   return result;
 }
+
+export const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
