@@ -8,9 +8,11 @@ import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
 import puppeteer from "puppeteer";
 import { z } from "zod";
-import { executeCodeSchema, UrlContentTypeEnum } from "../../lib/mcpServer.js";
+import { UrlContentTypeEnum } from "../../lib/mcpServer.js";
 import { upload } from "../../lib/upload.js";
-import executeCode from "./assistants/tools/executeCode.js";
+import executeCode, {
+  executeCodeSchema,
+} from "./assistants/tools/executeCode.js";
 import getUrlContent from "./assistants/tools/getUrlContent.js";
 
 const experimentsRouter = Router();

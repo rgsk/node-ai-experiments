@@ -5,7 +5,6 @@ import {
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { v4 } from "uuid";
 import { z } from "zod";
-import executeCode from "../routers/children/assistants/tools/executeCode.js";
 import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js";
 import { jsonDataService } from "../routers/children/jsonDataService.js";
 import aiService from "./aiService.js";
@@ -185,56 +184,6 @@ mcpServer.tool(
         {
           type: "text",
           text: text,
-        },
-      ],
-    };
-  }
-);
-export const executeCodeSchema = {
-  code: z.string({
-    description: html`the code to execute.
-      <important>
-        make sure you perform print/console.log, so you can the see the code
-        execution output, if you won't do that you would get empty string as
-        output.
-      </important>`,
-  }),
-  language: z.enum(
-    ["node", "javascript", "python", "typescript", "cpp", "unknown"],
-    {
-      description: html`programming language to use. If the user explicitly
-      tells about which language to use, use that language. if it's not one of
-      known language pass the value "unknown", I will throw an error.`,
-    }
-  ),
-};
-export type SupportedLangugages = Exclude<
-  z.infer<typeof executeCodeSchema.language>,
-  "unknown"
->;
-mcpServer.tool(
-  "executeCode",
-  "you have to ability to execute code and give outputs of stdout to the user.",
-  executeCodeSchema,
-  async (args) => {
-    fileLogger.log({
-      tool: "executeCode",
-      args,
-    });
-    const { code, language } = args;
-    if (language === "unknown") {
-      throw new Error("This programming language is not supported");
-    }
-    const { output } = await executeCode({ code, language });
-    fileLogger.log({
-      tool: "executeCode",
-      output: output,
-    });
-    return {
-      content: [
-        {
-          type: "text",
-          text: output,
         },
       ],
     };

@@ -1,7 +1,30 @@
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
-import { SupportedLangugages } from "../../../../lib/mcpServer.js";
+import { z } from "zod";
+import { html } from "../../../../lib/generalUtils.js";
+export const executeCodeSchema = {
+  code: z.string({
+    description: html`the code to execute.
+      <important>
+        make sure you perform print/console.log, so you can the see the code
+        execution output, if you won't do that you would get empty string as
+        output.
+      </important>`,
+  }),
+  language: z.enum(
+    ["node", "javascript", "python", "typescript", "cpp", "unknown"],
+    {
+      description: html`programming language to use. If the user explicitly
+      tells about which language to use, use that language. if it's not one of
+      known language pass the value "unknown", I will throw an error.`,
+    }
+  ),
+};
+export type SupportedLangugages = Exclude<
+  z.infer<typeof executeCodeSchema.language>,
+  "unknown"
+>;
 function wrapLastLineInPrint(codeStr: string): string {
   const lines = codeStr.split("\n");
   if (lines.length === 0) return codeStr;
