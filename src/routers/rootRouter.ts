@@ -111,8 +111,8 @@ rootRouter.post("/json-completion", async (req, res, next) => {
 
 const getTextStreamTools = async () => {
   const composioTools = await composioToolset.getTools({
-    // apps: ["googlesheets"],
-    apps: [],
+    apps: ["googlesheets"],
+    // apps: [],
   });
   const mcpToolsSchema = await mcpClient.listTools();
   const mcpOpenAITools = mcpSchemaToOpenAITools(mcpToolsSchema);
@@ -132,7 +132,7 @@ rootRouter.get("/tools", async (req, res, next) => {
 
 const executeTool = async (toolCall: any) => {
   let output = "";
-  if (toolCall.source === "compsio") {
+  if (toolCall.source === "composio") {
     output = await composioToolset.executeToolCall({
       ...toolCall,
       function: {
