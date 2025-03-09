@@ -26,6 +26,8 @@ app.get("/sse", async (req, res, next) => {
   try {
     transport = new SSEServerTransport("/messages", res);
     await mcpServer.connect(transport);
+    // make new request from mcp-inspector after this log to see the updates
+    console.log(`transport connection success`);
   } catch (err) {
     return next(err);
   }
