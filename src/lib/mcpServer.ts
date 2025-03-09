@@ -14,12 +14,12 @@ import { html } from "./generalUtils.js";
 import { Memory, Persona } from "./typesJsonData.js";
 
 // Create an MCP server
-const server = new McpServer({
+const mcpServer = new McpServer({
   name: "Node AI Experiments MCP Server",
   version: "1.0.0",
 });
 
-server.resource(
+mcpServer.resource(
   "userMemories",
   new ResourceTemplate("users://{userEmail}/memories", { list: undefined }),
   async (uri, args) => {
@@ -48,7 +48,7 @@ server.resource(
   }
 );
 
-server.tool(
+mcpServer.tool(
   "getRelevantDocs",
   "When you are acting as persona, this tool helps you to get the relevant docs to respond, for this persona data from various sources is collected like websites, pdfs, image texts. When you run this function, you get the relevant texts, which you can use as context to answer user query. This function performs RAG on texts of all those data sources.",
   {
@@ -98,7 +98,7 @@ server.tool(
     };
   }
 );
-server.tool(
+mcpServer.tool(
   "saveUserInfoToMemory",
   "Save any information the user reveals about themselves during conversations — this includes their preferences, interests, goals, plans, likes/dislikes, personality traits, or anything relevant that can help personalize future conversations.",
   {
@@ -160,7 +160,7 @@ export const UrlContentTypeEnum = z.enum(
 );
 export type UrlContentType = z.infer<typeof UrlContentTypeEnum>;
 
-server.tool(
+mcpServer.tool(
   "getUrlContent",
   "Get the contents of the web-page that the url is pointing to.",
   {
@@ -212,7 +212,7 @@ export type SupportedLangugages = Exclude<
   z.infer<typeof executeCodeSchema.language>,
   "unknown"
 >;
-server.tool(
+mcpServer.tool(
   "executeCode",
   "you have to ability to execute code and give outputs of stdout to the user.",
   executeCodeSchema,
@@ -241,7 +241,7 @@ server.tool(
   }
 );
 
-server.prompt(
+mcpServer.prompt(
   "persona",
   { personaId: z.string(), userEmail: z.string() },
   async (args) => {
@@ -283,7 +283,7 @@ server.prompt(
   }
 );
 
-server.prompt("memory", { userEmail: z.string() }, async (args) => {
+mcpServer.prompt("memory", { userEmail: z.string() }, async (args) => {
   fileLogger.log({
     prompt: "memory",
     args,
@@ -320,8 +320,33 @@ server.prompt("memory", { userEmail: z.string() }, async (args) => {
   };
 });
 
+mcpServer.prompt("demo", {}, async (args) => {
+  fileLogger.log({
+    prompt: "demo",
+    args,
+  });
+  const result = "demo prompt";
+  fileLogger.log({
+    prompt: "demo",
+    output: result,
+  });
+  return {
+    messages: [
+      {
+        role: "user",
+        content: {
+          type: "text",
+          text: result,
+        },
+      },
+    ],
+  };
+});
+
 (async () => {
   // Start receiving messages on stdin and sending messages on stdout
   const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await mcpServer.connect(transport);
 })();
+
+export default mcpServer;
