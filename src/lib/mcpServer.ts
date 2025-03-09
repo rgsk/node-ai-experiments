@@ -9,8 +9,8 @@ import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js
 import { jsonDataService } from "../routers/children/jsonDataService.js";
 import aiService from "./aiService.js";
 import fileLogger from "./fileLogger.js";
-import { html } from "./generalUtils.js";
 import { Memory, Persona } from "./typesJsonData.js";
+import { html } from "./utils.js";
 
 // Create an MCP server
 const mcpServer = new McpServer({

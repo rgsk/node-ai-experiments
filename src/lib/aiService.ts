@@ -1,6 +1,6 @@
 import axios from "axios";
 import environmentVars from "./environmentVars.js";
-import { encodeQueryParams } from "./generalUtils.js";
+import { encodeQueryParams } from "./utils.js";
 
 const axiosInstance = axios.create({
   baseURL: environmentVars.PYTHON_EXPERIMENTS_SERVER_URL,

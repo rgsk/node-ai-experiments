@@ -1,5 +1,5 @@
 import environmentVars from "./environmentVars.js";
-import { appendFile } from "./generalUtils.js";
+import { appendFile } from "./utils.js";
 
 const fileLogger = {
   log: (data: any) => {
