@@ -20,10 +20,7 @@ const environmentVarsSchema = z.object({
   AWS_ACCESS_KEY: z.string(),
   AWS_SECRET_ACCESS_KEY: z.string(),
   COMPOSIO_API_KEY: z.string(),
-  HOST_DIR: z.string(),
   PYTHON_EXPERIMENTS_SERVER_URL: z.string(),
-  MCP_SECRET: z.string(),
-  MCP_AI_EXPERIMENTS_SERVER: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -36,9 +33,6 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
   COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY!,
   PYTHON_EXPERIMENTS_SERVER_URL: process.env.PYTHON_EXPERIMENTS_SERVER_URL!,
-  HOST_DIR: process.env.HOST_DIR ?? process.cwd(),
-  MCP_SECRET: process.env.MCP_SECRET!,
-  MCP_AI_EXPERIMENTS_SERVER: process.env.MCP_AI_EXPERIMENTS_SERVER!,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);
