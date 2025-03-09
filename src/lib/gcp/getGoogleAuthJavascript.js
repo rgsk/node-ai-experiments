@@ -11,10 +11,10 @@ const SCOPES = [
 // created automatically when the authorization flow completes for the first
 // time.
 
-const TOKEN_PATH = "secrets/credentials-gcp-token.json";
+const TOKEN_PATH = "credentials-gcp-token.json";
 
 // download the credentials.json file and save it in current folder
-const CREDENTIALS_PATH = "secrets/credentials-gcp-client-secret.json";
+const CREDENTIALS_PATH = "credentials-gcp-client-secret.json";
 const credentialsBuffer = fs.readFileSync(CREDENTIALS_PATH);
 const credentials = JSON.parse(credentialsBuffer.toString());
 
