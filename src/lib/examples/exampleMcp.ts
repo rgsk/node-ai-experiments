@@ -1,9 +1,6 @@
-import experimentsMcpClient, {
-  experimentsMcpTransport,
-} from "../experimentsMcpClient.js";
+import mcpClient from "../mcpClient.js";
 
 const practice = async () => {
-  await experimentsMcpClient.connect(experimentsMcpTransport);
   const userEmail = "rahulguptasde@gmail.com";
   //   const memoriesResult = await experimentsMcpClient.readResource({
   //     uri: `users://${userEmail}/memories`,
@@ -19,7 +16,7 @@ const practice = async () => {
   //   console.log(result);
   //   const resources = await experimentsMcpClient.listResourceTemplates();
   //   console.log(resources);
-  const prompt = await experimentsMcpClient.getPrompt({
+  const prompt = await mcpClient.getPrompt({
     name: "memory",
     arguments: {
       userEmail,

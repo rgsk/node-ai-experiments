@@ -3,10 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { OpenAI } from "openai";
 import { AssistantStreamEvent } from "openai/resources/beta/assistants.js";
 import composioToolset from "../../../lib/composioToolset.js";
+import mcpClient from "../../../lib/mcpClient.js";
 import { addProps } from "../../../lib/middlewareProps.js";
 import openAIClient from "../../../lib/openAIClient.js";
 import { Middlewares } from "../../../middlewares/middlewaresNamespace.js";
-import { EmitSocketEvent, getMcpClient } from "./assistantsRouter.js";
+import { EmitSocketEvent } from "./assistantsRouter.js";
 
 type ToolsPassed = { name: string; type: "mcp" | "composio" }[];
 export type EventObject = {
@@ -114,7 +115,6 @@ class EventHandler extends EventEmitter {
             if (matchingToolPassed.type === "composio") {
               output = await composioToolset.executeToolCall(toolCall);
             } else if (matchingToolPassed.type === "mcp") {
-              const mcpClient = await getMcpClient();
               const value = await mcpClient.callTool({
                 name: toolCall.function.name,
                 arguments: JSON.parse(toolCall.function.arguments),

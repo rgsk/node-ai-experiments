@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "../lib/authUtils.js";
-import environmentVars from "../lib/environmentVars.js";
 import { addProps } from "../lib/middlewareProps.js";
 import { Middlewares } from "./middlewaresNamespace.js";
 
@@ -10,21 +9,6 @@ const authenticate = async (
   next: NextFunction
 ) => {
   try {
-    const secretsAllowed = [environmentVars.MCP_SECRET];
-    const apiSecret = req.header("X-API-SECRET");
-    // console.log({ apiSecret });
-    if (apiSecret) {
-      if (secretsAllowed.includes(apiSecret)) {
-        // TODO: don't pass dummy props
-        const props: Middlewares.Authenticate = {
-          decodedIdToken: {} as any,
-          userEmail: "",
-        };
-        addProps(req, props, Middlewares.Keys.Authenticate);
-        return next();
-      }
-    }
-
     const queryToken = req.query["token"];
     const authorizationHeader = req.header("Authorization");
     if (queryToken) {

@@ -1,12 +1,10 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { Router } from "express";
 import fs from "fs";
 import { MessageContentPartParam } from "openai/resources/beta/threads/messages";
 import { z } from "zod";
 import { io } from "../../../app.js";
 import composioToolset from "../../../lib/composioToolset.js";
-import environmentVars from "../../../lib/environmentVars.js";
+import mcpClient from "../../../lib/mcpClient.js";
 import mcpSchemaToOpenAITools from "../../../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../../../lib/middlewareProps.js";
 import openAIClient from "../../../lib/openAIClient.js";
@@ -57,18 +55,7 @@ const requestBodySchema = z.object({
   imageUrls: z.record(z.string()).optional(),
   attachFilesToCodeInterpreter: z.boolean().optional(),
 });
-export const getMcpClient = async () => {
-  const mcpTransport = new SSEClientTransport(
-    new URL(environmentVars.MCP_AI_EXPERIMENTS_SERVER + "/sse")
-  );
 
-  const mcpClient = new Client({
-    name: "example-client",
-    version: "1.0.0",
-  });
-  await mcpClient.connect(mcpTransport);
-  return mcpClient;
-};
 assistantsRouter.post("/chat", async (req, res, next) => {
   try {
     const { userEmail } = getProps<Middlewares.Authenticate>(
@@ -109,7 +96,6 @@ assistantsRouter.post("/chat", async (req, res, next) => {
         type: "text",
         text: m,
       })) ?? [];
-    const mcpClient = await getMcpClient();
 
     const message = await openAIClient.beta.threads.messages.create(threadId, {
       role: "user",

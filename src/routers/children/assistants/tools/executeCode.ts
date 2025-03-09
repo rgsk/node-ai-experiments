@@ -1,7 +1,6 @@
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
-import environmentVars from "../../../../lib/environmentVars.js";
 import { SupportedLangugages } from "../../../../lib/mcpServer.js";
 function wrapLastLineInPrint(codeStr: string): string {
   const lines = codeStr.split("\n");
@@ -63,7 +62,7 @@ const executeCode = ({
     cpp: ".cpp",
   };
   const mountPath = path.join(
-    environmentVars.HOST_DIR,
+    // environmentVars.HOST_DIR,
     "code-runners",
     languageToRunners[language]
   );
