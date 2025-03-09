@@ -20,7 +20,7 @@ tsconfigPaths.register({
 
 const app = express();
 
-let transport: SSEServerTransport;
+let transport: SSEServerTransport | undefined = undefined;
 
 app.get("/sse", async (req, res, next) => {
   try {
@@ -36,7 +36,9 @@ app.post("/messages", async (req, res, next) => {
     // Note: to support multiple simultaneous connections, these messages will
     // need to be routed to a specific matching transport. (This logic isn't
     // implemented here, for simplicity.)
-    await transport.handlePostMessage(req, res);
+    if (transport) {
+      await transport.handlePostMessage(req, res);
+    }
   } catch (err) {
     return next(err);
   }

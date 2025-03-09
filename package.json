@@ -23,7 +23,7 @@
     "run-file": "ts-node",
     "run-js-file": "node",
     "watch:file": "ts-node-dev --respawn --transpile-only",
-    "mcp-inspector": "CLIENT_PORT=8181 SERVER_PORT=9121 npx @modelcontextprotocol/inspector node dist/lib/mcpServer.js",
+    "mcp-inspector": "CLIENT_PORT=8181 SERVER_PORT=9121 npx @modelcontextprotocol/inspector",
     "refresh:chrome": "osascript -e 'tell application \"Google Chrome\" to reload active tab of front window'",
     "watch:file:refresh:chrome": "nodemon -w views/test.ejs --exec \"yarn run:file src/examples/modifyPdf.ts && yarn refresh:chrome\""
   },
