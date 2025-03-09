@@ -111,13 +111,14 @@ rootRouter.post("/json-completion", async (req, res, next) => {
 
 const getTextStreamTools = async () => {
   const composioTools = await composioToolset.getTools({
-    apps: ["googlesheets"],
-    // apps: [],
+    // apps: ["googlesheets"],
+    apps: [],
   });
   const mcpToolsSchema = await mcpClient.listTools();
   const mcpOpenAITools = mcpSchemaToOpenAITools(mcpToolsSchema);
+
   // const mcpOpenAITools: any = [];
-  return { composioTools, mcpOpenAITools };
+  return { composioTools, mcpOpenAITools: mcpOpenAITools };
 };
 
 rootRouter.get("/tools", async (req, res, next) => {
@@ -130,12 +131,8 @@ rootRouter.get("/tools", async (req, res, next) => {
 });
 
 const executeTool = async (toolCall: any) => {
-  const { composioTools, mcpOpenAITools } = await getTextStreamTools();
-
   let output = "";
-  if (
-    composioTools.some((tool) => tool.function.name === toolCall.function.name)
-  ) {
+  if (toolCall.source === "compsio") {
     output = await composioToolset.executeToolCall({
       ...toolCall,
       function: {
@@ -143,11 +140,7 @@ const executeTool = async (toolCall: any) => {
         arguments: JSON.stringify(toolCall.function.arguments),
       },
     });
-  } else if (
-    mcpOpenAITools.some(
-      (tool: any) => tool.function.name === toolCall.function.name
-    )
-  ) {
+  } else if (toolCall.source === "mcp") {
     const value = await mcpClient.callTool({
       name: toolCall.function.name,
       arguments: toolCall.function.arguments,
@@ -170,15 +163,13 @@ rootRouter.post("/execute-tool", async (req, res, next) => {
 
 rootRouter.post("/text", async (req, res, next) => {
   try {
-    let { messages, socketId } = req.body;
+    let { messages, socketId, tools } = req.body;
     const socket = socketId ? io.sockets.sockets.get(socketId) : undefined;
     const emitSocketEvent: EmitSocketEvent = (eventName: string, data: any) => {
       if (socket) {
         socket.emit(eventName, data);
       }
     };
-    const { composioTools, mcpOpenAITools } = await getTextStreamTools();
-    const tools = [...composioTools, ...mcpOpenAITools];
     messages = messages.map((m: any) => {
       if (m.tool_calls) {
         for (let tc of m.tool_calls) {
@@ -247,9 +238,13 @@ export const handleStream = async ({
           const parsedArgs = JSON.parse(toolCallAccumulators[idx]);
           // If parsing is successful, emit the complete tool call immediately.
           savedToolCalls[idx].function.arguments = parsedArgs;
+          const tool = tools.find(
+            (t: any) => t.function.name === savedToolCalls[idx].function.name
+          );
           const toolCall = {
             ...savedToolCalls[idx],
-            variant: "serverSide",
+            source: tool.source,
+            variant: tool.variant,
           };
           toolCalls.push(toolCall);
           emitSocketEvent("toolCall", toolCall);
