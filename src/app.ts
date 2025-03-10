@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { Server as SocketServer } from "socket.io";
 import tsconfigPaths from "tsconfig-paths";
 import environmentVars from "./lib/environmentVars.js";
+import exampleBase from "./lib/examples/exampleBase.js";
 import mcpServer from "./lib/mcpServer.js";
 import authenticate from "./middlewares/authenticate.js";
 import errorHandler from "./middlewares/errorHandler.js";
@@ -75,4 +76,4 @@ httpServer.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-// exampleBase();
+exampleBase();

@@ -1,9 +1,9 @@
 import environmentVars from "../environmentVars.js";
-import exampleComposio from "./exampleComposio.js";
+import example from "./example.js";
 
 const exampleBase = () => {
   if (environmentVars.NODE_ENV === "development") {
-    exampleComposio();
+    example();
   }
 };
 export default exampleBase;

@@ -171,6 +171,8 @@ rootRouter.post("/text", async (req, res, next) => {
       }
     };
     messages = messages.map((m: any) => {
+      delete m.id;
+      delete m.status;
       if (m.tool_calls) {
         for (let tc of m.tool_calls) {
           tc.function.arguments = JSON.stringify(tc.function.arguments);
