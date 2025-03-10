@@ -222,12 +222,12 @@ const getImageDescription = async (imageUrl: string) => {
   return response.choices[0].message.content;
 };
 const fetchImage = async (url: string) => {
-  const [imageDescription, imageOCR] = await Promise.all([
+  const [imageModelOutput, imageOCROutput] = await Promise.all([
     getImageDescription(url),
     tesseract.recognize(url),
   ]);
 
-  return `Image Description:\n${imageDescription}\nImage OCR:\n${imageOCR}`;
+  return JSON.stringify({ imageModelOutput, imageOCROutput });
 };
 
 export const getUrlContentType = (url: string): UrlContentType => {

@@ -80,6 +80,17 @@ const getModel = (overrideModel?: Partial<Record<AIClient, string>>) => {
     return overrideModel?.[aiClient] || "gpt-4o";
   }
 };
+
+rootRouter.get("/model", async (req, res, next) => {
+  try {
+    return res.json({
+      model: `${aiClient}/${getModel()}`,
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 rootRouter.post("/completion", async (req, res, next) => {
   try {
     const { messages } = req.body;
