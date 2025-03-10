@@ -1,20 +1,25 @@
 import { Router } from "express";
 import { z } from "zod";
+import { s3ClientBuckets } from "../../lib/s3Client.js";
 import {
   deleteS3Url,
   getPresignedUrl,
   getUploadURL,
 } from "../../lib/s3Utils.js";
-
 const awsRouter = Router();
 
 const uploadUrlSchema = z.object({
   key: z.string(),
+  access: z.enum(["public", "private"]).optional(),
 });
 awsRouter.get("/upload-url", async (req, res, next) => {
   try {
-    const { key } = uploadUrlSchema.parse(req.query);
-    const url = await getUploadURL({ key });
+    const { key, access } = uploadUrlSchema.parse(req.query);
+    const url = await getUploadURL({
+      key,
+      bucket:
+        access === "public" ? s3ClientBuckets.public : s3ClientBuckets.default,
+    });
     return res.json({
       url,
     });

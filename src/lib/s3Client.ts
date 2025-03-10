@@ -3,7 +3,8 @@ import environmentVars from "./environmentVars.js";
 
 export const s3ClientRegion = "us-east-1";
 export const s3ClientBuckets = {
-  main: "c08a1eeb-cb81-4c3c-9a11-f616ffd8e042",
+  default: "c08a1eeb-cb81-4c3c-9a11-f616ffd8e042",
+  public: "pubbuckrah",
 };
 
 const s3Client = new S3({
