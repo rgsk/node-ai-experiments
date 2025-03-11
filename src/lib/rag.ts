@@ -96,7 +96,7 @@ async function deleteSource({
   return { count };
 }
 
-const saveContent = async ({
+const embedContent = async ({
   data: { content, metadata, collectionName, source },
   config: { chunkLength, overlapLength },
 }: {
@@ -129,6 +129,6 @@ const rag = {
   retrieveRelevantDocs,
   deleteCollection,
   deleteSource,
-  saveContent,
+  embedContent,
 };
 export default rag;

@@ -3,7 +3,7 @@ import { z } from "zod";
 import rag from "../../lib/rag.js";
 
 const ragRouter = Router();
-const saveContentSchema = z.object({
+const embedContentSchema = z.object({
   data: z.object({
     content: z.string(),
     collectionName: z.string(),
@@ -15,10 +15,10 @@ const saveContentSchema = z.object({
     overlapLength: z.number().int(),
   }),
 });
-ragRouter.post("/save-content", async (req, res, next) => {
+ragRouter.post("/embed-content", async (req, res, next) => {
   try {
-    const parsed = saveContentSchema.parse(req.body);
-    const result = await rag.saveContent(parsed);
+    const parsed = embedContentSchema.parse(req.body);
+    const result = await rag.embedContent(parsed);
     return res.json(result);
   } catch (err) {
     return next(err);
