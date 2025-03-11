@@ -258,7 +258,7 @@ const getUrlContent = async (url: string, type?: UrlContentType) => {
     if (content) {
       output = content;
     } else {
-      output = "An error occurred while fetching the URL contents.";
+      throw new Error("An error occurred while fetching the URL contents.");
     }
   } catch (err: any) {
     if (err.status === 401 || err.status === 403) {
@@ -271,7 +271,7 @@ const getUrlContent = async (url: string, type?: UrlContentType) => {
         output = "Unauthorized to access the current page";
       }
     } else {
-      output = "An error occurred while fetching the URL contents.";
+      throw err;
     }
   }
   return output;
