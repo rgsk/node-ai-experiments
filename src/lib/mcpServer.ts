@@ -7,8 +7,8 @@ import { v4 } from "uuid";
 import { z } from "zod";
 import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js";
 import { jsonDataService } from "../routers/children/jsonDataService.js";
-import aiService from "./aiService.js";
 import fileLogger from "./fileLogger.js";
+import rag from "./rag.js";
 import { Memory, Persona } from "./typesJsonData.js";
 import { html } from "./utils.js";
 
@@ -48,7 +48,7 @@ mcpServer.resource(
 );
 
 mcpServer.tool(
-  "getRelevantDocs",
+  "retrieveRelevantDocs",
   "When you are acting as persona, this tool helps you to get the relevant docs to respond, for this persona data from various sources is collected like websites, pdfs, image texts. When you run this function, you get the relevant texts, which you can use as context to answer user query. This function performs RAG on texts of all those data sources.",
   {
     query: z.string({
@@ -66,7 +66,7 @@ mcpServer.tool(
   },
   async (args) => {
     fileLogger.log({
-      tool: "getRelevantDocs",
+      tool: "retrieveRelevantDocs",
       args,
     });
     const { query, personaId, userEmail, numDocs, sources } = args;
@@ -77,14 +77,15 @@ mcpServer.tool(
     if (!persona) {
       throw new Error("persona not found");
     }
-    const relevantDocs = await aiService.getRelevantDocs({
-      query: query,
+
+    const relevantDocs = await rag.retrieveRelevantDocs({
+      query,
       collectionName: persona.collectionName,
-      numDocs,
+      limit: numDocs,
       sources,
     });
     fileLogger.log({
-      tool: "getRelevantDocs",
+      tool: "retrieveRelevantDocs",
       output: relevantDocs,
     });
     return {
@@ -211,7 +212,7 @@ mcpServer.prompt(
       <persona>${JSON.stringify(persona)}</persona>
       you have to respond on persona's behalf
 
-      additionally since, user interacting with this persona, getRelevantDocs tool becomes important
+      additionally since, user interacting with this persona, retrieveRelevantDocs tool becomes important
       so make sure to pass user query to that tool and fetch the relevant docs and respond accordingly
     `;
     fileLogger.log({

@@ -176,7 +176,12 @@ rootRouter.post("/execute-tool", async (req, res, next) => {
 
 rootRouter.post("/text", async (req, res, next) => {
   try {
-    let { messages, socketId, tools } = req.body;
+    let {
+      messages,
+      socketId,
+      tools,
+      config: { personaId },
+    } = req.body;
     const socket = socketId ? io.sockets.sockets.get(socketId) : undefined;
     const emitSocketEvent: EmitSocketEvent = (eventName: string, data: any) => {
       if (socket) {

@@ -48,7 +48,12 @@ ragRouter.post("/embeddings", async (req, res, next) => {
 const relevantDocsQuerySchema = z.object({
   query: z.string(),
   collectionName: z.string(),
-  source: z.string().optional(),
+  source: z.preprocess((data) => {
+    if (typeof data === "string") {
+      return [data];
+    }
+    return data;
+  }, z.array(z.string()).optional()),
   limit: z.preprocess((a) => {
     if (typeof a === "string") {
       // Ensure the entire string is a valid integer (optional minus sign, then digits)
@@ -68,7 +73,7 @@ ragRouter.get("/relevant-docs", async (req, res, next) => {
     const result = await rag.retrieveRelevantDocs({
       query,
       collectionName,
-      source,
+      sources: source,
       limit,
     });
     return res.json(result);

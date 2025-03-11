@@ -40,12 +40,12 @@ const createEmbeddings = async (
 async function retrieveRelevantDocs({
   query,
   collectionName,
-  source,
+  sources,
   limit = 5,
 }: {
   query: string;
   collectionName: string;
-  source?: string;
+  sources?: string[];
   limit?: number;
 }) {
   const response = await openAIClient.embeddings.create({
@@ -58,7 +58,9 @@ async function retrieveRelevantDocs({
   const result = await db.$queryRaw`
   SELECT "collectionName", "source", "metadata", "content" FROM "Document"
   WHERE "collectionName" = ${collectionName} ${
-    source ? Prisma.sql`AND "source" = ${source}` : Prisma.sql``
+    sources
+      ? Prisma.sql`AND "source" in (${Prisma.join(sources)})`
+      : Prisma.sql``
   }
   ORDER BY embedding <-> ${embedding}::vector LIMIT ${limit}
   `;
