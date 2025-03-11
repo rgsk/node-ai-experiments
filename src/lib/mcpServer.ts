@@ -9,7 +9,7 @@ import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js
 import { jsonDataService } from "../routers/children/jsonDataService.js";
 import fileLogger from "./fileLogger.js";
 import rag from "./rag.js";
-import { Memory, Persona } from "./typesJsonData.js";
+import { Memory } from "./typesJsonData.js";
 import { html } from "./utils.js";
 
 // Create an MCP server
@@ -54,8 +54,7 @@ mcpServer.tool(
     query: z.string({
       description: "A query based on which docs will be fetched.",
     }),
-    personaId: z.string(),
-    userEmail: z.string().email(),
+    collectionName: z.string(),
     sources: z
       .string({ description: "filter by particular sources" })
       .array()
@@ -69,18 +68,11 @@ mcpServer.tool(
       tool: "retrieveRelevantDocs",
       args,
     });
-    const { query, personaId, userEmail, numDocs, sources } = args;
-    const result = await jsonDataService.findByKey<Persona>(
-      `reactAIExperiments/users/${userEmail}/personas/${personaId}`
-    );
-    const persona = result?.value;
-    if (!persona) {
-      throw new Error("persona not found");
-    }
+    const { query, collectionName, numDocs, sources } = args;
 
     const relevantDocs = await rag.retrieveRelevantDocs({
       query,
-      collectionName: persona.collectionName,
+      collectionName: collectionName,
       limit: numDocs,
       sources,
     });
@@ -190,85 +182,6 @@ mcpServer.tool(
     };
   }
 );
-
-mcpServer.prompt(
-  "persona",
-  { personaId: z.string(), userEmail: z.string() },
-  async (args) => {
-    fileLogger.log({
-      prompt: "persona",
-      args,
-    });
-    const { personaId, userEmail } = args;
-    const result = await jsonDataService.findByKey<Persona>(
-      `reactAIExperiments/users/${userEmail}/personas/${personaId}`
-    );
-    const persona = result?.value;
-    if (!persona) {
-      throw new Error("persona not found");
-    }
-    const personaInstruction = `
-      user is interacting persona with following personality
-      <persona>${JSON.stringify(persona)}</persona>
-      you have to respond on persona's behalf
-
-      additionally since, user interacting with this persona, retrieveRelevantDocs tool becomes important
-      so make sure to pass user query to that tool and fetch the relevant docs and respond accordingly
-    `;
-    fileLogger.log({
-      prompt: "persona",
-      output: personaInstruction,
-    });
-    return {
-      messages: [
-        {
-          role: "user",
-          content: {
-            type: "text",
-            text: personaInstruction,
-          },
-        },
-      ],
-    };
-  }
-);
-
-mcpServer.prompt("memory", { userEmail: z.string() }, async (args) => {
-  fileLogger.log({
-    prompt: "memory",
-    args,
-  });
-  const { userEmail } = args;
-  const key = `reactAIExperiments/users/${userEmail}/memories`;
-
-  const jsonData = await jsonDataService.findByKey<Memory[]>(key);
-  const memories = jsonData?.value;
-  const statements = memories?.map((m) => m.statement);
-  const memoryInstruction = html`
-    Following memory statements are gathered from previous conversations with
-    the user, try to incorporate them into the conversation context to provide a
-    more personalized response.
-    <statements> ${statements} </statements>
-
-    additionally, if user has revealed something new about himself in the
-    conversation so far, save that statement in the memory
-  `;
-  fileLogger.log({
-    prompt: "memory",
-    output: memoryInstruction,
-  });
-  return {
-    messages: [
-      {
-        role: "user",
-        content: {
-          type: "text",
-          text: memoryInstruction,
-        },
-      },
-    ],
-  };
-});
 
 mcpServer.prompt("demo", {}, async (args) => {
   fileLogger.log({
