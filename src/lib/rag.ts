@@ -3,7 +3,7 @@ import { JsonValue } from "@prisma/client/runtime/library";
 import { v4 } from "uuid";
 import { db } from "./db.js";
 import openAIClient from "./openAIClient.js";
-export const createEmbeddings = async (
+const createEmbeddings = async (
   data: {
     content: string;
     metadata?: JsonValue;
@@ -36,7 +36,7 @@ export const createEmbeddings = async (
   return { count };
 };
 
-export async function retrieveRelevantDocs({
+async function retrieveRelevantDocs({
   query,
   collectionName,
   source,
@@ -70,7 +70,7 @@ export async function retrieveRelevantDocs({
   }[];
 }
 
-export async function deleteCollection({
+async function deleteCollection({
   collectionName,
 }: {
   collectionName: string;
@@ -81,7 +81,7 @@ export async function deleteCollection({
   `;
   return { count };
 }
-export async function deleteSource({
+async function deleteSource({
   collectionName,
   source,
 }: {
@@ -94,3 +94,11 @@ export async function deleteSource({
   `;
   return { count };
 }
+
+const rag = {
+  createEmbeddings,
+  retrieveRelevantDocs,
+  deleteCollection,
+  deleteSource,
+};
+export default rag;

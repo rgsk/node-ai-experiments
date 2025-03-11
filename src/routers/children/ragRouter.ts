@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { createEmbeddings, retrieveRelevantDocs } from "../../lib/rag.js";
+import rag from "../../lib/rag.js";
 
 const ragRouter = Router();
 const createEmbeddingsBodySchema = z.object({
@@ -16,7 +16,7 @@ const createEmbeddingsBodySchema = z.object({
 ragRouter.post("/embeddings", async (req, res, next) => {
   try {
     const { data } = createEmbeddingsBodySchema.parse(req.body);
-    const result = await createEmbeddings(data);
+    const result = await rag.createEmbeddings(data);
     return res.json(result);
   } catch (err) {
     return next(err);
@@ -43,11 +43,42 @@ ragRouter.get("/relevant-docs", async (req, res, next) => {
   try {
     const { query, collectionName, source, limit } =
       relevantDocsQuerySchema.parse(req.query);
-    const result = await retrieveRelevantDocs({
+    const result = await rag.retrieveRelevantDocs({
       query,
       collectionName,
       source,
       limit,
+    });
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
+const deleteCollectionSchema = z.object({
+  collectionName: z.string(),
+});
+ragRouter.delete("/collection", async (req, res, next) => {
+  try {
+    const { collectionName } = deleteCollectionSchema.parse(req.body);
+    const result = await rag.deleteCollection({
+      collectionName,
+    });
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+const deleteSourceSchema = z.object({
+  collectionName: z.string(),
+  source: z.string(),
+});
+ragRouter.delete("/source", async (req, res, next) => {
+  try {
+    const { collectionName, source } = deleteSourceSchema.parse(req.body);
+    const result = await rag.deleteSource({
+      collectionName,
+      source,
     });
     return res.json(result);
   } catch (err) {
