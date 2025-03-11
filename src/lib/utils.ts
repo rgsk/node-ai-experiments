@@ -59,3 +59,20 @@ export function html(strings: any, ...values: any) {
 }
 
 export const getDirname = () => path.dirname(fileURLToPath(import.meta.url));
+
+export function chunkWithOverlap<T>(
+  arr: T[] | string,
+  chunkLength: number,
+  overlapLength = 0
+) {
+  if (chunkLength <= 0) throw new Error("chunkLength must be positive");
+  if (overlapLength < 0 || overlapLength >= chunkLength)
+    throw new Error("invalid overlapLength");
+  const chunks = [];
+  let i = 0;
+  while (i < arr.length) {
+    chunks.push(arr.slice(i, i + chunkLength));
+    i += chunkLength - overlapLength;
+  }
+  return chunks;
+}

@@ -3,6 +3,7 @@ import { JsonValue } from "@prisma/client/runtime/library";
 import { v4 } from "uuid";
 import { db } from "./db.js";
 import openAIClient from "./openAIClient.js";
+import { chunkWithOverlap } from "./utils.js";
 const createEmbeddings = async (
   data: {
     content: string;
@@ -95,10 +96,39 @@ async function deleteSource({
   return { count };
 }
 
+const saveContent = async ({
+  data: { content, metadata, collectionName, source },
+  config: { chunkLength, overlapLength },
+}: {
+  data: {
+    content: string;
+    metadata?: JsonValue;
+    collectionName: string;
+    source: string;
+  };
+  config: {
+    chunkLength: number;
+    overlapLength: number;
+  };
+}) => {
+  // break contents into chunks
+  const chunks = chunkWithOverlap(content, chunkLength, overlapLength);
+  const result = await createEmbeddings(
+    chunks.map((chunk) => ({
+      content: chunk as string,
+      collectionName,
+      source,
+      metadata,
+    }))
+  );
+  return result;
+};
+
 const rag = {
   createEmbeddings,
   retrieveRelevantDocs,
   deleteCollection,
   deleteSource,
+  saveContent,
 };
 export default rag;

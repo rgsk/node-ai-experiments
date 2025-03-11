@@ -3,6 +3,28 @@ import { z } from "zod";
 import rag from "../../lib/rag.js";
 
 const ragRouter = Router();
+const saveContentSchema = z.object({
+  data: z.object({
+    content: z.string(),
+    collectionName: z.string(),
+    source: z.string(),
+    metadata: z.any().optional(),
+  }),
+  config: z.object({
+    chunkLength: z.number().int(),
+    overlapLength: z.number().int(),
+  }),
+});
+ragRouter.post("/save-content", async (req, res, next) => {
+  try {
+    const parsed = saveContentSchema.parse(req.body);
+    const result = await rag.saveContent(parsed);
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 const createEmbeddingsBodySchema = z.object({
   data: z.array(
     z.object({
