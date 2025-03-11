@@ -11,4 +11,4 @@ docker run \
 	-e POSTGRES_USER=postgres \
 	-e POSTGRES_DB=postgres \
 	-v node-ai-experiments-postgres-data:/var/lib/postgresql/data \
-	-d postgres:14
+	-d pgvector/pgvector:pg16

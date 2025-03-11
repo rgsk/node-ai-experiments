@@ -17,6 +17,7 @@
     "build-code-runners": "sh code-runners/bin/build.sh",
     "migrate": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
+    "migrate:dev:create-only": "prisma migrate dev --create-only",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset",
     "migrate:force-reset": "prisma migrate reset --force",
