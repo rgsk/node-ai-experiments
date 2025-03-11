@@ -44,7 +44,7 @@ export async function retrieveRelevantDocs({
 }: {
   query: string;
   collectionName: string;
-  source: string;
+  source?: string;
   limit?: number;
 }) {
   const response = await openAIClient.embeddings.create({
@@ -56,7 +56,9 @@ export async function retrieveRelevantDocs({
 
   const result = await db.$queryRaw`
   SELECT "collectionName", "source", "metadata", "content" FROM "Document"
-  WHERE "collectionName" = ${collectionName} AND "source" = ${source}
+  WHERE "collectionName" = ${collectionName} ${
+    source ? Prisma.sql`AND "source" = ${source}` : Prisma.sql``
+  }
   ORDER BY embedding <-> ${embedding}::vector LIMIT ${limit}
   `;
 
