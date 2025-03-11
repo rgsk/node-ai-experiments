@@ -56,7 +56,7 @@ export async function retrieveRelevantDocs({
 
   const result = await db.$queryRaw`
   SELECT "collectionName", "source", "metadata", "content" FROM "Document"
-  where "collectionName" = ${collectionName} AND "source" = ${source}
+  WHERE "collectionName" = ${collectionName} AND "source" = ${source}
   ORDER BY embedding <-> ${embedding}::vector LIMIT ${limit}
   `;
 
@@ -66,4 +66,29 @@ export async function retrieveRelevantDocs({
     metadata: JsonValue;
     content: string;
   }[];
+}
+
+export async function deleteCollection({
+  collectionName,
+}: {
+  collectionName: string;
+}) {
+  const count = await db.$executeRaw`
+    DELETE FROM "Document"
+    WHERE "collectionName" = ${collectionName}
+  `;
+  return { count };
+}
+export async function deleteSource({
+  collectionName,
+  source,
+}: {
+  collectionName: string;
+  source: string;
+}) {
+  const count = await db.$executeRaw`
+    DELETE FROM "Document"
+    WHERE "collectionName" = ${collectionName} AND "source" = ${source}
+  `;
+  return { count };
 }

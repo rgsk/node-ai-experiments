@@ -19,6 +19,7 @@ import awsRouter from "./children/awsRouter.js";
 import friendsRouter from "./children/friendsRouter.js";
 import jsonDataRouter from "./children/jsonDataRouter.js";
 import { jsonDataService } from "./children/jsonDataService.js";
+import ragRouter from "./children/ragRouter.js";
 
 const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
@@ -26,6 +27,7 @@ rootRouter.use("/json-data", jsonDataRouter);
 rootRouter.use("/aws", awsRouter);
 rootRouter.use("/assistants", assistantsRouter);
 rootRouter.use("/admin", adminRequired, adminRouter);
+rootRouter.use("/rag", adminRequired, ragRouter);
 rootRouter.get("/", async (req, res, next) => {
   try {
     return res.json({

@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import { v4 } from "uuid";
 import { db } from "../db.js";
 import openAIClient from "../openAIClient.js";
-import { retrieveRelevantDocs } from "../rag.js";
 const createEmbeddings1 = async (texts: string[]) => {
   console.log("Generating embeddings...");
 
@@ -75,13 +74,18 @@ const example = async () => {
   //     },
   //   ]);
   //   console.log(result);
-  const fds = await retrieveRelevantDocs({
-    query: "hii",
-    collectionName: "fsd",
-    source: "fsdff",
-    limit: 1,
-  });
-  console.log(fds);
+  //   const fds = await retrieveRelevantDocs({
+  //     query: "hii",
+  //     collectionName: "fsd",
+  //     source: "fsdff",
+  //     limit: 1,
+  //   });
+  //   console.log(fds);
+  //   const result = await deleteSource({
+  //     collectionName: "exampleCollection",
+  //     source: "fdf",
+  //   });
+  //   console.log(result);
 };
 
 export default example;
