@@ -3,14 +3,16 @@ import {
   ResourceTemplate,
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import axios from "axios";
 import { v4 } from "uuid";
 import { z } from "zod";
 import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js";
 import { jsonDataService } from "../routers/children/jsonDataService.js";
+import environmentVars from "./environmentVars.js";
 import fileLogger from "./fileLogger.js";
 import rag from "./rag.js";
 import { Memory } from "./typesJsonData.js";
-import { html } from "./utils.js";
+import { encodeQueryParams, html } from "./utils.js";
 
 // Create an MCP server
 const mcpServer = new McpServer({
@@ -177,6 +179,62 @@ mcpServer.tool(
         {
           type: "text",
           text: text,
+        },
+      ],
+    };
+  }
+);
+function extractRelevantSearchResults(searchResults: any) {
+  const items = searchResults.items;
+  const extractedResults = items.map((item: any) => {
+    const { title, link, snippet, displayLink } = item;
+    const cseThumbnail = item.pagemap?.cse_thumbnail?.[0]?.src || null;
+    const ogImage =
+      item.pagemap?.metatags?.find((tag: any) => tag["og:image"])?.[
+        "og:image"
+      ] || null;
+
+    return {
+      title,
+      link,
+      snippet,
+      displayLink,
+      image: cseThumbnail || ogImage, // Prefer cseThumbnail if available
+    };
+  });
+  return extractedResults;
+}
+mcpServer.tool(
+  "googleSearch",
+  "If user query is such that you can better respond with upto date information from google search results, then use this tool.",
+  {
+    query: z.string({
+      description: "query based on which results would be fetched",
+    }),
+  },
+  async (args) => {
+    fileLogger.log({
+      tool: "googleSearch",
+      args,
+    });
+    const { query } = args;
+    const result = await axios.get(
+      `https://www.googleapis.com/customsearch/v1?${encodeQueryParams({
+        key: environmentVars.GOOGLE_API_KEY,
+        cx: "c3384dedc07b144cf",
+        q: query,
+      })}`
+    );
+    const parsedResults = extractRelevantSearchResults(result.data);
+    fileLogger.log({
+      tool: "getUrlContent",
+      output: parsedResults,
+    });
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(parsedResults),
         },
       ],
     };

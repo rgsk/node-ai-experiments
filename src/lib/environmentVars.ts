@@ -21,6 +21,7 @@ const environmentVarsSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   COMPOSIO_API_KEY: z.string(),
   PYTHON_EXPERIMENTS_SERVER_URL: z.string(),
+  GOOGLE_API_KEY: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -33,6 +34,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
   COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY!,
   PYTHON_EXPERIMENTS_SERVER_URL: process.env.PYTHON_EXPERIMENTS_SERVER_URL!,
+  GOOGLE_API_KEY: process.env.GOOGLE_API_KEY!,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);

@@ -4,6 +4,7 @@
 **/.env
 **/credentials-*
 **/logs.js
+**/new.json
 
 # python related
 **/.venv

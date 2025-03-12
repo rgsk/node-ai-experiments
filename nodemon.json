@@ -1,4 +1,4 @@
 {
   "delay": "1000",
-  "ignore": ["code-runners", "logs.js"]
+  "ignore": ["code-runners", "logs.js", "new.json"]
 }
