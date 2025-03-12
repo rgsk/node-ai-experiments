@@ -206,7 +206,13 @@ function extractRelevantSearchResults(searchResults: any) {
 }
 mcpServer.tool(
   "googleSearch",
-  "If user query is such that you can better respond with upto date information from google search results, then use this tool.",
+  html`
+    If user query is such that you can better respond with upto date information
+    from google search results, then use this tool. also note based on initial
+    results, you could further need to research the particular website, in case
+    you need to do that, use the link field from search results and pass it to
+    getUrlContent tool to fetch further details to answer the query better
+  `,
   {
     query: z.string({
       description: "query based on which results would be fetched",
@@ -227,7 +233,7 @@ mcpServer.tool(
     );
     const parsedResults = extractRelevantSearchResults(result.data);
     fileLogger.log({
-      tool: "getUrlContent",
+      tool: "googleSearch",
       output: parsedResults,
     });
     return {

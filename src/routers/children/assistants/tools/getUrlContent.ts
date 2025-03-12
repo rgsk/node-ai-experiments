@@ -4,6 +4,7 @@ import tesseract from "node-tesseract-ocr";
 // @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse.js";
 import { YoutubeTranscript } from "youtube-transcript";
+import aiService from "../../../../lib/aiService.js";
 import getGoogleDocData from "../../../../lib/gcp/getGoogleDocData.js";
 import getGoogleSheetData from "../../../../lib/gcp/getGoogleSheetData.js";
 import { UrlContentType } from "../../../../lib/mcpServer.js";
@@ -34,21 +35,10 @@ function isImageUrl(url: string): boolean {
 }
 
 // Function to fetch and extract text from a webpage
-const fetchWebPage = async (url: string): Promise<string> => {
+const fetchWebPage = async (url: string) => {
   try {
-    // Fetch the HTML content of the page
-    const response = await axios.get(url);
-    const html = response.data;
-
-    // Load the HTML into jsdom
-    const dom = new JSDOM(html);
-    // Get the page title
-    const pageTitle = dom.window.document.title;
-
-    // Extract the text content of the body (similar to innerText)
-    const pageText = dom.window.document.body.textContent?.trim() || "";
-
-    return `Page Title: ${pageTitle}\nPage Content: ${pageText}`;
+    const result = await aiService.getWebpageContent(url);
+    return JSON.stringify(result);
   } catch (error) {
     throw new Error(`Failed to fetch webpage content: ${error}`);
   }

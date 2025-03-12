@@ -33,5 +33,21 @@ const aiService = {
     >(`/relevant_docs?${queryString}`);
     return result.data;
   },
+  getWebpageContent: async (url: string) => {
+    const result = await axiosInstance.get<{
+      title: string;
+      description: string;
+      og?: {
+        site_name: string;
+        type: string;
+        title: string;
+        description: string;
+        image: string;
+        url: string;
+      };
+      content: string;
+    }>(`/webpage-content?${encodeQueryParams({ url })}`);
+    return result.data;
+  },
 };
 export default aiService;
