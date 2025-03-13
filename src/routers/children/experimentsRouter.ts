@@ -90,12 +90,12 @@ experimentsRouter.post("/execute-latex", async (req, res, next) => {
         });
         fs.unlink(tempPdfFile.replace(".pdf", ".aux"), (unlinkErr) => {
           if (unlinkErr) {
-            console.error("Error deleting temporary .pdf file:", unlinkErr);
+            console.error("Error deleting temporary .aux file:", unlinkErr);
           }
         });
         fs.unlink(tempPdfFile.replace(".pdf", ".log"), (unlinkErr) => {
           if (unlinkErr) {
-            console.error("Error deleting temporary .pdf file:", unlinkErr);
+            console.error("Error deleting temporary .log file:", unlinkErr);
           }
         });
 
