@@ -6,6 +6,7 @@ import fs from "fs";
 import { JSDOM } from "jsdom";
 import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
+import path from "path";
 import puppeteer from "puppeteer";
 import { z } from "zod";
 import { UrlContentTypeEnum } from "../../lib/mcpServer.js";
@@ -14,7 +15,6 @@ import executeCode, {
   executeCodeSchema,
 } from "./assistants/tools/executeCode.js";
 import getUrlContent from "./assistants/tools/getUrlContent.js";
-
 const experimentsRouter = Router();
 // Endpoint to execute Python code
 
@@ -31,6 +31,84 @@ experimentsRouter.post("/execute-code", async (req, res, next) => {
     return next(err);
   }
 });
+
+experimentsRouter.post("/execute-latex", async (req, res, next) => {
+  try {
+    // Retrieve LaTeX code from the request body
+    const latexCode = req.body.code;
+    // return res.json({ message: "" });
+    if (!latexCode) {
+      return res.status(400).json({ error: "No LaTeX code provided" });
+    }
+
+    // Create a unique base name for temporary files
+    const uniqueBase = `temp-${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 15)}`;
+    const tempDir = "temp";
+    const tempTexFile = path.join(tempDir, uniqueBase + ".tex");
+    const tempPdfFile = path.join(tempDir, uniqueBase + ".pdf");
+
+    // Write the LaTeX code to the temporary .tex file
+    await fs.promises.writeFile(tempTexFile, latexCode, "utf8");
+
+    // Build the pdflatex command.
+    // -interaction=nonstopmode ensures that the process does not hang waiting for user input.
+    // -output-directory directs output (including the PDF) to the temp directory.
+    const command = `pdflatex -interaction=nonstopmode -output-directory=${tempDir} ${tempTexFile}`;
+
+    // Execute the pdflatex command
+    exec(command, async (error, stdout, stderr) => {
+      // Clean up the temporary .tex file
+      fs.unlink(tempTexFile, (unlinkErr) => {
+        if (unlinkErr) {
+          console.error("Error deleting temporary .tex file:", unlinkErr);
+        }
+      });
+
+      if (error) {
+        // If an error occurred, pass it along to the error handling middleware
+        return next(new Error(stderr || error.message));
+      }
+
+      try {
+        // Read the generated PDF file
+        const pdfData = await fs.promises.readFile(tempPdfFile);
+
+        // Set appropriate headers to return the PDF
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+          "Content-Disposition",
+          'attachment; filename="output.pdf"'
+        );
+
+        // Clean up the temporary .pdf file after reading
+        fs.unlink(tempPdfFile, (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Error deleting temporary .pdf file:", unlinkErr);
+          }
+        });
+        fs.unlink(tempPdfFile.replace(".pdf", ".aux"), (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Error deleting temporary .pdf file:", unlinkErr);
+          }
+        });
+        fs.unlink(tempPdfFile.replace(".pdf", ".log"), (unlinkErr) => {
+          if (unlinkErr) {
+            console.error("Error deleting temporary .pdf file:", unlinkErr);
+          }
+        });
+
+        return res.send(pdfData);
+      } catch (readErr) {
+        return next(readErr);
+      }
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 const ocrSchema = z.object({
   imageUrl: z.string(),
 });
