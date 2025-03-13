@@ -143,7 +143,15 @@ mcpServer.tool(
   }
 );
 export const UrlContentTypeEnum = z.enum(
-  ["pdf", "google_doc", "google_sheet", "web_page", "youtube_video", "image"],
+  [
+    "pdf",
+    "csv",
+    "google_doc",
+    "google_sheet",
+    "web_page",
+    "youtube_video",
+    "image",
+  ],
   {
     description: html`if you for sure know that url has contents for one of
     these categories (depending on extension or url structure), (or user has

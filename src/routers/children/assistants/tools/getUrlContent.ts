@@ -58,6 +58,26 @@ const fetchPDF = async (url: string): Promise<string> => {
   }
 };
 
+// New helper function to check if the URL points to a CSV file
+function isCSVUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.pathname.endsWith(".csv");
+  } catch (error) {
+    throw new Error(`Invalid URL provided: ${error}`);
+  }
+}
+
+// New function to fetch CSV content
+const fetchCSV = async (url: string): Promise<string> => {
+  try {
+    const response = await axios.get(url, { responseType: "text" });
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to fetch CSV content: ${error}`);
+  }
+};
+
 function checkIsGoogleDoc(url: string): boolean {
   try {
     // Parse the URL
@@ -226,6 +246,7 @@ export const getUrlContentType = (url: string): UrlContentType => {
   if (checkIsYoutubeVideo(url)) return "youtube_video";
   if (checkIsGoogleDoc(url)) return "google_doc";
   if (checkIsGoogleSheet(url)) return "google_sheet";
+  if (isCSVUrl(url)) return "csv";
   return "web_page";
 };
 // Main function to fetch content based on file type
@@ -243,6 +264,8 @@ const getUrlContent = async (url: string, type?: UrlContentType) => {
       ? fetchYoutubeTranscript(url)
       : contentType === "image"
       ? fetchImage(url)
+      : contentType === "csv"
+      ? fetchCSV(url)
       : fetchWebPage(url));
 
     if (content) {
