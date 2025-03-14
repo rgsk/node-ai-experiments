@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { v4 } from "uuid";
+import { z } from "zod";
 import { io } from "../app.js";
 import composioToolset from "../lib/composioToolset.js";
+import { db } from "../lib/db.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
 import mcpClient from "../lib/mcpClient.js";
@@ -365,6 +367,35 @@ rootRouter.post("/deduct-credits", async (req, res, next) => {
       isAllowed: true,
       creditsBalance: updatedCreditDetails.balance,
     });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+const searchMessagesSchema = z.object({
+  q: z.string(),
+});
+
+rootRouter.get("/search-messages", async (req, res, next) => {
+  try {
+    const { q } = searchMessagesSchema.parse(req.query);
+    const { userEmail } = getProps<Middlewares.Authenticate>(
+      req,
+      Middlewares.Keys.Authenticate
+    );
+
+    const result = await db.$queryRaw`
+    SELECT * 
+FROM "JsonData"
+WHERE key LIKE ${`reactAIExperiments/users/${userEmail}/chats/%/messages`}
+AND EXISTS (
+    SELECT 1 FROM jsonb_array_elements(value) AS elem
+    WHERE elem->>'role' in ('user', 'assistant')  and elem->>'content' ILIKE ${`%${q}%`}
+)
+ORDER BY "createdAt" DESC
+    `;
+
+    return res.json(result);
   } catch (err) {
     return next(err);
   }
