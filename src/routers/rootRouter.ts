@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import { z } from "zod";
 import { io } from "../app.js";
 import composioToolset from "../lib/composioToolset.js";
+import { uuidPlaceholder } from "../lib/constants.js";
 import { db } from "../lib/db.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
@@ -10,7 +11,7 @@ import mcpClient from "../lib/mcpClient.js";
 import mcpSchemaToOpenAITools from "../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../lib/middlewareProps.js";
 import openAIClient from "../lib/openAIClient.js";
-import { CreditDetails } from "../lib/typesJsonData.js";
+import { Chat, CreditDetails, Message } from "../lib/typesJsonData.js";
 import adminRequired from "../middlewares/adminRequired.js";
 import { Middlewares } from "../middlewares/middlewaresNamespace.js";
 import adminRouter from "./children/adminRouter.js";
@@ -20,7 +21,7 @@ import assistantsRouter, {
 import awsRouter from "./children/awsRouter.js";
 import friendsRouter from "./children/friendsRouter.js";
 import jsonDataRouter from "./children/jsonDataRouter.js";
-import { jsonDataService } from "./children/jsonDataService.js";
+import { jsonDataService, JsonDataValue } from "./children/jsonDataService.js";
 import ragRouter from "./children/ragRouter.js";
 
 const rootRouter = Router();
@@ -384,18 +385,34 @@ rootRouter.get("/search-messages", async (req, res, next) => {
       Middlewares.Keys.Authenticate
     );
 
-    const result = await db.$queryRaw`
+    const messagesJsonDataEntries: JsonDataValue<Message[]>[] =
+      await db.$queryRaw`
     SELECT * 
 FROM "JsonData"
-WHERE key LIKE ${`reactAIExperiments/users/${userEmail}/chats/%/messages`}
+WHERE key LIKE ${`reactAIExperiments/users/${userEmail}/chats/${uuidPlaceholder}/messages`}
 AND EXISTS (
     SELECT 1 FROM jsonb_array_elements(value) AS elem
     WHERE elem->>'role' in ('user', 'assistant')  and elem->>'content' ILIKE ${`%${q}%`}
 )
 ORDER BY "createdAt" DESC
     `;
+    const chatIds: string[] = [];
+    for (let d of messagesJsonDataEntries) {
+      const match = d.key.match(/\/chats\/([^/]+)\/messages/);
 
-    return res.json(result);
+      if (match) {
+        const uuid = match[1];
+        chatIds.push(uuid);
+      }
+    }
+    const chatJsonDataEntries = await jsonDataService.findByKeyLike<Chat>(
+      `reactAIExperiments/users/${userEmail}/chats/${uuidPlaceholder}`
+    );
+
+    return res.json({
+      messagesJsonDataEntries,
+      chatJsonDataEntries,
+    });
   } catch (err) {
     return next(err);
   }
