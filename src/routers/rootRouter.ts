@@ -3,7 +3,6 @@ import { v4 } from "uuid";
 import { z } from "zod";
 import { io } from "../app.js";
 import composioToolset from "../lib/composioToolset.js";
-import { uuidPlaceholder } from "../lib/constants.js";
 import { db } from "../lib/db.js";
 import { deepSeekClient } from "../lib/deepSeekClient.js";
 import environmentVars from "../lib/environmentVars.js";
@@ -385,33 +384,53 @@ rootRouter.get("/search-messages", async (req, res, next) => {
       Middlewares.Keys.Authenticate
     );
 
-    const messagesJsonDataEntries: JsonDataValue<Message[]>[] =
-      await db.$queryRaw`
-    SELECT * 
-FROM "JsonData"
-WHERE key LIKE ${`reactAIExperiments/users/${userEmail}/chats/${uuidPlaceholder}/messages`}
-AND EXISTS (
-    SELECT 1 FROM jsonb_array_elements(value) AS elem
-    WHERE elem->>'role' in ('user', 'assistant')  and elem->>'content' ILIKE ${`%${q}%`}
+    const result: JsonDataValue<Message[] | Chat>[] = await db.$queryRaw`
+WITH MatchedChats AS (
+    -- Find chats that match the query in either the title or messages content
+    SELECT DISTINCT key
+    FROM "JsonData"
+    WHERE 
+        (
+            key LIKE ${`reactAIExperiments/users/${userEmail}/chats/%/messages`}
+            AND EXISTS (
+                SELECT 1 FROM jsonb_array_elements(value) AS elem
+                WHERE elem->>'role' IN ('user', 'assistant')  
+                    AND elem->>'content' ILIKE ${`%${q}%`}
+            )
+        )
+        OR 
+        (
+            key LIKE ${`reactAIExperiments/users/${userEmail}/chats/%`}
+            AND value->>'title' ILIKE ${`%${q}%`}
+        )
 )
-ORDER BY "createdAt" DESC
-    `;
-    const chatIds: string[] = [];
-    for (let d of messagesJsonDataEntries) {
-      const match = d.key.match(/\/chats\/([^/]+)\/messages/);
 
-      if (match) {
-        const uuid = match[1];
-        chatIds.push(uuid);
+-- Fetch both the chat and corresponding messages for matched chat IDs
+SELECT *
+FROM "JsonData"
+WHERE 
+    key IN (
+        SELECT key FROM MatchedChats
+        UNION
+        -- Ensure the chat entry is fetched if messages match and vice versa
+        SELECT REPLACE(key, '/messages', '') FROM MatchedChats WHERE key LIKE '%/messages'
+        UNION
+        SELECT key || '/messages' FROM MatchedChats WHERE key NOT LIKE '%/messages'
+    )
+ORDER BY "createdAt" DESC;
+    `;
+    const messagesJsonDataEntries: JsonDataValue<Message[]>[] = [];
+    const chatJsonDataEntries: JsonDataValue<Chat>[] = [];
+    for (const entry of result) {
+      if (entry.key.endsWith("/messages")) {
+        messagesJsonDataEntries.push(entry as any);
+      } else {
+        chatJsonDataEntries.push(entry as any);
       }
     }
-    const chatJsonDataEntries = await jsonDataService.findByKeyLike<Chat>(
-      `reactAIExperiments/users/${userEmail}/chats/${uuidPlaceholder}`
-    );
-
     return res.json({
-      messagesJsonDataEntries,
-      chatJsonDataEntries,
+      messagesJsonDataEntries: messagesJsonDataEntries,
+      chatJsonDataEntries: chatJsonDataEntries,
     });
   } catch (err) {
     return next(err);
