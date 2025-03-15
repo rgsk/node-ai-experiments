@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Socket } from "socket.io";
 import { v4 } from "uuid";
 import { z } from "zod";
 import { io } from "../app.js";
@@ -14,9 +15,7 @@ import { Chat, CreditDetails, Message } from "../lib/typesJsonData.js";
 import adminRequired from "../middlewares/adminRequired.js";
 import { Middlewares } from "../middlewares/middlewaresNamespace.js";
 import adminRouter from "./children/adminRouter.js";
-import assistantsRouter, {
-  EmitSocketEvent,
-} from "./children/assistants/assistantsRouter.js";
+import assistantsRouter from "./children/assistants/assistantsRouter.js";
 import awsRouter from "./children/awsRouter.js";
 import friendsRouter from "./children/friendsRouter.js";
 import jsonDataRouter from "./children/jsonDataRouter.js";
@@ -162,11 +161,9 @@ rootRouter.post("/text", async (req, res, next) => {
   try {
     let { messages, socketId, tools, model } = req.body;
     const socket = socketId ? io.sockets.sockets.get(socketId) : undefined;
-    const emitSocketEvent: EmitSocketEvent = (eventName: string, data: any) => {
-      if (socket) {
-        socket.emit(eventName, data);
-      }
-    };
+    if (!socket) {
+      throw new Error("socket not present");
+    }
     messages = messages.map((m: any) => {
       delete m.id;
       delete m.status;
@@ -180,7 +177,7 @@ rootRouter.post("/text", async (req, res, next) => {
     const { toolCalls } = await handleStream({
       messages,
       tools,
-      emitSocketEvent,
+      socket,
       model,
     });
 
@@ -193,20 +190,30 @@ rootRouter.post("/text", async (req, res, next) => {
 export const handleStream = async ({
   messages,
   tools,
-  emitSocketEvent,
+  socket,
   model,
 }: {
   messages: any;
   tools: any;
-  emitSocketEvent: EmitSocketEvent;
+  socket: Socket;
   model: string;
 }) => {
   const [clientName, modelName] = model.split("/");
-  const stream = await getClient(clientName).chat.completions.create({
-    messages: messages,
-    model: modelName,
-    stream: true,
-    tools: tools,
+  const controller = new AbortController(); // Create an AbortController
+  const signal = controller.signal; // Get the signal
+  const stream = await getClient(clientName).chat.completions.create(
+    {
+      messages: messages,
+      model: modelName,
+      stream: true,
+      tools: tools,
+    },
+    {
+      signal,
+    }
+  );
+  socket.on("stop", () => {
+    controller.abort();
   });
 
   // Object to accumulate the tool call arguments for each index.
@@ -219,10 +226,10 @@ export const handleStream = async ({
   for await (const part of stream) {
     const delta = part.choices[0].delta;
     if (delta.content) {
-      emitSocketEvent("content", delta.content);
+      socket.emit("content", delta.content);
     }
     if ((delta as any).reasoning_content) {
-      emitSocketEvent("reasoning_content", (delta as any).reasoning_content);
+      socket.emit("reasoning_content", (delta as any).reasoning_content);
     }
     if (delta.tool_calls) {
       for (const toolCall of delta.tool_calls) {
@@ -253,10 +260,10 @@ export const handleStream = async ({
             variant: tool.variant,
           };
           toolCalls.push(toolCall);
-          emitSocketEvent("toolCall", toolCall);
+          socket.emit("toolCall", toolCall);
           if (toolCall.variant === "serverSide") {
             executeTool(toolCall).then((output) => {
-              emitSocketEvent("toolCallOutput", {
+              socket.emit("toolCallOutput", {
                 toolCall,
                 toolCallOutput: output,
               });
