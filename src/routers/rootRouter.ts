@@ -63,66 +63,45 @@ rootRouter.get("/session", async (req, res, next) => {
     return next(err);
   }
 });
-enum AIClient {
-  Deepseek = "deepseek",
-  OpenAI = "openai",
-}
-const aiClient = AIClient.OpenAI as AIClient.Deepseek | AIClient.OpenAI; // Example usage
 
-const getClient = () => {
-  if (aiClient === AIClient.Deepseek) {
+const getClient = (clientName: string) => {
+  if (clientName === "deepseek") {
     return deepSeekClient;
-  } else {
+  } else if (clientName === "openai") {
     return openAIClient;
-  }
-};
-
-const getModel = (overrideModel?: Partial<Record<AIClient, string>>) => {
-  if (aiClient === AIClient.Deepseek) {
-    return overrideModel?.[aiClient] || "deepseek-chat";
   } else {
-    return overrideModel?.[aiClient] || "gpt-4o";
+    throw new Error("unknown ai client");
   }
 };
 
-rootRouter.get("/model", async (req, res, next) => {
-  try {
-    return res.json({
-      model: `${aiClient}/${getModel()}`,
-    });
-  } catch (err) {
-    return next(err);
-  }
-});
+// rootRouter.post("/completion", async (req, res, next) => {
+//   try {
+//     const { messages } = req.body;
+//     const completion = await getClient().chat.completions.create({
+//       messages: messages,
+//       model: getModel(),
+//     });
+//     return res.json({
+//       content: completion.choices[0].message.content,
+//     });
+//   } catch (err) {
+//     return next(err);
+//   }
+// });
 
-rootRouter.post("/completion", async (req, res, next) => {
-  try {
-    const { messages } = req.body;
-    const completion = await getClient().chat.completions.create({
-      messages: messages,
-      model: getModel(),
-    });
-    return res.json({
-      content: completion.choices[0].message.content,
-    });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-rootRouter.post("/json-completion", async (req, res, next) => {
-  try {
-    const { messages } = req.body;
-    const completion = await getClient().chat.completions.create({
-      messages: messages,
-      model: getModel(),
-      response_format: { type: "json_object" },
-    });
-    return res.json(JSON.parse(completion.choices[0].message.content as any));
-  } catch (err) {
-    return next(err);
-  }
-});
+// rootRouter.post("/json-completion", async (req, res, next) => {
+//   try {
+//     const { messages } = req.body;
+//     const completion = await getClient().chat.completions.create({
+//       messages: messages,
+//       model: getModel(),
+//       response_format: { type: "json_object" },
+//     });
+//     return res.json(JSON.parse(completion.choices[0].message.content as any));
+//   } catch (err) {
+//     return next(err);
+//   }
+// });
 
 const getTextStreamTools = async () => {
   const composioTools = await composioToolset.getTools({
@@ -178,7 +157,7 @@ rootRouter.post("/execute-tool", async (req, res, next) => {
 
 rootRouter.post("/text", async (req, res, next) => {
   try {
-    let { messages, socketId, tools } = req.body;
+    let { messages, socketId, tools, model } = req.body;
     const socket = socketId ? io.sockets.sockets.get(socketId) : undefined;
     const emitSocketEvent: EmitSocketEvent = (eventName: string, data: any) => {
       if (socket) {
@@ -199,6 +178,7 @@ rootRouter.post("/text", async (req, res, next) => {
       messages,
       tools,
       emitSocketEvent,
+      model,
     });
 
     return res.json({ toolCalls });
@@ -211,14 +191,17 @@ export const handleStream = async ({
   messages,
   tools,
   emitSocketEvent,
+  model,
 }: {
   messages: any;
   tools: any;
   emitSocketEvent: EmitSocketEvent;
+  model: string;
 }) => {
-  const stream = await getClient().chat.completions.create({
+  const [clientName, modelName] = model.split("/");
+  const stream = await getClient(clientName).chat.completions.create({
     messages: messages,
-    model: getModel(),
+    model: modelName,
     stream: true,
     tools: tools,
   });
@@ -284,25 +267,6 @@ export const handleStream = async ({
   return {
     toolCalls,
   };
-};
-
-export const getTextStreamOpenAIEmitDelta = async function* ({
-  messages,
-  tools,
-}: {
-  messages: any;
-  tools: any;
-}) {
-  const stream = await getClient().chat.completions.create({
-    messages: messages,
-    model: getModel(),
-    stream: true,
-    tools: tools,
-  });
-  for await (const part of stream) {
-    const delta = part.choices[0].delta;
-    yield JSON.stringify(delta);
-  }
 };
 
 rootRouter.post("/initialize-credits", async (req, res, next) => {
