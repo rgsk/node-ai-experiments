@@ -374,11 +374,18 @@ rootRouter.post("/deduct-credits", async (req, res, next) => {
 
 const searchMessagesSchema = z.object({
   q: z.string(),
+  personaId: z.string().optional(),
 });
 
 rootRouter.get("/search-messages", async (req, res, next) => {
   try {
-    const { q } = searchMessagesSchema.parse(req.query);
+    const { q, personaId } = searchMessagesSchema.parse(req.query);
+    const attachPersonaPrefixIfPresent = (key: string) => {
+      if (personaId) {
+        return `personas/${personaId}/${key}`;
+      }
+      return key;
+    };
     const { userEmail } = getProps<Middlewares.Authenticate>(
       req,
       Middlewares.Keys.Authenticate
@@ -391,7 +398,9 @@ WITH MatchedChats AS (
     FROM "JsonData"
     WHERE 
         (
-            key LIKE ${`reactAIExperiments/users/${userEmail}/chats/%/messages`}
+            key LIKE ${`reactAIExperiments/users/${userEmail}/${attachPersonaPrefixIfPresent(
+              `chats/%/messages`
+            )}`}
             AND EXISTS (
                 SELECT 1 FROM jsonb_array_elements(value) AS elem
                 WHERE elem->>'role' IN ('user', 'assistant')  
@@ -400,7 +409,9 @@ WITH MatchedChats AS (
         )
         OR 
         (
-            key LIKE ${`reactAIExperiments/users/${userEmail}/chats/%`}
+            key LIKE ${`reactAIExperiments/users/${userEmail}/${attachPersonaPrefixIfPresent(
+              `chats/%`
+            )}`}
             AND value->>'title' ILIKE ${`%${q}%`}
         )
 )
