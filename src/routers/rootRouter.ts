@@ -74,34 +74,37 @@ const getClient = (clientName: string) => {
   }
 };
 
-// rootRouter.post("/completion", async (req, res, next) => {
-//   try {
-//     const { messages } = req.body;
-//     const completion = await getClient().chat.completions.create({
-//       messages: messages,
-//       model: getModel(),
-//     });
-//     return res.json({
-//       content: completion.choices[0].message.content,
-//     });
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+rootRouter.post("/completion", async (req, res, next) => {
+  try {
+    const { messages, model } = req.body;
+    const [clientName, modelName] = model.split("/");
 
-// rootRouter.post("/json-completion", async (req, res, next) => {
-//   try {
-//     const { messages } = req.body;
-//     const completion = await getClient().chat.completions.create({
-//       messages: messages,
-//       model: getModel(),
-//       response_format: { type: "json_object" },
-//     });
-//     return res.json(JSON.parse(completion.choices[0].message.content as any));
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+    const completion = await getClient(clientName).chat.completions.create({
+      messages: messages,
+      model: modelName,
+    });
+    return res.json({
+      content: completion.choices[0].message.content,
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+rootRouter.post("/json-completion", async (req, res, next) => {
+  try {
+    const { messages, model } = req.body;
+    const [clientName, modelName] = model.split("/");
+    const completion = await getClient(clientName).chat.completions.create({
+      messages: messages,
+      model: modelName,
+      response_format: { type: "json_object" },
+    });
+    return res.json(JSON.parse(completion.choices[0].message.content as any));
+  } catch (err) {
+    return next(err);
+  }
+});
 
 const getTextStreamTools = async () => {
   const composioTools = await composioToolset.getTools({
