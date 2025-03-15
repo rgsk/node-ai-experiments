@@ -218,6 +218,9 @@ export const handleStream = async ({
     if (delta.content) {
       emitSocketEvent("content", delta.content);
     }
+    if ((delta as any).reasoning_content) {
+      emitSocketEvent("reasoning_content", (delta as any).reasoning_content);
+    }
     if (delta.tool_calls) {
       for (const toolCall of delta.tool_calls) {
         const idx = toolCall.index;
