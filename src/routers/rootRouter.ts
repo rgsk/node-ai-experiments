@@ -431,20 +431,33 @@ rootRouter.post("/process-file-message", async (req, res, next) => {
   try {
     const { s3Url, collectionName } = req.body;
     const content = await getUrlContent(s3Url);
-    const source = s3Url;
-    await rag.deleteSource({ collectionName, source });
-    const result = await rag.embedContent({
-      data: {
-        content: content,
-        source: source,
-        collectionName: collectionName,
-      },
-      config: {
-        chunkLength: 250,
-        overlapLength: 0,
-      },
-    });
-    return res.json(result);
+    const ragContentLengthThreshold = 5000;
+    if (content.length > ragContentLengthThreshold) {
+      const source = s3Url;
+      await rag.deleteSource({ collectionName, source });
+      const { count } = await rag.embedContent({
+        data: {
+          content: content,
+          source: source,
+          collectionName: collectionName,
+        },
+        config: {
+          chunkLength: 250,
+          overlapLength: 0,
+        },
+      });
+      const summary = await rag.summariseContent({
+        data: { content },
+        config: {
+          chunkLength: 2000,
+          overlapLength: 0,
+        },
+      });
+
+      return res.json({ summary, embeddingCount: count, type: "rag" });
+    } else {
+      return res.json({ content, type: "full" });
+    }
   } catch (err) {
     return next(err);
   }

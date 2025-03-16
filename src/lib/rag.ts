@@ -127,11 +127,52 @@ const embedContent = async ({
   return result;
 };
 
+const summariseChunk = async (chunk: string) => {
+  const prompt = `
+    give a short summary of below text - 
+    <text>${chunk}</text>
+  `;
+  const r = await openAIClient.chat.completions.create({
+    messages: [{ role: "user", content: prompt }],
+    model: "gpt-4o",
+  });
+  return r.choices[0].message?.content ?? "";
+};
+
+const summariseContent = async ({
+  data: { content },
+  config: { chunkLength, overlapLength },
+}: {
+  data: {
+    content: string;
+  };
+  config: {
+    chunkLength: number;
+    overlapLength: number;
+  };
+}) => {
+  const chunks = chunkWithOverlap(content, chunkLength, overlapLength);
+  // console.log(`chunks count: ${chunks.length}`);
+  const result = await Promise.all(
+    chunks.map((chunk) => summariseChunk(chunk as string))
+  );
+  const prompt = `
+    give a summary of below text - 
+    <text>${result.join("\n")}</text>
+  `;
+  const r = await openAIClient.chat.completions.create({
+    messages: [{ role: "user", content: prompt }],
+    model: "gpt-4o",
+  });
+  return r.choices[0].message?.content ?? "";
+};
+
 const rag = {
   createEmbeddings,
   retrieveRelevantDocs,
   deleteCollection,
   deleteSource,
   embedContent,
+  summariseContent,
 };
 export default rag;
