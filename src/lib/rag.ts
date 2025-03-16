@@ -114,6 +114,7 @@ const embedContent = async ({
   };
 }) => {
   // break contents into chunks
+  content = content.replace(/\x00/g, "\uFFFD");
   const chunks = chunkWithOverlap(content, chunkLength, overlapLength);
   const result = await createEmbeddings(
     chunks.map((chunk) => ({
