@@ -22,7 +22,8 @@ const sampleJsonData = async () => {
   //   console.log(deletedDetails.count);
   const deletedCount = await jsonDataService.deleteByKeyLike(key);
   console.log({ deletedCount });
-  const allDetailsKeys = await jsonDataService.findByKeyLike<Details>(key);
+  const allDetailsKeys = (await jsonDataService.findByKeyLike<Details>({ key }))
+    .data;
   console.log(allDetailsKeys.length);
   if (allDetailsKeys.length > 0) {
     console.log(allDetailsKeys[0].value.count);
