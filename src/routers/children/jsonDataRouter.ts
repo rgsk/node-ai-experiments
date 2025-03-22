@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { Router } from "express";
 import { z } from "zod";
 import { getProps } from "../../lib/middlewareProps.js";
@@ -59,6 +60,7 @@ const keyLikeSchema = z.object({
     z.number().int().min(1).optional()
   ),
 });
+
 // Route to fetch records where the key matches a pattern
 jsonDataRouter.get(
   "/key-like",
@@ -74,6 +76,47 @@ jsonDataRouter.get(
         key: getPopulatedKey(key, userEmail),
         page,
         perPage,
+      });
+      return res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+const reportCardKeyLikeSchema = keyLikeSchema.extend({
+  searchTerm: z.string().optional(),
+  classValue: z.string().optional(),
+});
+
+jsonDataRouter.get(
+  "/key-like/report-cards",
+  checkAdminOperation({ keySource: "query", operationType: "read" }),
+  async (req, res, next) => {
+    try {
+      const { userEmail } = getProps<Middlewares.Authenticate>(
+        req,
+        Middlewares.Keys.Authenticate
+      );
+      const { key, page, perPage, searchTerm, classValue } =
+        reportCardKeyLikeSchema.parse(req.query);
+
+      const result = await jsonDataService.findByKeyLike({
+        key: getPopulatedKey(key, userEmail),
+        page,
+        perPage,
+        valueFilters: Prisma.sql`
+          ${
+            searchTerm
+              ? Prisma.sql`AND "value"->>'Student Name' ILIKE ${`%${searchTerm}%`}`
+              : Prisma.sql``
+          }
+          ${
+            classValue
+              ? Prisma.sql`AND "value"->>'Class' = ${classValue}`
+              : Prisma.sql``
+          }
+        `,
       });
       return res.json(result);
     } catch (err) {

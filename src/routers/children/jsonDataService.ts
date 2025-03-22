@@ -1,4 +1,5 @@
 import { JsonData, Prisma } from "@prisma/client";
+import { Sql } from "@prisma/client/runtime/library";
 import { db } from "../../lib/db.js";
 export type JsonDataValue<T> = Omit<JsonData, "value"> & { value: T };
 export const jsonDataService = {
@@ -12,14 +13,17 @@ export const jsonDataService = {
     key,
     page,
     perPage,
+    valueFilters,
   }: {
     key: string;
     page?: number;
     perPage?: number;
+    valueFilters?: Sql;
   }) {
     const res = await db.$queryRaw<{ count: number }[]>`
     SELECT COUNT(*) AS count FROM "JsonData"
     WHERE "key" LIKE ${key}
+    ${valueFilters ?? Prisma.sql``}
   `;
 
     const count = Number(String(res[0].count));
@@ -27,6 +31,7 @@ export const jsonDataService = {
     const data = (await db.$queryRaw`
       SELECT * FROM "JsonData"
       WHERE "key" LIKE ${key}
+      ${valueFilters ?? Prisma.sql``}
       ORDER BY "createdAt" DESC
       
       ${
