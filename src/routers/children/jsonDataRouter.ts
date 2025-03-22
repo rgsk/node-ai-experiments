@@ -48,6 +48,17 @@ jsonDataRouter.get(
   }
 );
 
+const keyLikeSchema = z.object({
+  key: z.string(),
+  page: z.preprocess(
+    (val) => (typeof val === "string" ? parseInt(val, 10) : val),
+    z.number().int().min(1).optional()
+  ),
+  perPage: z.preprocess(
+    (val) => (typeof val === "string" ? parseInt(val, 10) : val),
+    z.number().int().min(1).optional()
+  ),
+});
 // Route to fetch records where the key matches a pattern
 jsonDataRouter.get(
   "/key-like",
@@ -58,10 +69,12 @@ jsonDataRouter.get(
         req,
         Middlewares.Keys.Authenticate
       );
-      const { key } = zodSchemaKey.parse(req.query);
-      const jsonDataArray = await jsonDataService.findByKeyLike(
-        getPopulatedKey(key, userEmail)
-      );
+      const { key, page, perPage } = keyLikeSchema.parse(req.query);
+      const jsonDataArray = await jsonDataService.findByKeyLike({
+        key: getPopulatedKey(key, userEmail),
+        page,
+        perPage,
+      });
       return res.json(jsonDataArray);
     } catch (err) {
       next(err);

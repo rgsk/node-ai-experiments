@@ -1,4 +1,4 @@
-import { JsonData } from "@prisma/client";
+import { JsonData, Prisma } from "@prisma/client";
 import { db } from "../../lib/db.js";
 export type JsonDataValue<T> = Omit<JsonData, "value"> & { value: T };
 export const jsonDataService = {
@@ -8,11 +8,28 @@ export const jsonDataService = {
     })) as JsonDataValue<T> | null;
   },
 
-  async findByKeyLike<T>(key: string) {
+  async findByKeyLike<T>({
+    key,
+    page,
+    perPage,
+  }: {
+    key: string;
+    page?: number;
+    perPage?: number;
+  }) {
     return (await db.$queryRaw`
       SELECT * FROM "JsonData"
       WHERE "key" LIKE ${key}
-      ORDER BY "createdAt" DESC`) as JsonDataValue<T>[];
+      ORDER BY "createdAt" DESC
+      
+      ${
+        page !== undefined
+          ? Prisma.sql`LIMIT ${perPage ?? 10} OFFSET ${
+              (page - 1) * (perPage ?? 10)
+            }`
+          : Prisma.sql``
+      }
+    `) as JsonDataValue<T>[];
   },
 
   async createOrUpdate<T>(data: {
