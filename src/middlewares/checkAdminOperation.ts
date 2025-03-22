@@ -1,10 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { getProps } from "../lib/middlewareProps.js";
+import { jsonDataService } from "../routers/children/jsonDataService.js";
 import { Middlewares } from "./middlewaresNamespace.js";
 
-export const checkIsAdmin = (userEmail: string) => {
-  return userEmail === "rahulguptasde@gmail.com";
+export const checkIsAdmin = ({
+  userEmail,
+  key,
+}: {
+  userEmail: string;
+  key: string;
+}) => {
+  if (key.startsWith("sdCentralAcademyWeb/")) {
+    return ["rahulguptasde@gmail.com", "prinashagupta@gmail.com"].includes(
+      userEmail
+    );
+  }
+  return ["rahulguptasde@gmail.com"].includes(userEmail);
 };
 
 const checkAdminOperation =
@@ -23,10 +35,7 @@ const checkAdminOperation =
         req,
         Middlewares.Keys.Authenticate
       );
-      const isAdmin = checkIsAdmin(userEmail);
-      if (isAdmin) {
-        return next();
-      }
+
       let key: string | undefined;
       if (bulk) {
         if (keySource === "body") {
@@ -53,6 +62,13 @@ const checkAdminOperation =
       if (!key) {
         throw new Error("key is not present");
       }
+      const isAdmin = checkIsAdmin({ userEmail, key });
+      if (isAdmin) {
+        return next();
+      }
+      if (key.startsWith("sdCentralAcademyWeb/")) {
+        await sdCentralAcademyWebChecks({ userEmail });
+      }
       if (!key.includes("admin")) {
         return next();
       }
@@ -71,3 +87,22 @@ const checkAdminOperation =
   };
 
 export default checkAdminOperation;
+
+const sdCentralAcademyWebChecks = async ({
+  userEmail,
+}: {
+  userEmail: string;
+}) => {
+  const result = await jsonDataService.findByKey<string[]>(
+    `sdCentralAcademyWeb/admin/public/emailsWithDashboardAccess`
+  );
+  const emailsWithDashboardAccess = result?.value;
+  if (!emailsWithDashboardAccess) {
+    throw new Error("emailsWithDashboardAccess not present");
+  }
+
+  if (emailsWithDashboardAccess.includes(userEmail)) {
+    return;
+  }
+  throw new Error("no access");
+};
