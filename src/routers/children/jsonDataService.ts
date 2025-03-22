@@ -17,7 +17,14 @@ export const jsonDataService = {
     page?: number;
     perPage?: number;
   }) {
-    return (await db.$queryRaw`
+    const res = await db.$queryRaw<{ count: number }[]>`
+    SELECT COUNT(*) AS count FROM "JsonData"
+    WHERE "key" LIKE ${key}
+  `;
+
+    const count = Number(String(res[0].count));
+
+    const data = (await db.$queryRaw`
       SELECT * FROM "JsonData"
       WHERE "key" LIKE ${key}
       ORDER BY "createdAt" DESC
@@ -30,6 +37,7 @@ export const jsonDataService = {
           : Prisma.sql``
       }
     `) as JsonDataValue<T>[];
+    return { data, count };
   },
 
   async createOrUpdate<T>(data: {

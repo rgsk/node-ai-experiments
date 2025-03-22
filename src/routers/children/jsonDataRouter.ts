@@ -70,12 +70,12 @@ jsonDataRouter.get(
         Middlewares.Keys.Authenticate
       );
       const { key, page, perPage } = keyLikeSchema.parse(req.query);
-      const jsonDataArray = await jsonDataService.findByKeyLike({
+      const result = await jsonDataService.findByKeyLike({
         key: getPopulatedKey(key, userEmail),
         page,
         perPage,
       });
-      return res.json(jsonDataArray);
+      return res.json(result);
     } catch (err) {
       next(err);
     }
