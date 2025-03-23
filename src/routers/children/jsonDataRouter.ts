@@ -108,7 +108,11 @@ jsonDataRouter.get(
         valueFilters: Prisma.sql`
           ${
             searchTerm
-              ? Prisma.sql`AND "value"->>'Student Name' ILIKE ${`%${searchTerm}%`}`
+              ? Prisma.sql`AND (
+      "value"->>'Student Name' ILIKE ${"%" + searchTerm + "%"}
+      OR "value"->>'Regn. No.' = ${searchTerm}
+      OR "value"->>'id' = ${searchTerm}
+    )`
               : Prisma.sql``
           }
           ${
