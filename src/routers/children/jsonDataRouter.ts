@@ -87,6 +87,7 @@ jsonDataRouter.get(
 const reportCardKeyLikeSchema = keyLikeSchema.extend({
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
+  sectionValue: z.string().optional(),
 });
 
 jsonDataRouter.get(
@@ -98,7 +99,7 @@ jsonDataRouter.get(
         req,
         Middlewares.Keys.Authenticate
       );
-      const { key, page, perPage, searchTerm, classValue } =
+      const { key, page, perPage, searchTerm, classValue, sectionValue } =
         reportCardKeyLikeSchema.parse(req.query);
 
       const result = await jsonDataService.findByKeyLike({
@@ -118,6 +119,11 @@ jsonDataRouter.get(
           ${
             classValue
               ? Prisma.sql`AND "value"->>'Class' = ${classValue}`
+              : Prisma.sql``
+          }
+          ${
+            sectionValue
+              ? Prisma.sql`AND "value"->>'Section' = ${sectionValue}`
               : Prisma.sql``
           }
         `,
