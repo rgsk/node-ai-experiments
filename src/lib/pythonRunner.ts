@@ -38,28 +38,26 @@ function wrapLastLineInPrint(codeStr: string): string {
 
 const codeWrapper = (code: string) => {
   return `
-  import matplotlib
-  matplotlib.use("Agg")  # Set backend to avoid GUI-related errors
-  
-  import sys
-  from io import StringIO
-  
-  output = StringIO()
-  sys.stdout = output
-  
-  ${code}
-  
-  # Reset stdout so further prints go to the console.
-  sys.stdout = sys.__stdout__
-  output.getvalue()
+import matplotlib
+matplotlib.use("Agg")  # Set backend to avoid GUI-related errors
+
+import sys
+from io import StringIO
+
+output = StringIO()
+sys.stdout = output
+
+${code}
+
+# Reset stdout so further prints go to the console.
+sys.stdout = sys.__stdout__
+output.getvalue()
   `;
 };
 
 const pythonRunner = {
   runCode: async (code: string) => {
-    const result = await pyodideInstance.runPythonAsync(
-      codeWrapper(wrapLastLineInPrint(code))
-    );
+    const result = await pyodideInstance.runPythonAsync(codeWrapper(code));
     return result;
   },
 };

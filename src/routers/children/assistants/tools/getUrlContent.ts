@@ -4,11 +4,11 @@ import tesseract from "node-tesseract-ocr";
 // @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse.js";
 import { YoutubeTranscript } from "youtube-transcript";
-import aiService from "../../../../lib/aiService.js";
 import getGoogleDocData from "../../../../lib/gcp/getGoogleDocData.js";
 import getGoogleSheetData from "../../../../lib/gcp/getGoogleSheetData.js";
 import { UrlContentType } from "../../../../lib/mcpServer.js";
 import openAIClient from "../../../../lib/openAIClient.js";
+import pythonRunner from "../../../../lib/pythonRunner.js";
 import { extractVideoId } from "../../youtubeRouter.js";
 
 // Function to determine if the URL is a PDF, ignoring query parameters and fragments
@@ -37,8 +37,41 @@ function isImageUrl(url: string): boolean {
 // Function to fetch and extract text from a webpage
 const fetchWebPage = async (url: string) => {
   try {
-    const result = await aiService.getWebpageContent(url);
-    return JSON.stringify(result);
+    const userAgent =
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";
+
+    const { data } = await axios.get(url as string, {
+      headers: {
+        "User-Agent": userAgent,
+      },
+    });
+    const output = await pythonRunner.runCode(`
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(${JSON.stringify(data)}, 'html.parser')
+title = soup.title.string.strip() if soup.title else "No Title Found"
+# Extract description from meta tag
+description = soup.find("meta", attrs={"name": "description"})
+description = description["content"].strip(
+) if description and "content" in description.attrs else "No Description Found"
+
+# Extract all Open Graph tags
+og_tags = {}
+for meta in soup.find_all("meta"):
+    if meta.get("property", "").startswith("og:"):
+        og_tags[meta["property"].replace("og:", "")] = meta["content"].strip(
+        ) if "content" in meta.attrs else ""
+
+# Extract text content
+content = soup.get_text(separator=' ', strip=True)
+
+print({
+    "title": title,
+    "description": description,
+    "og": og_tags,
+    "content": content,
+})
+        `);
+    return output;
   } catch (error) {
     throw new Error(`Failed to fetch webpage content: ${error}`);
   }

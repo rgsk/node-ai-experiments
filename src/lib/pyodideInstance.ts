@@ -12,5 +12,6 @@ export async function initializePyodide() {
     "scipy",
     "scikit-learn",
     "pandas",
+    "beautifulsoup4",
   ]);
 }
