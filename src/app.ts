@@ -7,6 +7,7 @@ import tsconfigPaths from "tsconfig-paths";
 import environmentVars from "./lib/environmentVars.js";
 import exampleBase from "./lib/examples/exampleBase.js";
 import mcpServer from "./lib/mcpServer.js";
+import { initializePyodide } from "./lib/pyodideInstance.js";
 import authenticate from "./middlewares/authenticate.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import experimentsRouter from "./routers/children/experimentsRouter.js";
@@ -72,8 +73,10 @@ app.use(errorHandler);
 
 const PORT = environmentVars.PORT;
 // Start the server
-httpServer.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+initializePyodide().then(() => {
+  httpServer.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
 });
 
 exampleBase();

@@ -10,6 +10,7 @@ import path from "path";
 import puppeteer from "puppeteer";
 import { z } from "zod";
 import { UrlContentTypeEnum } from "../../lib/mcpServer.js";
+import pythonRunner from "../../lib/pythonRunner.js";
 import { upload } from "../../lib/upload.js";
 import executeCode, {
   executeCodeSchema,
@@ -290,6 +291,18 @@ experimentsRouter.get("/file-download-url", async (req, res, next) => {
 
     // Pipe the response to the client
     return response.data.pipe(res);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+experimentsRouter.get("/run-python", async (req, res, next) => {
+  try {
+    const { code } = req.body;
+    const output = await pythonRunner.runCode(code);
+    return res.json({
+      output,
+    });
   } catch (err) {
     return next(err);
   }

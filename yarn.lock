@@ -6406,6 +6406,13 @@ pusher-js@8.4.0-rc2:
   dependencies:
     tweetnacl "^1.0.3"
 
+pyodide@^0.27.4:
+  version "0.27.4"
+  resolved "https://registry.yarnpkg.com/pyodide/-/pyodide-0.27.4.tgz#269dfb5991d950d5bd17a3484247993b20d715da"
+  integrity sha512-2y3ySHCBmyzYDUlB939SaU3n7RxYQxwnGHgdakW/CPrNFX2L9fC+4nfJWQJH8a0ruQa8bBZSKCImMt/cq15RiQ==
+  dependencies:
+    ws "^8.5.0"
+
 qs@6.11.0:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
@@ -7650,6 +7657,11 @@ ws@^8.18.0:
   version "8.18.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.0.tgz#0d7505a6eafe2b0e712d232b42279f53bc289bbc"
   integrity sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==
+
+ws@^8.5.0:
+  version "8.18.1"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.1.tgz#ea131d3784e1dfdff91adb0a4a116b127515e3cb"
+  integrity sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==
 
 ws@~8.17.1:
   version "8.17.1"
