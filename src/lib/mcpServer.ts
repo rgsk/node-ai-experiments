@@ -10,6 +10,7 @@ import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js
 import { jsonDataService } from "../routers/children/jsonDataService.js";
 import environmentVars from "./environmentVars.js";
 import fileLogger from "./fileLogger.js";
+import { initializePyodide } from "./pyodideInstance.js";
 import rag from "./rag.js";
 import { Memory } from "./typesJsonData.js";
 import { encodeQueryParams, html } from "./utils.js";
@@ -279,6 +280,7 @@ mcpServer.prompt("demo", {}, async (args) => {
 });
 
 (async () => {
+  await initializePyodide();
   // Start receiving messages on stdin and sending messages on stdout
   const transport = new StdioServerTransport();
   await mcpServer.connect(transport);
