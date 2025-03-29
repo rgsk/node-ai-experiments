@@ -24,4 +24,4 @@ COPY ./ ./
 RUN yarn init:prisma
 RUN yarn build
 
-CMD ["sh", "./bin/start.sh"]
+CMD ["yarn", "start"]
