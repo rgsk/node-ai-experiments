@@ -6,12 +6,5 @@ export async function initializePyodide() {
   pyodideInstance = await loadPyodide({
     indexURL: "pyodide",
   });
-  await pyodideInstance.loadPackage([
-    "numpy",
-    "matplotlib",
-    "scipy",
-    "scikit-learn",
-    "pandas",
-    "beautifulsoup4",
-  ]);
+  await pyodideInstance.loadPackage(["beautifulsoup4"]);
 }
