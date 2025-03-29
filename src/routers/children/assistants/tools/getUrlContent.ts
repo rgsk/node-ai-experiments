@@ -33,17 +33,21 @@ function isImageUrl(url: string): boolean {
   // Check if the URL ends with any of the defined image extensions.
   return imageExtensions.some((extension) => lowerUrl.endsWith(extension));
 }
+const headers = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "same-origin",
+  "Sec-Fetch-User": "?1",
+};
 
 // Function to fetch and extract text from a webpage
 const fetchWebPage = async (url: string) => {
   try {
-    const userAgent =
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";
-
     const { data } = await axios.get(url as string, {
-      headers: {
-        "User-Agent": userAgent,
-      },
+      headers: headers,
     });
     const output = await pythonRunner.runCode(`
 from bs4 import BeautifulSoup
