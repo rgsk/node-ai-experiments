@@ -234,6 +234,7 @@ export const handleStream = async ({
       socket.emit("reasoning_content", (delta as any).reasoning_content);
     }
     if (delta.tool_calls) {
+      socket.emit("tool_calls");
       for (const toolCall of delta.tool_calls) {
         const idx = toolCall.index;
 
