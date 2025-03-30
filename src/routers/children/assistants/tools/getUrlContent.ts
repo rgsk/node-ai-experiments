@@ -101,7 +101,7 @@ const fetchPDF = async (url: string): Promise<string> => {
 };
 
 // New helper function to check if the URL points to a CSV file
-function isCSVUrl(url: string): boolean {
+export function isCSVUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
     return parsedUrl.pathname.endsWith(".csv");

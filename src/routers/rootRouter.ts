@@ -17,7 +17,9 @@ import adminRequired from "../middlewares/adminRequired.js";
 import { Middlewares } from "../middlewares/middlewaresNamespace.js";
 import adminRouter from "./children/adminRouter.js";
 import assistantsRouter from "./children/assistants/assistantsRouter.js";
-import getUrlContent from "./children/assistants/tools/getUrlContent.js";
+import getUrlContent, {
+  isCSVUrl,
+} from "./children/assistants/tools/getUrlContent.js";
 import awsRouter from "./children/awsRouter.js";
 import friendsRouter from "./children/friendsRouter.js";
 import jsonDataRouter from "./children/jsonDataRouter.js";
@@ -431,9 +433,10 @@ ORDER BY "createdAt" DESC;
 rootRouter.post("/process-file-message", async (req, res, next) => {
   try {
     const { s3Url, collectionName } = req.body;
+    const isCSVS3Url = isCSVUrl(s3Url);
     const content = await getUrlContent(s3Url);
     const ragContentLengthThreshold = 5000;
-    if (content.length > ragContentLengthThreshold) {
+    if (!isCSVS3Url && content.length > ragContentLengthThreshold) {
       const source = s3Url;
       await rag.deleteSource({ collectionName, source });
       const { count } = await rag.embedContent({
