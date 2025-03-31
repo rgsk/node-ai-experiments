@@ -22,6 +22,7 @@ const environmentVarsSchema = z.object({
   COMPOSIO_API_KEY: z.string(),
   PYTHON_EXPERIMENTS_SERVER_URL: z.string(),
   GOOGLE_API_KEY: z.string(),
+  OPENROUTER_API_KEY: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -35,6 +36,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY!,
   PYTHON_EXPERIMENTS_SERVER_URL: process.env.PYTHON_EXPERIMENTS_SERVER_URL!,
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY!,
+  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY!,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);

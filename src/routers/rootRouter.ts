@@ -11,6 +11,7 @@ import mcpClient from "../lib/mcpClient.js";
 import mcpSchemaToOpenAITools from "../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../lib/middlewareProps.js";
 import openAIClient from "../lib/openAIClient.js";
+import openRouterClient from "../lib/openRouterClient.js";
 import rag from "../lib/rag.js";
 import { Chat, CreditDetails, Message } from "../lib/typesJsonData.js";
 import adminRequired from "../middlewares/adminRequired.js";
@@ -68,7 +69,9 @@ rootRouter.get("/session", async (req, res, next) => {
 });
 
 const getClient = (clientName: string) => {
-  if (clientName === "deepseek") {
+  if (clientName === "openrouter") {
+    return openRouterClient;
+  } else if (clientName === "deepseek") {
     return deepSeekClient;
   } else if (clientName === "openai") {
     return openAIClient;
@@ -191,6 +194,13 @@ rootRouter.post("/text", async (req, res, next) => {
   }
 });
 
+const getClientNameAndModelName = (model: string) => {
+  const slashIndex = model.indexOf("/");
+  const clientName = model.slice(0, slashIndex);
+  const modelName = model.slice(slashIndex + 1);
+  return { clientName, modelName };
+};
+
 export const handleStream = async ({
   messages,
   tools,
@@ -202,7 +212,8 @@ export const handleStream = async ({
   socket: Socket;
   model: string;
 }) => {
-  const [clientName, modelName] = model.split("/");
+  const { clientName, modelName } = getClientNameAndModelName(model);
+
   const controller = new AbortController(); // Create an AbortController
   const signal = controller.signal; // Get the signal
   const stream = await getClient(clientName).chat.completions.create(
