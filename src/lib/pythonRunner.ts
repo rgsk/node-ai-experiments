@@ -61,6 +61,10 @@ output.getvalue()
 };
 
 const pythonRunner = {
+  runCodeRaw: async (code: string) => {
+    const result = await pyodideInstance.runPythonAsync(codeWrapper(code));
+    return result;
+  },
   runCode: async (code: string) => {
     const result = await pyodideInstance.runPythonAsync(
       codeWrapper(wrapLastLineInPrint(code))

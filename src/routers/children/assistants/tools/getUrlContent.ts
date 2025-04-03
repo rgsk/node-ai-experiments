@@ -54,7 +54,7 @@ const fetchWebPage = async (url: string) => {
     const { data } = await axios.get(url as string, {
       headers: headers,
     });
-    const output = await pythonRunner.runCode(`
+    const output = await pythonRunner.runCodeRaw(`
 from bs4 import BeautifulSoup
 soup = BeautifulSoup(${JSON.stringify(data)}, 'html.parser')
 title = soup.title.string.strip() if soup.title else "No Title Found"
