@@ -18,7 +18,7 @@ awsRouter.get("/upload-url", async (req, res, next) => {
     const url = await getUploadURL({
       key,
       bucket:
-        access === "public" ? s3ClientBuckets.public : s3ClientBuckets.default,
+        access === "public" ? s3ClientBuckets.public : s3ClientBuckets.private,
     });
     return res.json({
       url,
