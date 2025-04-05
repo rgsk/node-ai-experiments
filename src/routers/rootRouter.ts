@@ -172,7 +172,7 @@ rootRouter.post("/execute-tool", async (req, res, next) => {
 
 rootRouter.post("/text", async (req, res, next) => {
   try {
-    let { messages, socketId, tools, model } = req.body;
+    let { messages, socketId, tools, model, streamAudio } = req.body;
     const socket = socketId ? io.sockets.sockets.get(socketId) : undefined;
     if (!socket) {
       throw new Error("socket not present");
@@ -192,6 +192,7 @@ rootRouter.post("/text", async (req, res, next) => {
       tools,
       socket,
       model,
+      streamAudio,
     });
 
     return res.json({ toolCalls });
@@ -219,11 +220,13 @@ export const handleStream = async ({
   tools,
   socket,
   model,
+  streamAudio,
 }: {
   messages: any;
   tools: any;
   socket: Socket;
   model: string;
+  streamAudio?: boolean;
 }) => {
   const { clientName, modelName } = getClientNameAndModelName(model);
 
@@ -240,11 +243,6 @@ export const handleStream = async ({
       signal,
     }
   );
-  const [textStream, textStreamForAudio] = await duplicateStream(stream);
-  const audioStream = getAudioStreamBySentence(
-    modifyStream(textStreamForAudio),
-    (text) => getAudioStreamOpenAI(text, signal)
-  );
 
   socket.on("stop", () => {
     controller.abort();
@@ -257,14 +255,7 @@ export const handleStream = async ({
 
   const toolCalls: any = [];
 
-  async function streamAudio() {
-    for await (const chunk of audioStream) {
-      socket.emit("audio", chunk);
-    }
-    socket.emit("audio-complete");
-  }
-
-  async function streamText() {
+  async function streamText(textStream: AsyncIterable<ChatCompletionChunk>) {
     for await (const part of textStream) {
       const delta = part.choices[0].delta;
       if (delta.content) {
@@ -321,8 +312,23 @@ export const handleStream = async ({
     }
     socket.emit("text-complete");
   }
+  if (streamAudio) {
+    const [textStream, textStreamForAudio] = await duplicateStream(stream);
+    const audioStream = getAudioStreamBySentence(
+      modifyStream(textStreamForAudio),
+      (text) => getAudioStreamOpenAI(text, signal)
+    );
+    async function streamAudio() {
+      for await (const chunk of audioStream) {
+        socket.emit("audio", chunk);
+      }
+      socket.emit("audio-complete");
+    }
 
-  await Promise.all([streamAudio(), streamText()]);
+    await Promise.all([streamAudio(), streamText(textStream)]);
+  } else {
+    await streamText(stream);
+  }
 
   return {
     toolCalls,
