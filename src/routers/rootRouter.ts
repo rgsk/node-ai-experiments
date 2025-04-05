@@ -509,12 +509,20 @@ rootRouter.post("/process-file-message", async (req, res, next) => {
   }
 });
 
-export const getTextStreamOpenAI = async function* (messages: any) {
-  const stream = await openAIClient.chat.completions.create({
-    messages: messages,
-    model: "gpt-4o",
-    stream: true,
-  });
+export const getTextStreamOpenAI = async function* (
+  messages: any,
+  signal?: AbortSignal
+) {
+  const stream = await openAIClient.chat.completions.create(
+    {
+      messages: messages,
+      model: "gpt-4o",
+      stream: true,
+    },
+    {
+      signal,
+    }
+  );
   for await (const part of stream) {
     const content = part.choices[0].delta.content ?? "";
     yield content;
@@ -553,11 +561,21 @@ rootRouter.post("/audio", async (req, res, next) => {
   try {
     const { messages } = req.body;
 
-    const textStream = getTextStreamOpenAI(messages);
-    const audioStream = getAudioStreamBySentence(
-      textStream,
-      getAudioStreamOpenAI
+    const controller = new AbortController(); // Create an AbortController
+    const signal = controller.signal; // Get the signal
+
+    const textStream = getTextStreamOpenAI(messages, signal);
+    const audioStream = getAudioStreamBySentence(textStream, (text) =>
+      getAudioStreamOpenAI(text, signal)
     );
+    req.on("close", () => {
+      controller.abort();
+      console.log("Client disconnected (request closed)");
+    });
+    res.on("close", () => {
+      controller.abort();
+      console.log("Client disconnected (response closed)");
+    });
     let audioChunkCount = 0;
     for await (const chunk of audioStream) {
       audioChunkCount++;
@@ -577,7 +595,18 @@ const generateAudioSchema = z.object({
 rootRouter.post("/play-audio", async (req, res, next) => {
   try {
     const { text } = generateAudioSchema.parse(req.body);
-    const audioStream = getAudioStreamOpenAI(text);
+    const controller = new AbortController(); // Create an AbortController
+    const signal = controller.signal; // Get the signal
+    const audioStream = getAudioStreamOpenAI(text, signal);
+
+    req.on("close", () => {
+      controller.abort();
+      console.log("Client disconnected (request closed)");
+    });
+    res.on("close", () => {
+      controller.abort();
+      console.log("Client disconnected (response closed)");
+    });
     for await (const chunk of audioStream) {
       res.write(chunk);
     }
