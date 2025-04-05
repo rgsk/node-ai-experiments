@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { ChatCompletionChunk } from "openai/resources/index.mjs";
 import { Socket } from "socket.io";
 import { v4 } from "uuid";
 import { z } from "zod";
@@ -14,6 +15,7 @@ import openAIClient from "../lib/openAIClient.js";
 import openRouterClient from "../lib/openRouterClient.js";
 import rag from "../lib/rag.js";
 import {
+  duplicateStream,
   getAudioStreamBySentence,
   parseReaderByChunks,
 } from "../lib/streamUtils.js";
@@ -204,7 +206,14 @@ const getClientNameAndModelName = (model: string) => {
   const modelName = model.slice(slashIndex + 1);
   return { clientName, modelName };
 };
-
+async function* modifyStream(
+  originalStream: AsyncIterable<ChatCompletionChunk>
+) {
+  for await (const chunk of originalStream) {
+    const content = chunk.choices[0].delta.content ?? "";
+    yield content;
+  }
+}
 export const handleStream = async ({
   messages,
   tools,
@@ -231,6 +240,12 @@ export const handleStream = async ({
       signal,
     }
   );
+  const [textStream, textStreamForAudio] = await duplicateStream(stream);
+  const audioStream = getAudioStreamBySentence(
+    modifyStream(textStreamForAudio),
+    (text) => getAudioStreamOpenAI(text, signal)
+  );
+
   socket.on("stop", () => {
     controller.abort();
   });
@@ -242,60 +257,72 @@ export const handleStream = async ({
 
   const toolCalls: any = [];
 
-  for await (const part of stream) {
-    const delta = part.choices[0].delta;
-    if (delta.content) {
-      socket.emit("content", delta.content);
+  async function streamAudio() {
+    for await (const chunk of audioStream) {
+      socket.emit("audio", chunk);
     }
-    if ((delta as any).reasoning_content) {
-      socket.emit("reasoning_content", (delta as any).reasoning_content);
-    }
-    if (delta.tool_calls) {
-      socket.emit("tool_calls");
-      for (const toolCall of delta.tool_calls) {
-        const idx = toolCall.index;
+    socket.emit("audio-complete");
+  }
 
-        // Save the complete tool call object the first time it appears.
-        if (!savedToolCalls[idx]) {
-          savedToolCalls[idx] = toolCall;
-        }
-        // Initialize the accumulator for arguments if not already set.
-        if (!toolCallAccumulators[idx]) {
-          toolCallAccumulators[idx] = "";
-        }
-        // Append the current chunk of arguments.
-        toolCallAccumulators[idx] += toolCall.function!.arguments;
+  async function streamText() {
+    for await (const part of textStream) {
+      const delta = part.choices[0].delta;
+      if (delta.content) {
+        socket.emit("content", delta.content);
+      }
+      if ((delta as any).reasoning_content) {
+        socket.emit("reasoning_content", (delta as any).reasoning_content);
+      }
+      if (delta.tool_calls) {
+        socket.emit("tool_calls");
+        for (const toolCall of delta.tool_calls) {
+          const idx = toolCall.index;
 
-        // Attempt to parse the accumulated arguments.
-        try {
-          const parsedArgs = JSON.parse(toolCallAccumulators[idx]);
-          // If parsing is successful, emit the complete tool call immediately.
-          savedToolCalls[idx].function.arguments = parsedArgs;
-          const tool = tools.find(
-            (t: any) => t.function.name === savedToolCalls[idx].function.name
-          );
-          const toolCall = {
-            ...savedToolCalls[idx],
-            source: tool.source,
-            variant: tool.variant,
-          };
-          toolCalls.push(toolCall);
-          socket.emit("toolCall", toolCall);
-          if (toolCall.variant === "serverSide") {
-            executeTool(toolCall).then((output) => {
-              socket.emit("toolCallOutput", {
-                toolCall,
-                toolCallOutput: output,
-              });
-            });
+          // Save the complete tool call object the first time it appears.
+          if (!savedToolCalls[idx]) {
+            savedToolCalls[idx] = toolCall;
           }
-        } catch (e) {
-          // JSON.parse failed: likely the tool call arguments are not complete yet.
-          // Continue accumulating.
+          // Initialize the accumulator for arguments if not already set.
+          if (!toolCallAccumulators[idx]) {
+            toolCallAccumulators[idx] = "";
+          }
+          // Append the current chunk of arguments.
+          toolCallAccumulators[idx] += toolCall.function!.arguments;
+
+          // Attempt to parse the accumulated arguments.
+          try {
+            const parsedArgs = JSON.parse(toolCallAccumulators[idx]);
+            // If parsing is successful, emit the complete tool call immediately.
+            savedToolCalls[idx].function.arguments = parsedArgs;
+            const tool = tools.find(
+              (t: any) => t.function.name === savedToolCalls[idx].function.name
+            );
+            const toolCall = {
+              ...savedToolCalls[idx],
+              source: tool.source,
+              variant: tool.variant,
+            };
+            toolCalls.push(toolCall);
+            socket.emit("toolCall", toolCall);
+            if (toolCall.variant === "serverSide") {
+              executeTool(toolCall).then((output) => {
+                socket.emit("toolCallOutput", {
+                  toolCall,
+                  toolCallOutput: output,
+                });
+              });
+            }
+          } catch (e) {
+            // JSON.parse failed: likely the tool call arguments are not complete yet.
+            // Continue accumulating.
+          }
         }
       }
     }
+    socket.emit("text-complete");
   }
+
+  await Promise.all([streamAudio(), streamText()]);
 
   return {
     toolCalls,
@@ -494,7 +521,10 @@ export const getTextStreamOpenAI = async function* (messages: any) {
   }
 };
 
-export const getAudioStreamOpenAI = async function* (text: string) {
+export const getAudioStreamOpenAI = async function* (
+  text: string,
+  signal?: AbortSignal
+) {
   const response = await fetch("https://api.openai.com/v1/audio/speech", {
     method: "POST",
     headers: {
@@ -507,6 +537,7 @@ export const getAudioStreamOpenAI = async function* (text: string) {
       input: text,
       instructions: "Speak in a cheerful and positive tone.",
     }),
+    signal,
   });
 
   if (!response.body) {

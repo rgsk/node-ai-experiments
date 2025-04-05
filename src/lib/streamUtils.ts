@@ -78,3 +78,72 @@ export const parseReaderByChunks = async function* (
 
   yield* chunkBuffer(stream, chunkSize);
 };
+
+type AsyncIteratorResult<T> = Promise<IteratorResult<T>>;
+
+class AsyncQueue<T> {
+  private items: T[] = [];
+  private resolvers: ((value: IteratorResult<T>) => void)[] = [];
+  private closed = false;
+
+  enqueue(item: T) {
+    if (this.resolvers.length) {
+      const resolve = this.resolvers.shift()!;
+      resolve({ value: item, done: false });
+    } else {
+      this.items.push(item);
+    }
+  }
+
+  close() {
+    this.closed = true;
+    while (this.resolvers.length) {
+      const resolve = this.resolvers.shift()!;
+      resolve({ value: undefined as any, done: true });
+    }
+  }
+
+  [Symbol.asyncIterator](): AsyncIterableIterator<T> {
+    return this.createAsyncIterator();
+  }
+
+  private createAsyncIterator(): AsyncIterableIterator<T> {
+    return {
+      next: (): AsyncIteratorResult<T> => {
+        if (this.items.length) {
+          const value = this.items.shift()!;
+          return Promise.resolve({ value, done: false });
+        }
+
+        if (this.closed) {
+          return Promise.resolve({ value: undefined as any, done: true });
+        }
+
+        return new Promise<IteratorResult<T>>((resolve) => {
+          this.resolvers.push(resolve);
+        });
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
+  }
+}
+
+export async function duplicateStream<T>(
+  source: AsyncIterable<T>
+): Promise<[AsyncIterable<T>, AsyncIterable<T>]> {
+  const queue1 = new AsyncQueue<T>();
+  const queue2 = new AsyncQueue<T>();
+
+  (async () => {
+    for await (const item of source) {
+      queue1.enqueue(item);
+      queue2.enqueue(item);
+    }
+    queue1.close();
+    queue2.close();
+  })();
+
+  return [queue1, queue2];
+}
