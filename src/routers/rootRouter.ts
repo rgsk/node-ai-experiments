@@ -13,6 +13,10 @@ import { getProps } from "../lib/middlewareProps.js";
 import openAIClient from "../lib/openAIClient.js";
 import openRouterClient from "../lib/openRouterClient.js";
 import rag from "../lib/rag.js";
+import {
+  getAudioStreamBySentence,
+  parseReaderByChunks,
+} from "../lib/streamUtils.js";
 import { Chat, CreditDetails, Message } from "../lib/typesJsonData.js";
 import adminRequired from "../middlewares/adminRequired.js";
 import { Middlewares } from "../middlewares/middlewaresNamespace.js";
@@ -473,6 +477,80 @@ rootRouter.post("/process-file-message", async (req, res, next) => {
     } else {
       return res.json({ content, type: "full" });
     }
+  } catch (err) {
+    return next(err);
+  }
+});
+
+export const getTextStreamOpenAI = async function* (messages: any) {
+  const stream = await openAIClient.chat.completions.create({
+    messages: messages,
+    model: "gpt-4o",
+    stream: true,
+  });
+  for await (const part of stream) {
+    const content = part.choices[0].delta.content ?? "";
+    yield content;
+  }
+};
+
+export const getAudioStreamOpenAI = async function* (text: string) {
+  const response = await fetch("https://api.openai.com/v1/audio/speech", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${environmentVars.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini-tts",
+      voice: "alloy",
+      input: text,
+      instructions: "Speak in a cheerful and positive tone.",
+    }),
+  });
+
+  if (!response.body) {
+    throw new Error("Response body is undefined");
+  }
+
+  const reader = response.body.getReader();
+  //   yield* parseReader(reader);
+  yield* parseReaderByChunks(reader, 1024);
+};
+
+rootRouter.post("/audio", async (req, res, next) => {
+  try {
+    const { messages } = req.body;
+
+    const textStream = getTextStreamOpenAI(messages);
+    const audioStream = getAudioStreamBySentence(
+      textStream,
+      getAudioStreamOpenAI
+    );
+    let audioChunkCount = 0;
+    for await (const chunk of audioStream) {
+      audioChunkCount++;
+      res.write(chunk);
+    }
+    // console.log(`Sent ${audioChunkCount} audio chunks`);
+    return res.end();
+  } catch (err) {
+    return next(err);
+  }
+});
+
+const generateAudioSchema = z.object({
+  text: z.string(),
+});
+
+rootRouter.post("/play-audio", async (req, res, next) => {
+  try {
+    const { text } = generateAudioSchema.parse(req.body);
+    const audioStream = getAudioStreamOpenAI(text);
+    for await (const chunk of audioStream) {
+      res.write(chunk);
+    }
+    return res.end();
   } catch (err) {
     return next(err);
   }
