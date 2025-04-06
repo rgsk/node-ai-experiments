@@ -8,6 +8,7 @@ import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
 import path from "path";
 import puppeteer from "puppeteer";
+import { v4 } from "uuid";
 import { z } from "zod";
 import { UrlContentTypeEnum } from "../../lib/mcpServer.js";
 import pythonRunner from "../../lib/pythonRunner.js";
@@ -151,7 +152,7 @@ const urlContentSchema = z.object({
 experimentsRouter.get("/url-content", async (req, res, next) => {
   try {
     const { url, type } = urlContentSchema.parse(req.query);
-    const content = await getUrlContent(url, type);
+    const content = await getUrlContent({ url, collectionName: v4(), type });
     return res.send(content);
   } catch (err) {
     return next(err);

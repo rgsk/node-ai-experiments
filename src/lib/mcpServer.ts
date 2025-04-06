@@ -170,6 +170,10 @@ mcpServer.tool(
     url: z.string({
       description: "the url for the which the contents needs to be fetched",
     }),
+    collectionName: z.string({
+      description:
+        "collectionName in which rag entries are embedded in case url content is too large",
+    }),
     type: UrlContentTypeEnum.optional(),
   },
   async (args) => {
@@ -177,8 +181,8 @@ mcpServer.tool(
       tool: "getUrlContent",
       args,
     });
-    const { url, type } = args;
-    const text = await getUrlContent(url, type);
+    const { url, collectionName, type } = args;
+    const text = await getUrlContent({ url, collectionName, type });
     fileLogger.log({
       tool: "getUrlContent",
       output: text,

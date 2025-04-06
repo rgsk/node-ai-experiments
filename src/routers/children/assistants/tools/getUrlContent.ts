@@ -302,7 +302,15 @@ export const getUrlContentType = (url: string): UrlContentType => {
   return "web_page";
 };
 // Main function to fetch content based on file type
-const getUrlContent = async (url: string, type?: UrlContentType) => {
+const getUrlContent = async ({
+  url,
+  collectionName,
+  type,
+}: {
+  url: string;
+  collectionName: string;
+  type?: UrlContentType;
+}) => {
   let output: string;
   const contentType = type ?? getUrlContentType(url);
   try {
@@ -328,7 +336,7 @@ const getUrlContent = async (url: string, type?: UrlContentType) => {
       ) {
         // perform rag
         const result = await rag.processFileMessage({
-          collectionName: url,
+          collectionName: collectionName,
           source: url,
           content,
         });
