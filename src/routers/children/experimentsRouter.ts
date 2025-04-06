@@ -16,7 +16,9 @@ import { upload } from "../../lib/upload.js";
 import executeCode, {
   executeCodeSchema,
 } from "./assistants/tools/executeCode.js";
-import getUrlContent from "./assistants/tools/getUrlContent.js";
+import getUrlContent, {
+  fetchWebsiteMeta,
+} from "./assistants/tools/getUrlContent.js";
 const experimentsRouter = Router();
 // Endpoint to execute Python code
 
@@ -162,7 +164,7 @@ experimentsRouter.get("/url-content", async (req, res, next) => {
 const userAgent =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";
 
-experimentsRouter.get("/meta", async (req, res, next) => {
+experimentsRouter.get("/meta-old", async (req, res, next) => {
   const { url } = req.query;
   try {
     const { data } = await axios.get(url as string, {
@@ -183,6 +185,16 @@ experimentsRouter.get("/meta", async (req, res, next) => {
       bodyTextContent,
     };
     return res.json(meta);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+experimentsRouter.get("/meta", async (req, res, next) => {
+  const { url } = req.query;
+  try {
+    const result = await fetchWebsiteMeta(url as string);
+    return res.json(result);
   } catch (err) {
     return next(err);
   }

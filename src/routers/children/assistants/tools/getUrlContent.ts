@@ -1,5 +1,6 @@
 import axios from "axios";
 import { JSDOM } from "jsdom";
+import json5 from "json5";
 import tesseract from "node-tesseract-ocr";
 // @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse.js";
@@ -8,8 +9,8 @@ import { UrlContentType } from "../../../../lib/mcpServer.js";
 import openAIClient from "../../../../lib/openAIClient.js";
 import pythonRunner from "../../../../lib/pythonRunner.js";
 import rag from "../../../../lib/rag.js";
+import { WebsiteMeta } from "../../../../lib/typesJsonData.js";
 import { extractVideoId } from "../../youtubeRouter.js";
-
 // Function to determine if the URL is a PDF, ignoring query parameters and fragments
 const isPDF = (url: string): boolean => {
   try {
@@ -53,9 +54,30 @@ const fetchWebPage = async (url: string) => {
     const { data } = await axios.get(url as string, {
       headers: headers,
     });
+    const response_text = JSON.stringify(data);
     const output = await pythonRunner.runCodeRaw(`
 from bs4 import BeautifulSoup
-soup = BeautifulSoup(${JSON.stringify(data)}, 'html.parser')
+soup = BeautifulSoup(${response_text}, 'html.parser')
+content = soup.get_text(separator=' ', strip=True)
+print(content)
+        `);
+    return output;
+  } catch (error) {
+    throw new Error(`Failed to fetch webpage content: ${error}`);
+  }
+};
+
+export const fetchWebsiteMeta = async (url: string) => {
+  try {
+    const { data } = await axios.get(url as string, {
+      headers: headers,
+    });
+    const response_text = JSON.stringify(data);
+    const output = await pythonRunner.runCodeRaw(`
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse, urljoin
+soup = BeautifulSoup(${response_text}, 'html.parser')
+url = '${url}'
 title = soup.title.string.strip() if soup.title else "No Title Found"
 # Extract description from meta tag
 description = soup.find("meta", attrs={"name": "description"})
@@ -69,17 +91,30 @@ for meta in soup.find_all("meta"):
         og_tags[meta["property"].replace("og:", "")] = meta["content"].strip(
         ) if "content" in meta.attrs else ""
 
-# Extract text content
-content = soup.get_text(separator=' ', strip=True)
+
+# Extract favicon
+favicon = None
+for link in soup.find_all("link", rel=True):
+    rel = link.get("rel", [])
+    if isinstance(rel, list) and ("icon" in rel or "shortcut icon" in rel):
+        href = link.get("href", None)
+        if href:
+            favicon = urljoin(url, href)  # This handles relative and absolute URLs
+            break
+
+parsed_url = urlparse(url)
+domain = parsed_url.netloc
+favicon = favicon or f'https://www.google.com/s2/favicons?domain={domain}&sz=64'
 
 print({
+    "url": url,
     "title": title,
     "description": description,
+    "favicon": favicon,
     "og": og_tags,
-    "content": content,
 })
         `);
-    return output;
+    return json5.parse(output) as WebsiteMeta;
   } catch (error) {
     throw new Error(`Failed to fetch webpage content: ${error}`);
   }

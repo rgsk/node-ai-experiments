@@ -117,3 +117,18 @@ export type CreditDetails = {
   userEmail: string;
   balance: number;
 };
+
+export type WebsiteMeta = {
+  url: string;
+  title: string;
+  description: string;
+  favicon: string;
+  og?: {
+    site_name?: string;
+    type?: string;
+    title?: string;
+    description?: string;
+    image?: string;
+    url?: string;
+  };
+};
