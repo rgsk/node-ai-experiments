@@ -478,14 +478,19 @@ ORDER BY "createdAt" DESC;
   }
 });
 
+const processFileMessageSchema = z.object({
+  url: z.string(),
+  collectionName: z.string(),
+});
+
 rootRouter.post("/process-file-message", async (req, res, next) => {
   try {
-    const { s3Url, collectionName } = req.body;
-    const csvUrl = isCSVUrl(s3Url);
-    const content = await getUrlContent(s3Url);
+    const { url, collectionName } = processFileMessageSchema.parse(req.body);
+    const csvUrl = isCSVUrl(url);
+    const content = await getUrlContent({ url, collectionName });
     const result = await rag.processFileMessage({
       content,
-      source: s3Url,
+      source: url,
       collectionName,
       ragAllowed: !csvUrl,
     });
