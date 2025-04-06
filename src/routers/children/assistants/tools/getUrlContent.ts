@@ -109,16 +109,27 @@ export function isCSVUrl(url: string): boolean {
     throw new Error(`Invalid URL provided: ${error}`);
   }
 }
-
+const csvContentLimit = 10000;
 // New function to fetch CSV content
 const fetchCSV = async (url: string): Promise<string> => {
   try {
-    const response = await axios.get(url, { responseType: "text" });
-    return response.data;
+    const response = await axios.get<string>(url, { responseType: "text" });
+    const content = response.data;
+    if (content.length > csvContentLimit) {
+      return JSON.stringify({
+        instruction: `content length exceeds the limit of ${csvContentLimit} characters, so only partial content is fetched.`,
+        partialContent: content.slice(0, csvContentLimit),
+      });
+    } else {
+      return JSON.stringify({ content: content });
+    }
   } catch (error) {
     throw new Error(`Failed to fetch CSV content: ${error}`);
   }
 };
+// sample csv's
+// https://public-ai-exp.s3.us-east-1.amazonaws.com/070709e3-6e17-4b19-b870-a0cf71d82a46/Expenses%20Sheet-Sheet1.csv
+// https://public-ai-exp.s3.us-east-1.amazonaws.com/c4689720-0b39-4fc1-ae5d-e6edd1485704/Housing-Housing.csv
 
 function checkIsGoogleDoc(url: string): boolean {
   try {
