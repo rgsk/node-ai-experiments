@@ -7,6 +7,7 @@ import { YoutubeTranscript } from "youtube-transcript";
 import { UrlContentType } from "../../../../lib/mcpServer.js";
 import openAIClient from "../../../../lib/openAIClient.js";
 import pythonRunner from "../../../../lib/pythonRunner.js";
+import rag from "../../../../lib/rag.js";
 import { extractVideoId } from "../../youtubeRouter.js";
 
 // Function to determine if the URL is a PDF, ignoring query parameters and fragments
@@ -228,12 +229,19 @@ function extractGoogleSheetId(url: string): string | null {
 
 const fetchGoogleDoc = async (url: string) => {
   const documentId = extractGoogleDocId(url);
+  if (!documentId) throw new Error("no documentId");
   const publicDocUrl = `https://docs.google.com/document/d/${documentId}/export?format=txt`;
   const response = await axios.get<string>(publicDocUrl, {
     responseType: "text",
   });
   const content = response.data;
-  return JSON.stringify({ content });
+  const result = await rag.processFileMessage({
+    collectionName: documentId,
+    source: publicDocUrl,
+    content,
+  });
+
+  return JSON.stringify(result);
 };
 const getPageTitle = async (url: string) => {
   const response = await axios.get(url);

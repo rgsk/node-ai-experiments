@@ -167,6 +167,42 @@ const summariseContent = async ({
   return r.choices[0].message?.content ?? "";
 };
 
+const processFileMessage = async (props: {
+  content: string;
+  source: string;
+  collectionName: string;
+  ragAllowed?: boolean;
+}) => {
+  const { content, source, collectionName, ragAllowed = true } = props;
+  console.log("content.length", content.length);
+  const ragContentLengthThreshold = 10000;
+  if (ragAllowed && content.length > ragContentLengthThreshold) {
+    await rag.deleteSource({ collectionName, source });
+    const { count } = await rag.embedContent({
+      data: {
+        content: content,
+        source: source,
+        collectionName: collectionName,
+      },
+      config: {
+        chunkLength: 250,
+        overlapLength: 0,
+      },
+    });
+    const summary = await rag.summariseContent({
+      data: { content },
+      config: {
+        chunkLength: 2000,
+        overlapLength: 0,
+      },
+    });
+
+    return { summary, embeddingCount: count, type: "rag" };
+  } else {
+    return { content, type: "full" };
+  }
+};
+
 const rag = {
   createEmbeddings,
   retrieveRelevantDocs,
@@ -174,5 +210,6 @@ const rag = {
   deleteSource,
   embedContent,
   summariseContent,
+  processFileMessage,
 };
 export default rag;

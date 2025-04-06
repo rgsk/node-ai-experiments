@@ -481,35 +481,15 @@ ORDER BY "createdAt" DESC;
 rootRouter.post("/process-file-message", async (req, res, next) => {
   try {
     const { s3Url, collectionName } = req.body;
-    const isCSVS3Url = isCSVUrl(s3Url);
+    const csvUrl = isCSVUrl(s3Url);
     const content = await getUrlContent(s3Url);
-    const ragContentLengthThreshold = 5000;
-    if (!isCSVS3Url && content.length > ragContentLengthThreshold) {
-      const source = s3Url;
-      await rag.deleteSource({ collectionName, source });
-      const { count } = await rag.embedContent({
-        data: {
-          content: content,
-          source: source,
-          collectionName: collectionName,
-        },
-        config: {
-          chunkLength: 250,
-          overlapLength: 0,
-        },
-      });
-      const summary = await rag.summariseContent({
-        data: { content },
-        config: {
-          chunkLength: 2000,
-          overlapLength: 0,
-        },
-      });
-
-      return res.json({ summary, embeddingCount: count, type: "rag" });
-    } else {
-      return res.json({ content, type: "full" });
-    }
+    const result = await rag.processFileMessage({
+      content,
+      source: s3Url,
+      collectionName,
+      ragAllowed: !csvUrl,
+    });
+    return res.json(result);
   } catch (err) {
     return next(err);
   }
