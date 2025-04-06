@@ -111,7 +111,7 @@ print({
     "title": title,
     "description": description,
     "favicon": favicon,
-    "og": og_tags,
+    "image": og_tags['image']
 })
         `);
     return json5.parse(output) as WebsiteMeta;
