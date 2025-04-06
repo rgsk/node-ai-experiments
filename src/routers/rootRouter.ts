@@ -330,7 +330,8 @@ export const handleStream = async ({
           socket.emit("audio", chunk);
         }
       } catch (err) {
-        console.log("audio paused error");
+        // !!IMPORTANT below error is thrown when we pause the audio stream
+        // console.log("audio paused error");
       }
       socket.emit("audio-complete");
     }
