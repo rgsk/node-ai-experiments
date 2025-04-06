@@ -18,13 +18,17 @@ gcpRouter.get("/google-doc", async (req, res, next) => {
 });
 const googleSheetQuerySchema = z.object({
   spreadsheetId: z.string(),
-  range: z.string(),
+  range: z.string().optional(),
 });
 gcpRouter.get("/google-sheet", async (req, res, next) => {
   try {
     const { spreadsheetId, range } = googleSheetQuerySchema.parse(req.query);
-    const output = await getGoogleSheetData({ spreadsheetId, range });
-    return res.json({ output });
+    const result = await getGoogleSheetData({
+      spreadsheetId,
+      range,
+      type: "string",
+    });
+    return res.json(result);
   } catch (err) {
     return next(err);
   }
@@ -33,12 +37,25 @@ gcpRouter.get("/google-sheet", async (req, res, next) => {
 gcpRouter.get("/google-sheet/raw", async (req, res, next) => {
   try {
     const { spreadsheetId, range } = googleSheetQuerySchema.parse(req.query);
-    const data = await getGoogleSheetData({
+    const result = await getGoogleSheetData({
       spreadsheetId,
       range,
-      stringify: false,
+      type: "raw",
     });
-    return res.json(data);
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
+gcpRouter.get("/google-sheet/csv", async (req, res, next) => {
+  try {
+    const { spreadsheetId, range } = googleSheetQuerySchema.parse(req.query);
+    const result = await getGoogleSheetData({
+      spreadsheetId,
+      range,
+      type: "csv",
+    });
+    return res.json(result);
   } catch (err) {
     return next(err);
   }

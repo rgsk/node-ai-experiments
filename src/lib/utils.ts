@@ -76,3 +76,15 @@ export function chunkWithOverlap<T>(
   }
   return chunks;
 }
+
+export function getCsvFile({
+  csvContent,
+  filename,
+}: {
+  csvContent: string;
+  filename: string;
+}) {
+  // Convert CSV string to a Buffer using UTF-8 encoding
+  const buffer = Buffer.from(csvContent, "utf8");
+  return { buffer, name: filename, type: "text/csv" };
+}

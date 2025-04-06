@@ -235,11 +235,11 @@ const getPageTitle = async (url: string) => {
 const fetchGoogleSheet = async (url: string) => {
   const sheetId = extractGoogleSheetId(url);
   if (sheetId) {
-    const pageTitle = await getPageTitle(url);
-    const content = await getGoogleSheetData({
+    const { sheetDetails, url } = await getGoogleSheetData({
       spreadsheetId: sheetId,
+      type: "csv",
     });
-    return `Page Title: ${pageTitle}\nPage Content:\n${content}`;
+    return JSON.stringify({ sheetDetails, url });
   }
 };
 const fetchYoutubeTranscript = async (url: string) => {

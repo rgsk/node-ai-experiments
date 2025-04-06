@@ -1,60 +1,66 @@
 import { google } from "googleapis";
+import { uploadFileToS3 } from "../s3Utils.js";
+import { getCsvFile } from "../utils.js";
 import getGoogleAuth from "./getGoogleAuth.js";
-const getFirstTabName = async ({
+const getSheetDetails = async ({
   spreadsheetId,
   auth,
 }: {
   spreadsheetId: string;
   auth: any;
 }) => {
-  try {
-    // Fetch spreadsheet metadata to get sheet names
-    const spreadsheetMeta = await google.sheets("v4").spreadsheets.get({
-      spreadsheetId: spreadsheetId,
-      auth: auth,
-    });
-    if (spreadsheetMeta && spreadsheetMeta.data.sheets) {
-      // Extract the first sheet name
-      const firstSheet = spreadsheetMeta.data.sheets[0]; // The first sheet in the spreadsheet
-      if (firstSheet.properties) {
-        const firstSheetName = firstSheet.properties.title; // Extract the title (name) of the sheet
-        if (firstSheetName == null) return undefined;
-        return firstSheetName;
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching spreadsheet metadata:", error);
-    throw error;
-  }
+  // Fetch spreadsheet metadata to get sheet names
+  const spreadsheetMeta = await google.sheets("v4").spreadsheets.get({
+    spreadsheetId: spreadsheetId,
+    auth: auth,
+  });
+  const title = spreadsheetMeta.data.properties?.title;
+  const sheetNames = spreadsheetMeta.data.sheets?.map(
+    (s) => s.properties?.title
+  );
+  return { title, sheetNames };
 };
 
 const getGoogleSheetData = async ({
   spreadsheetId,
   range,
-  stringify = true,
+  type = "string",
 }: {
   spreadsheetId: string;
   range?: string;
-  stringify?: boolean;
+  type?: "string" | "raw" | "csv";
 }) => {
   const auth = await getGoogleAuth();
-  const finalRange = range || (await getFirstTabName({ spreadsheetId, auth }));
+  const sheetDetails = await getSheetDetails({ spreadsheetId, auth });
+  const finalRange = range || sheetDetails.sheetNames?.[0];
+  if (!finalRange) {
+    throw new Error("finalRange could not be determined");
+  }
   const result = await google.sheets("v4").spreadsheets.values.get({
     spreadsheetId: spreadsheetId,
     range: finalRange,
     auth: auth,
   });
-  if (stringify) {
-    // const title = result.data.range;
-    const tab = finalRange;
-    const content = result.data.values!.reduce((str: string, row: string[]) => {
-      return `${str}${row.join(", ")}\n`;
-    }, "");
-    const output = `Tab: ${tab}\nContent:\n${content}`;
-    return output;
-  } else {
-    return result.data;
+
+  if (type === "raw") {
+    return { sheetDetails, data: result.data };
   }
+  const tab = finalRange;
+  const content = result.data.values!.reduce((str: string, row: string[]) => {
+    return `${str}${row.join(", ")}\n`;
+  }, "");
+  if (type === "csv") {
+    const csvFile = getCsvFile({
+      csvContent: content,
+      filename: `${sheetDetails.title}-${tab}.csv`,
+    });
+    const csvUrl = await uploadFileToS3(csvFile);
+    return { sheetDetails, url: csvUrl };
+  }
+  // const title = result.data.range;
+
+  const output = `Tab: ${tab}\nContent:\n${content}`;
+  return { sheetDetails, output };
 };
 
 export default getGoogleSheetData;

@@ -4,8 +4,10 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import axios from "axios";
 import { secondsInDay, secondsInHour } from "date-fns/constants";
-import s3Client from "../lib/s3Client.js";
+import { v4 } from "uuid";
+import s3Client, { s3ClientBuckets } from "../lib/s3Client.js";
 
 export async function getUploadURL({
   key,
@@ -72,6 +74,31 @@ export const getPresignedUrl = async (url: string) => {
     key,
   });
   return presignedUrl;
+};
+
+export const uploadFileToS3 = async (file: {
+  buffer: Buffer;
+  name: string;
+  type: string;
+}) => {
+  // Generate a unique key
+  const key = `${v4()}/${file.name}`;
+
+  // Obtain the upload URL from your backend/S3 service
+  const uploadUrl = await getUploadURL({
+    key,
+    bucket: s3ClientBuckets.public,
+  });
+
+  // Upload the buffer with the appropriate content type header
+  await axios.put(uploadUrl, file.buffer, {
+    headers: {
+      "Content-Type": file.type,
+    },
+  });
+
+  const url = uploadUrl.split("?")[0];
+  return url;
 };
 
 export async function deleteObject({
