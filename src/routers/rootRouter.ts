@@ -244,10 +244,6 @@ export const handleStream = async ({
     }
   );
 
-  socket.on("stop", () => {
-    controller.abort();
-  });
-
   // Object to accumulate the tool call arguments for each index.
   const toolCallAccumulators: any = {};
   // Object to store the full tool call objects (saved once when first received).
@@ -323,9 +319,18 @@ export const handleStream = async ({
     socket.on("audio-stop", () => {
       audioController.abort();
     });
+    socket.on("stop", () => {
+      audioController.abort();
+      controller.abort();
+    });
+
     async function streamAudio() {
-      for await (const chunk of audioStream) {
-        socket.emit("audio", chunk);
+      try {
+        for await (const chunk of audioStream) {
+          socket.emit("audio", chunk);
+        }
+      } catch (err) {
+        console.log("audio paused error");
       }
       socket.emit("audio-complete");
     }
@@ -333,6 +338,9 @@ export const handleStream = async ({
     streamAudio();
     await streamText(textStream);
   } else {
+    socket.on("stop", () => {
+      controller.abort();
+    });
     await streamText(stream);
   }
 
