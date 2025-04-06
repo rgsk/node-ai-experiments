@@ -3,7 +3,7 @@ import { JsonValue } from "@prisma/client/runtime/library";
 import { v4 } from "uuid";
 import { db } from "./db.js";
 import openAIClient from "./openAIClient.js";
-import { chunkWithOverlap } from "./utils.js";
+import { chunkWithOverlap, html } from "./utils.js";
 const createEmbeddings = async (
   data: {
     content: string;
@@ -174,7 +174,6 @@ const processFileMessage = async (props: {
   ragAllowed?: boolean;
 }) => {
   const { content, source, collectionName, ragAllowed = true } = props;
-  console.log("content.length", content.length);
   const ragContentLengthThreshold = 10000;
   if (ragAllowed && content.length > ragContentLengthThreshold) {
     await rag.deleteSource({ collectionName, source });
@@ -197,9 +196,35 @@ const processFileMessage = async (props: {
       },
     });
 
-    return { summary, embeddingCount: count, type: "rag" };
+    return {
+      summary,
+      embeddingCount: count,
+      type: "rag",
+      instruction: html`
+        <span>
+          user entered a url or attached a file, it's contents were too large to
+          fit inside context window, so you are made available it's summary, if
+          it's appropriate to fetch more specific details, you can use
+          retrieveRelevantDocs tool
+        </span>
+
+        here are it's creds that you can use to call the tool
+        retrieveRelevantDocs:
+        ${JSON.stringify({
+          source,
+          collectionName,
+        })}
+      `,
+    };
   } else {
-    return { content, type: "full" };
+    return {
+      content,
+      type: "full",
+      instruction: html`
+        for this file or url, this is the full parsed content, use these
+        contents to answer the user query
+      `,
+    };
   }
 };
 

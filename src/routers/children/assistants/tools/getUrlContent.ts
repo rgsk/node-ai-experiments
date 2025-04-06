@@ -235,13 +235,7 @@ const fetchGoogleDoc = async (url: string) => {
     responseType: "text",
   });
   const content = response.data;
-  const result = await rag.processFileMessage({
-    collectionName: documentId,
-    source: publicDocUrl,
-    content,
-  });
-
-  return JSON.stringify(result);
+  return content;
 };
 const getPageTitle = async (url: string) => {
   const response = await axios.get(url);
@@ -312,7 +306,7 @@ const getUrlContent = async (url: string, type?: UrlContentType) => {
   let output: string;
   const contentType = type ?? getUrlContentType(url);
   try {
-    const content = await (contentType === "pdf"
+    let content = await (contentType === "pdf"
       ? fetchPDF(url)
       : contentType === "google_doc"
       ? fetchGoogleDoc(url)
@@ -327,6 +321,20 @@ const getUrlContent = async (url: string, type?: UrlContentType) => {
       : fetchWebPage(url));
 
     if (content) {
+      if (
+        (
+          ["pdf", "google_doc", "youtube_video", "web_page"] as UrlContentType[]
+        ).includes(contentType)
+      ) {
+        // perform rag
+        const result = await rag.processFileMessage({
+          collectionName: url,
+          source: url,
+          content,
+        });
+        content = JSON.stringify(result);
+      }
+
       output = content;
     } else {
       throw new Error("An error occurred while fetching the URL contents.");
