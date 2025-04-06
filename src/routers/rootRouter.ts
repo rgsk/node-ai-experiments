@@ -314,18 +314,24 @@ export const handleStream = async ({
   }
   if (streamAudio) {
     const [textStream, textStreamForAudio] = await duplicateStream(stream);
+    const audioController = new AbortController(); // Create an AbortController
+    const audioSignal = audioController.signal; // Get the signal
     const audioStream = getAudioStreamBySentence(
       modifyStream(textStreamForAudio),
-      (text) => getAudioStreamOpenAI(text, signal)
+      (text) => getAudioStreamOpenAI(text, audioSignal)
     );
+    socket.on("audio-stop", () => {
+      audioController.abort();
+    });
     async function streamAudio() {
       for await (const chunk of audioStream) {
         socket.emit("audio", chunk);
       }
       socket.emit("audio-complete");
     }
-
-    await Promise.all([streamAudio(), streamText(textStream)]);
+    // await Promise.all([streamAudio(), streamText(textStream)]);
+    streamAudio();
+    await streamText(textStream);
   } else {
     await streamText(stream);
   }
