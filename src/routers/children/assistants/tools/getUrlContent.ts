@@ -4,8 +4,6 @@ import tesseract from "node-tesseract-ocr";
 // @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse.js";
 import { YoutubeTranscript } from "youtube-transcript";
-import getGoogleDocData from "../../../../lib/gcp/getGoogleDocData.js";
-import getGoogleSheetData from "../../../../lib/gcp/getGoogleSheetData.js";
 import { UrlContentType } from "../../../../lib/mcpServer.js";
 import openAIClient from "../../../../lib/openAIClient.js";
 import pythonRunner from "../../../../lib/pythonRunner.js";
@@ -109,10 +107,11 @@ export function isCSVUrl(url: string): boolean {
     throw new Error(`Invalid URL provided: ${error}`);
   }
 }
-const csvContentLimit = 10000;
+
 // New function to fetch CSV content
 const fetchCSV = async (url: string): Promise<string> => {
   try {
+    const csvContentLimit = 10000;
     const response = await axios.get<string>(url, { responseType: "text" });
     const content = response.data;
     if (content.length > csvContentLimit) {
@@ -229,9 +228,12 @@ function extractGoogleSheetId(url: string): string | null {
 
 const fetchGoogleDoc = async (url: string) => {
   const documentId = extractGoogleDocId(url);
-  if (documentId) {
-    return getGoogleDocData({ documentId });
-  }
+  const publicDocUrl = `https://docs.google.com/document/d/${documentId}/export?format=txt`;
+  const response = await axios.get<string>(publicDocUrl, {
+    responseType: "text",
+  });
+  const content = response.data;
+  return JSON.stringify({ content });
 };
 const getPageTitle = async (url: string) => {
   const response = await axios.get(url);
@@ -245,13 +247,8 @@ const getPageTitle = async (url: string) => {
 };
 const fetchGoogleSheet = async (url: string) => {
   const sheetId = extractGoogleSheetId(url);
-  if (sheetId) {
-    const { sheetDetails, url } = await getGoogleSheetData({
-      spreadsheetId: sheetId,
-      type: "csv",
-    });
-    return JSON.stringify({ sheetDetails, url });
-  }
+  const publicSheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+  return fetchCSV(publicSheetUrl);
 };
 const fetchYoutubeTranscript = async (url: string) => {
   const videoId = extractVideoId(url);
