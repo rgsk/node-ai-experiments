@@ -364,6 +364,7 @@ const getUrlContent = async ({
       : fetchWebPage(url));
 
     if (content) {
+      const websiteMeta = await fetchWebsiteMeta(url);
       if (
         (
           ["pdf", "google_doc", "youtube_video", "web_page"] as UrlContentType[]
@@ -375,7 +376,15 @@ const getUrlContent = async ({
           source: url,
           content,
         });
-        content = JSON.stringify(result);
+        content = JSON.stringify({
+          websiteContentResult: result,
+          websiteMeta: websiteMeta,
+        });
+      } else {
+        content = JSON.stringify({
+          websiteContentResult: content,
+          websiteMeta: websiteMeta,
+        });
       }
 
       output = content;
