@@ -63,6 +63,9 @@ rootRouter.get("/session", async (req, res, next) => {
       body: JSON.stringify({
         model: "gpt-4o-realtime-preview-2024-12-17",
         voice: "verse",
+        input_audio_transcription: {
+          model: "gpt-4o-transcribe",
+        },
       }),
     });
     const data = await r.json();
