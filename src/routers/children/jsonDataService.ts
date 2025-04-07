@@ -44,6 +44,31 @@ export const jsonDataService = {
     `) as JsonDataValue<T>[];
     return { data, count };
   },
+  getRowNumber: async ({
+    key,
+    keyLike,
+    valueFilters,
+  }: {
+    key: string;
+    keyLike: string;
+    valueFilters?: Sql;
+  }) => {
+    const res = await db.$queryRaw<{ rank: number }[]>`
+WITH ranked_data AS (
+  SELECT 
+    *,
+    RANK() OVER (ORDER BY "createdAt" DESC) AS rank
+  FROM "JsonData"
+  WHERE "key" LIKE ${keyLike}
+  ${valueFilters ?? Prisma.sql``}
+)
+SELECT rank
+FROM ranked_data
+WHERE "key" = ${key};
+  `;
+    const rank = Number(String(res[0].rank));
+    return rank;
+  },
 
   async createOrUpdate<T>(data: {
     key: string;

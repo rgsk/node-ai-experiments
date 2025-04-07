@@ -135,6 +135,31 @@ jsonDataRouter.get(
   }
 );
 
+const rowNumberSchema = z.object({
+  key: z.string(),
+  keyLike: z.string(),
+});
+jsonDataRouter.get(
+  "/row-number",
+  checkAdminOperation({ keySource: "query", operationType: "read" }),
+  async (req, res, next) => {
+    try {
+      const { userEmail } = getProps<Middlewares.Authenticate>(
+        req,
+        Middlewares.Keys.Authenticate
+      );
+      const { key, keyLike } = rowNumberSchema.parse(req.query);
+      const result = await jsonDataService.getRowNumber({
+        key: getPopulatedKey(key, userEmail),
+        keyLike: getPopulatedKey(keyLike, userEmail),
+      });
+      return res.json({ rowNumber: result });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 // Route to create or update a single record
 jsonDataRouter.post(
   "/",
