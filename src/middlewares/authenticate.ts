@@ -37,8 +37,8 @@ const authenticate = async (
     } else {
       throw new Error("token not present");
     }
-  } catch (err) {
-    return next(err);
+  } catch (err: any) {
+    return res.status(401).json({ message: err.message, err });
   }
 };
 
