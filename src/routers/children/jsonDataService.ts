@@ -66,6 +66,10 @@ SELECT rank
 FROM ranked_data
 WHERE "key" = ${key};
   `;
+
+    if (res[0] === undefined) {
+      return 0;
+    }
     const rank = Number(String(res[0].rank));
     return rank;
   },
