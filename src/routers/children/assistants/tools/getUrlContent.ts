@@ -106,13 +106,16 @@ parsed_url = urlparse(url)
 domain = parsed_url.netloc
 favicon = favicon or f'https://www.google.com/s2/favicons?domain={domain}&sz=64'
 
-print({
+result = {
     "url": url,
     "title": title,
     "description": description,
     "favicon": favicon,
-    "image": og_tags['image']
-})
+}
+if 'image' in og_tags:
+    result['image'] = og_tags['image']
+    
+print(result)
         `);
     return json5.parse(output) as WebsiteMeta;
   } catch (error) {
