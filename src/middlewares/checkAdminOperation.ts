@@ -66,12 +66,23 @@ const checkAdminOperation =
       if (isAdmin) {
         return next();
       }
+      if (!key.includes("$userEmail")) {
+        if (isAdmin) {
+          return next();
+        } else {
+          throw new Error(
+            "accessing key other than user specific key, user must be admin"
+          );
+        }
+      }
       if (key.startsWith("sdCentralAcademyWeb/")) {
         await sdCentralAcademyWebChecks({ userEmail });
       }
+
       if (!key.includes("admin")) {
         return next();
       }
+
       if (key.includes("admin/public")) {
         if (operationType === "read") {
           return next();
