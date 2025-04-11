@@ -9,3 +9,6 @@
 # python related
 **/.venv
 **/__pycache__
+
+# Sentry Config File
+.sentryclirc

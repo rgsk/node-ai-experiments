@@ -21,6 +21,13 @@ import getUrlContent, {
 } from "./assistants/tools/getUrlContent.js";
 const experimentsRouter = Router();
 // Endpoint to execute Python code
+experimentsRouter.get("/test-error", async (req, res, next) => {
+  try {
+    throw new Error("this is again a new error");
+  } catch (err) {
+    return next(err);
+  }
+});
 
 const executeCodeBodySchema = z.object(executeCodeSchema);
 experimentsRouter.post("/execute-code", async (req, res, next) => {
