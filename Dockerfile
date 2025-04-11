@@ -4,7 +4,6 @@ FROM docker:23-cli AS docker-cli
 FROM node:18.19-slim
 
 ARG SENTRY_AUTH_TOKEN
-RUN echo $SENTRY_AUTH_TOKEN
 
 
 RUN apt-get update -y && \
