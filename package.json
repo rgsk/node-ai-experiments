@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "tsc && yarn sentry:sourcemaps",
+    "build": "tsc",
+    "local-build": "tsc && yarn sentry:sourcemaps",
     "watch": "tsc -w",
     "dev": "sh ./bin.dev/start.sh",
     "kill:port": "kill -9 $(lsof -t -i:4001)",
