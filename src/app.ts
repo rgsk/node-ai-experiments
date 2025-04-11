@@ -1,4 +1,5 @@
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import * as Sentry from "@sentry/node";
 import cors from "cors";
 import express from "express";
 import { createServer } from "http";
@@ -13,6 +14,12 @@ import experimentsRouter from "./routers/children/experimentsRouter.js";
 import gcpRouter from "./routers/children/gcpRouter.js";
 import youtubeRouter from "./routers/children/youtubeRouter.js";
 import rootRouter from "./routers/rootRouter.js";
+
+Sentry.init({
+  environment: environmentVars.NODE_ENV,
+  dsn: environmentVars.SENTRY_DSN,
+  tracesSampleRate: 1.0,
+});
 
 tsconfigPaths.register({
   baseUrl: "dist", // or wherever your compiled files are located
@@ -67,7 +74,11 @@ app.get("/pages/test", (req, res) => {
 app.use("/youtube", youtubeRouter);
 app.use("/experiments", experimentsRouter);
 app.use("/gcp", gcpRouter);
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
 app.use("/", authenticate, rootRouter);
+Sentry.setupExpressErrorHandler(app);
 app.use(errorHandler);
 
 const PORT = environmentVars.PORT;
