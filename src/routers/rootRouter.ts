@@ -32,6 +32,7 @@ import friendsRouter from "./children/friendsRouter.js";
 import jsonDataRouter from "./children/jsonDataRouter.js";
 import { jsonDataService, JsonDataValue } from "./children/jsonDataService.js";
 import ragRouter from "./children/ragRouter.js";
+import sdCentralAcademyWebRouter from "./children/sdCentralAcademyWebRouter.js";
 
 const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
@@ -40,6 +41,7 @@ rootRouter.use("/aws", awsRouter);
 rootRouter.use("/assistants", assistantsRouter);
 rootRouter.use("/admin", adminRequired, adminRouter);
 rootRouter.use("/rag", adminRequired, ragRouter);
+rootRouter.use("/sdCentralAcademyWeb", sdCentralAcademyWebRouter);
 rootRouter.get("/", async (req, res, next) => {
   try {
     return res.json({
