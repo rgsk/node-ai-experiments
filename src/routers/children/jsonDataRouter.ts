@@ -88,6 +88,7 @@ const reportCardKeyLikeSchema = keyLikeSchema.extend({
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
   sectionValue: z.string().optional(),
+  createdBy: z.string().optional(),
 });
 
 jsonDataRouter.get(
@@ -99,8 +100,15 @@ jsonDataRouter.get(
         req,
         Middlewares.Keys.Authenticate
       );
-      const { key, page, perPage, searchTerm, classValue, sectionValue } =
-        reportCardKeyLikeSchema.parse(req.query);
+      const {
+        key,
+        page,
+        perPage,
+        searchTerm,
+        classValue,
+        sectionValue,
+        createdBy,
+      } = reportCardKeyLikeSchema.parse(req.query);
 
       const result = await jsonDataService.findByKeyLike({
         key: getPopulatedKey(key, userEmail),
@@ -124,6 +132,11 @@ jsonDataRouter.get(
           ${
             sectionValue
               ? Prisma.sql`AND "value"->>'Section' = ${sectionValue}`
+              : Prisma.sql``
+          }
+          ${
+            createdBy
+              ? Prisma.sql`AND "value"->>'createdBy' = ${createdBy}`
               : Prisma.sql``
           }
         `,
