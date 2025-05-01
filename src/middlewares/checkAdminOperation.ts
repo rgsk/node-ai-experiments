@@ -66,17 +66,19 @@ const checkAdminOperation =
       if (isAdmin) {
         return next();
       }
-      if (!key.includes("$userEmail")) {
-        if (isAdmin) {
-          return next();
-        } else {
-          throw new Error(
-            "accessing key other than user specific key, user must be admin"
-          );
-        }
-      }
+
       if (key.startsWith("sdCentralAcademyWeb/")) {
         await sdCentralAcademyWebChecks({ userEmail });
+      } else {
+        if (!key.includes("$userEmail")) {
+          if (isAdmin) {
+            return next();
+          } else {
+            throw new Error(
+              "accessing key other than user specific key, user must be admin"
+            );
+          }
+        }
       }
 
       if (!key.includes("admin")) {
@@ -105,7 +107,7 @@ const sdCentralAcademyWebChecks = async ({
   userEmail: string;
 }) => {
   const result = await jsonDataService.findByKey<string[]>(
-    `sdCentralAcademyWeb/admin/public/emailsWithDashboardAccess`
+    `sdCentralAcademyWeb/admin/private/emailsWithDashboardAccess`
   );
   const emailsWithDashboardAccess = result?.value;
   if (!emailsWithDashboardAccess) {
