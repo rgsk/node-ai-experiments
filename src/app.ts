@@ -12,6 +12,7 @@ import authenticate from "./middlewares/authenticate.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import experimentsRouter from "./routers/children/experimentsRouter.js";
 import gcpRouter from "./routers/children/gcpRouter.js";
+import sdCentralAcademyWebRouter from "./routers/children/sdCentralAcademyWebRouter.js";
 import youtubeRouter from "./routers/children/youtubeRouter.js";
 import rootRouter from "./routers/rootRouter.js";
 
@@ -73,6 +74,7 @@ app.get("/pages/test", (req, res) => {
 });
 app.use("/youtube", youtubeRouter);
 app.use("/experiments", experimentsRouter);
+app.use("/sdCentralAcademyWeb", sdCentralAcademyWebRouter);
 app.use("/gcp", gcpRouter);
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
