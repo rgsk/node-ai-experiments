@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { ChatCompletionChunk } from "openai/resources/index.mjs";
+import {
+  ChatCompletionChunk,
+  ChatCompletionMessageParam,
+} from "openai/resources/index.mjs";
 import { Socket } from "socket.io";
 import { v4 } from "uuid";
 import { z } from "zod";
@@ -354,6 +357,35 @@ export const handleStream = async ({
     toolCalls,
   };
 };
+
+export const getTextStream = async function* ({
+  messages,
+}: {
+  messages: ChatCompletionMessageParam[];
+}) {
+  const stream = await openAIClient.chat.completions.create({
+    messages: messages,
+    model: "gpt-4o",
+    stream: true,
+  });
+  for await (const part of stream) {
+    const content = part.choices[0].delta.content ?? "";
+    yield content;
+  }
+};
+
+rootRouter.post("/text-stream", async (req, res, next) => {
+  try {
+    const { messages } = req.body;
+    const textStream = getTextStream({ messages });
+    for await (const chunk of textStream) {
+      res.write(chunk);
+    }
+    return res.end();
+  } catch (err) {
+    return next(err);
+  }
+});
 
 rootRouter.post("/initialize-credits", async (req, res, next) => {
   try {
