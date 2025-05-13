@@ -37,5 +37,26 @@ WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
     return next(err);
   }
 });
+const getClassDetailsQuerySchema = z.object({
+  academicSession: z.string(),
+  classValue: z.string(),
+});
+sdCentralAcademyWebRouter.get("/class-details", async (req, res, next) => {
+  try {
+    const { academicSession, classValue } = getClassDetailsQuerySchema.parse(
+      req.query
+    );
+    const result = await db.$queryRaw`
+    SELECT *
+FROM "JsonData"
+WHERE key LIKE 'sdCentralAcademyWeb/classDetails1/%'
+  AND value->>'Academic Session' = ${academicSession}
+  AND value->>'Class' = ${classValue};
+    `;
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
 
 export default sdCentralAcademyWebRouter;
