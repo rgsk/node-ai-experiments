@@ -8,6 +8,7 @@ import tsconfigPaths from "tsconfig-paths";
 import environmentVars from "./lib/environmentVars.js";
 import exampleBase from "./lib/examples/exampleBase.js";
 import mcpServer from "./lib/mcpServer.js";
+import { getSecret } from "./lib/secretsManager.js";
 import authenticate from "./middlewares/authenticate.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import experimentsRouter from "./routers/children/experimentsRouter.js";
@@ -85,8 +86,22 @@ app.use(errorHandler);
 
 const PORT = environmentVars.PORT;
 // Start the server
-httpServer.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+
+const initialSetupCode = async () => {
+  const secret = await getSecret(
+    "NODE_AI_EXPERIMENTS_ENVIRONMENT_VARIABLES_59be3ac8-cd3c-4db9-b36d-730862454c46"
+  );
+  if (secret) {
+    const secretEnvironmentVariables = JSON.parse(secret) as {
+      OPENAI_API_KEY: string;
+    };
+    environmentVars.OPENAI_API_KEY = secretEnvironmentVariables.OPENAI_API_KEY;
+  }
+};
+initialSetupCode().then(() => {
+  httpServer.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
 });
 
 exampleBase();
