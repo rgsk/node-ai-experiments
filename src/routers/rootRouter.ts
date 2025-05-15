@@ -17,6 +17,7 @@ import { getProps } from "../lib/middlewareProps.js";
 import openAIClient from "../lib/openAIClient.js";
 import openRouterClient from "../lib/openRouterClient.js";
 import rag from "../lib/rag.js";
+import { secretEnvironmentVariables } from "../lib/secretEnvironmentVariables.js";
 import {
   duplicateStream,
   getAudioStreamBySentence,
@@ -60,7 +61,7 @@ rootRouter.get("/session", async (req, res, next) => {
     const r = await fetch("https://api.openai.com/v1/realtime/sessions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${environmentVars.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${secretEnvironmentVariables.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -578,7 +579,7 @@ export const getAudioStreamOpenAI = async function* (
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${environmentVars.OPENAI_API_KEY}`,
+      Authorization: `Bearer ${secretEnvironmentVariables.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: "gpt-4o-mini-tts",

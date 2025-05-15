@@ -8,6 +8,7 @@ import tsconfigPaths from "tsconfig-paths";
 import environmentVars from "./lib/environmentVars.js";
 import exampleBase from "./lib/examples/exampleBase.js";
 import mcpServer from "./lib/mcpServer.js";
+import { secretEnvironmentVariables } from "./lib/secretEnvironmentVariables.js";
 import { getSecret } from "./lib/secretsManager.js";
 import authenticate from "./middlewares/authenticate.js";
 import errorHandler from "./middlewares/errorHandler.js";
@@ -92,10 +93,10 @@ const initialSetupCode = async () => {
     "NODE_AI_EXPERIMENTS_ENVIRONMENT_VARIABLES_59be3ac8-cd3c-4db9-b36d-730862454c46"
   );
   if (secret) {
-    const secretEnvironmentVariables = JSON.parse(secret) as {
+    const parsedSecret = JSON.parse(secret) as {
       OPENAI_API_KEY: string;
     };
-    environmentVars.OPENAI_API_KEY = secretEnvironmentVariables.OPENAI_API_KEY;
+    secretEnvironmentVariables.OPENAI_API_KEY = parsedSecret.OPENAI_API_KEY;
   }
 };
 initialSetupCode().then(() => {
