@@ -6,7 +6,7 @@ import tesseract from "node-tesseract-ocr";
 import pdf from "pdf-parse/lib/pdf-parse.js";
 import { YoutubeTranscript } from "youtube-transcript";
 import { UrlContentType } from "../../../../lib/mcpServer.js";
-import openAIClient from "../../../../lib/openAIClient.js";
+import { getOpenAIClient } from "../../../../lib/openAIClient.js";
 import pythonRunner from "../../../../lib/pythonRunner.js";
 import rag from "../../../../lib/rag.js";
 import { WebsiteMeta } from "../../../../lib/typesJsonData.js";
@@ -299,6 +299,7 @@ const fetchYoutubeTranscript = async (url: string) => {
   return `Youtube Video Title: ${pageTitle}\nTranscript:\n${content}`;
 };
 const getImageDescription = async (imageUrl: string) => {
+  const { openAIClient } = getOpenAIClient();
   const response = await openAIClient.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [

@@ -14,7 +14,7 @@ import environmentVars from "../lib/environmentVars.js";
 import mcpClient from "../lib/mcpClient.js";
 import mcpSchemaToOpenAITools from "../lib/mcpSchemaToOpenAITools.js";
 import { getProps } from "../lib/middlewareProps.js";
-import openAIClient from "../lib/openAIClient.js";
+import { getOpenAIClient } from "../lib/openAIClient.js";
 import openRouterClient from "../lib/openRouterClient.js";
 import rag from "../lib/rag.js";
 import { secretEnvironmentVariables } from "../lib/secretEnvironmentVariables.js";
@@ -27,7 +27,7 @@ import { Chat, CreditDetails, Message } from "../lib/typesJsonData.js";
 import adminRequired from "../middlewares/adminRequired.js";
 import { Middlewares } from "../middlewares/middlewaresNamespace.js";
 import adminRouter from "./children/adminRouter.js";
-import assistantsRouter from "./children/assistants/assistantsRouter.js";
+
 import getUrlContent, {
   isCSVUrl,
 } from "./children/assistants/tools/getUrlContent.js";
@@ -41,7 +41,6 @@ const rootRouter = Router();
 rootRouter.use("/friends", friendsRouter);
 rootRouter.use("/json-data", jsonDataRouter);
 rootRouter.use("/aws", awsRouter);
-rootRouter.use("/assistants", assistantsRouter);
 rootRouter.use("/admin", adminRequired, adminRouter);
 rootRouter.use("/rag", adminRequired, ragRouter);
 rootRouter.get("/", async (req, res, next) => {
@@ -87,6 +86,7 @@ const getClient = (clientName: string) => {
   } else if (clientName === "deepseek") {
     return deepSeekClient;
   } else if (clientName === "openai") {
+    const { openAIClient } = getOpenAIClient();
     return openAIClient;
   } else {
     throw new Error("unknown ai client");
@@ -362,6 +362,7 @@ export const getTextStream = async function* ({
 }: {
   messages: ChatCompletionMessageParam[];
 }) {
+  const { openAIClient } = getOpenAIClient();
   const stream = await openAIClient.chat.completions.create({
     messages: messages,
     model: "gpt-4o",
@@ -555,6 +556,7 @@ export const getTextStreamOpenAI = async function* (
   messages: any,
   signal?: AbortSignal
 ) {
+  const { openAIClient } = getOpenAIClient();
   const stream = await openAIClient.chat.completions.create(
     {
       messages: messages,

@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/library";
 import { v4 } from "uuid";
 import { db } from "./db.js";
-import openAIClient from "./openAIClient.js";
+import { getOpenAIClient } from "./openAIClient.js";
 import { chunkWithOverlap, html } from "./utils.js";
 const createEmbeddings = async (
   data: {
@@ -12,6 +12,7 @@ const createEmbeddings = async (
     source: string;
   }[]
 ) => {
+  const { openAIClient } = getOpenAIClient();
   const responses = await openAIClient.embeddings.create({
     model: "text-embedding-ada-002",
     input: data.map((d) => d.content),
@@ -48,6 +49,7 @@ async function retrieveRelevantDocs({
   sources?: string[];
   limit?: number;
 }) {
+  const { openAIClient } = getOpenAIClient();
   const response = await openAIClient.embeddings.create({
     model: "text-embedding-ada-002",
     input: query,
@@ -132,6 +134,7 @@ const summariseChunk = async (chunk: string) => {
     give a short summary of below text - 
     <text>${chunk}</text>
   `;
+  const { openAIClient } = getOpenAIClient();
   const r = await openAIClient.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
     model: "gpt-4o",
@@ -160,6 +163,7 @@ const summariseContent = async ({
     give a summary of below text - 
     <text>${result.join("\n")}</text>
   `;
+  const { openAIClient } = getOpenAIClient();
   const r = await openAIClient.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
     model: "gpt-4o",

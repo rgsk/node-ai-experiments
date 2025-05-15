@@ -1,9 +1,10 @@
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import composioToolset from "../composioToolset.js";
-import openAIClient from "../openAIClient.js";
+import { getOpenAIClient } from "../openAIClient.js";
 import { writeFile } from "../utils.js";
 
 const exampleComposio = async () => {
+  const { openAIClient } = getOpenAIClient();
   // Retrieve the required tools (e.g., for Google Sheets)
   const tools = await composioToolset.getTools({ apps: ["googlesheets"] });
 

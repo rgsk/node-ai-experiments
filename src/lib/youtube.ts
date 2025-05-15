@@ -1,5 +1,5 @@
 import { YoutubeTranscript } from "youtube-transcript";
-import openAIClient from "./openAIClient.js";
+import { getOpenAIClient } from "./openAIClient.js";
 
 interface SummaryItem {
   offset: number;
@@ -37,6 +37,7 @@ async function getSummaries(chunk: string[]): Promise<SummaryItem[]> {
     Return a JSON object with the key "summaries".
     ${JSON.stringify(sampleOutput)}
   `;
+  const { openAIClient } = getOpenAIClient();
   const r = await openAIClient.chat.completions.create({
     messages: [{ role: "user", content }],
     model: "gpt-4o",
@@ -61,6 +62,7 @@ async function getChapters(summaries: string[]): Promise<ChapterItem[]> {
     ${JSON.stringify(sampleOutput)}
     title should be around 5 words long.
   `;
+  const { openAIClient } = getOpenAIClient();
   const r = await openAIClient.chat.completions.create({
     messages: [{ role: "user", content }],
     model: "gpt-4o",

@@ -1,8 +1,22 @@
 import { OpenAI } from "openai";
 import { secretEnvironmentVariables } from "./secretEnvironmentVariables.js";
+let openAIClient: OpenAI | null = null;
+export const getOpenAIClient = () => {
+  if (openAIClient) {
+    return { openAIClient };
+  }
 
-const openAIClient = new OpenAI({
-  apiKey: secretEnvironmentVariables.OPENAI_API_KEY,
-});
+  if (!secretEnvironmentVariables.OPENAI_API_KEY) {
+    throw new Error(
+      "OPENAI_API_KEY not set. Make sure initialSetupCode() has run."
+    );
+  }
 
-export default openAIClient;
+  openAIClient = new OpenAI({
+    apiKey: secretEnvironmentVariables.OPENAI_API_KEY,
+  });
+
+  return {
+    openAIClient,
+  };
+};
