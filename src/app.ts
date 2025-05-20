@@ -64,9 +64,7 @@ const httpServer = createServer(app);
 export const io = new SocketServer(httpServer, {
   cors: {
     origin: "*",
-    credentials: true,
   },
-  transports: ["websocket"],
 });
 app.use(express.json());
 app.use(cors());
