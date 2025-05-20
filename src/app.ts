@@ -119,10 +119,15 @@ const initialSetupCode = async () => {
   await setupSecretEnvironmentVariables();
   await setupSocketRedisAdapter();
 };
-initialSetupCode().then(() => {
-  httpServer.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+initialSetupCode()
+  .then(() => {
+    httpServer.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("initialSetupCode error:");
+    console.error(err);
   });
-});
 
 exampleBase();

@@ -8,7 +8,7 @@ export const getOpenAIClient = () => {
 
   if (!secretEnvironmentVariables.OPENAI_API_KEY) {
     throw new Error(
-      "OPENAI_API_KEY not set. Make sure initialSetupCode() has run."
+      "OPENAI_API_KEY not set. Make sure setupSecretEnvironmentVariables() has run."
     );
   }
 
