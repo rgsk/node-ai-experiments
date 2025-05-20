@@ -14,6 +14,7 @@ export type AppEnvironment = z.infer<typeof AppEnvironmentEnum>;
 const environmentVarsSchema = z.object({
   PORT: z.string(),
   DATABASE_URL: z.string(),
+  REDIS_URL: z.string(),
   NODE_ENV: AppEnvironmentEnum,
   DEEPSEEK_API_KEY: z.string(),
   AWS_ACCESS_KEY: z.string(),
@@ -28,6 +29,7 @@ const environmentVarsSchema = z.object({
 const fields: z.infer<typeof environmentVarsSchema> = {
   PORT: process.env.PORT!,
   DATABASE_URL: process.env.DATABASE_URL!,
+  REDIS_URL: process.env.REDIS_URL!,
   NODE_ENV: process.env.NODE_ENV! as AppEnvironment,
   DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY!,
   AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY!,
