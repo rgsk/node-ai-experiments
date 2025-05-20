@@ -10,6 +10,7 @@ import path from "path";
 import puppeteer from "puppeteer";
 import { v4 } from "uuid";
 import { z } from "zod";
+import environmentVars from "../../lib/environmentVars.js";
 import { UrlContentTypeEnum } from "../../lib/mcpServer.js";
 import pythonRunner from "../../lib/pythonRunner.js";
 import { upload } from "../../lib/upload.js";
@@ -20,6 +21,15 @@ import getUrlContent, {
   fetchWebsiteMeta,
 } from "./assistants/tools/getUrlContent.js";
 const experimentsRouter = Router();
+experimentsRouter.get("/", async (req, res, next) => {
+  try {
+    return res.json({
+      message: `Experiments Server is running on http://localhost:${environmentVars.PORT}`,
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
 // Endpoint to execute Python code
 experimentsRouter.get("/test-error", async (req, res, next) => {
   try {
