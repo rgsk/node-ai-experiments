@@ -1,10 +1,8 @@
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import * as Sentry from "@sentry/node";
-import { createAdapter } from "@socket.io/redis-adapter";
 import cors from "cors";
 import express from "express";
 import { createServer } from "http";
-import { createClient } from "redis";
 import { Server as SocketServer } from "socket.io";
 import tsconfigPaths from "tsconfig-paths";
 import environmentVars from "./lib/environmentVars.js";
@@ -102,22 +100,22 @@ const setupSecretEnvironmentVariables = async () => {
   }
 };
 
-const setupSocketRedisAdapter = async () => {
-  // 1. Create a Redis client for publishing...
-  const pubClient = createClient({ url: environmentVars.REDIS_URL });
-  // 2. ...and one for subscribing
-  const subClient = pubClient.duplicate();
+// const setupSocketRedisAdapter = async () => {
+//   // 1. Create a Redis client for publishing...
+//   const pubClient = createClient({ url: environmentVars.REDIS_URL });
+//   // 2. ...and one for subscribing
+//   const subClient = pubClient.duplicate();
 
-  // 3. Connect both clients
-  await Promise.all([pubClient.connect(), subClient.connect()]);
+//   // 3. Connect both clients
+//   await Promise.all([pubClient.connect(), subClient.connect()]);
 
-  // 4. Tell Socket.IO to use the Redis adapter
-  io.adapter(createAdapter(pubClient, subClient));
-};
+//   // 4. Tell Socket.IO to use the Redis adapter
+//   io.adapter(createAdapter(pubClient, subClient));
+// };
 
 const initialSetupCode = async () => {
   await setupSecretEnvironmentVariables();
-  await setupSocketRedisAdapter();
+  // await setupSocketRedisAdapter();
 };
 initialSetupCode()
   .then(() => {
