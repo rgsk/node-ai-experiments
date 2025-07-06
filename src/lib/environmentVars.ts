@@ -22,6 +22,7 @@ const environmentVarsSchema = z.object({
   GOOGLE_API_KEY: z.string(),
   OPENROUTER_API_KEY: z.string(),
   SENTRY_DSN: z.string(),
+  PYTHON_EXPERIMENTS_SERVER_URL: z.string(),
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -35,6 +36,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   GOOGLE_API_KEY: process.env.GOOGLE_API_KEY!,
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY!,
   SENTRY_DSN: process.env.SENTRY_DSN!,
+  PYTHON_EXPERIMENTS_SERVER_URL: process.env.PYTHON_EXPERIMENTS_SERVER_URL!,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);

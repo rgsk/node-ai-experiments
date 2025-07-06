@@ -8,6 +8,7 @@ import { v4 } from "uuid";
 import { z } from "zod";
 import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js";
 import { jsonDataService } from "../routers/children/jsonDataService.js";
+import aiService from "./aiService.js";
 import environmentVars from "./environmentVars.js";
 import fileLogger from "./fileLogger.js";
 import { initializePyodide } from "./pyodideInstance.js";
@@ -185,6 +186,38 @@ mcpServer.tool(
     const text = await getUrlContent({ url, collectionName, type });
     fileLogger.log({
       tool: "getUrlContent",
+      output: text,
+    });
+    return {
+      content: [
+        {
+          type: "text",
+          text: text,
+        },
+      ],
+    };
+  }
+);
+mcpServer.tool(
+  "getClashRoyaleCards",
+  html`Get cards of clash royale deck. If user shares the clash royale deck to
+  analyse, you must use this tool to fetch the cards in the deck`,
+  {
+    url: z.string({
+      description:
+        "the image url shared by the user containing the clash royale deck",
+    }),
+  },
+  async (args) => {
+    fileLogger.log({
+      tool: "getClashRoyaleCards",
+      args,
+    });
+    const { url } = args;
+    const result = await aiService.getClashRoyaleCards(url);
+    const text = JSON.stringify(result);
+    fileLogger.log({
+      tool: "getClashRoyaleCards",
       output: text,
     });
     return {
