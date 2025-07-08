@@ -8,6 +8,7 @@ const labels = [
   "Date of Birth",
   "Class",
   "Section",
+  "studentImage",
 ];
 export const migrationScriptSdCentralAcademyWebCreateStudents = async () => {
   const reportCards = await jsonDataService.findByKeyLike({
