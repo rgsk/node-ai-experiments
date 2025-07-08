@@ -81,7 +81,6 @@ WHERE "key" = ${key};
     expireAt?: Date;
   }) {
     const jsonData = await this.findByKey(data.key);
-
     if (!jsonData) {
       return (await db.jsonData.create({
         data: {
@@ -92,7 +91,6 @@ WHERE "key" = ${key};
         },
       })) as JsonDataValue<T>;
     }
-
     return (await db.jsonData.update({
       where: { key: data.key },
       data: {
@@ -111,8 +109,13 @@ WHERE "key" = ${key};
       expireAt?: Date;
     }>
   ) {
+    const baseTime = Date.now();
     return await db.jsonData.createMany({
-      data: dataArray.map((d) => ({ ...d, value: d.value as any })),
+      data: dataArray.map((d, i) => ({
+        ...d,
+        value: d.value as any,
+        createdAt: new Date(baseTime + i),
+      })),
       skipDuplicates: true, // Skips duplicates if key already exists
     });
   },
