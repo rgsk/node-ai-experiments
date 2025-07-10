@@ -157,12 +157,14 @@ jsonDataRouter.get(
         createdBy,
         academicSessionValue,
       } = reportCardKeyLikeSchema.parse(req.query);
-
-      const result = await jsonDataService.findByKeyLike({
-        key: getPopulatedKey(key, userEmail),
-        page,
-        perPage,
-        valueFilters: Prisma.sql`
+      let studentIds: string[] | undefined;
+      if (searchTerm || classValue || sectionValue) {
+        const studentsResult = await jsonDataService.findByKeyLike({
+          key: getPopulatedKey(key, userEmail).replace(
+            "reportCards",
+            "students"
+          ),
+          valueFilters: Prisma.sql`
           ${
             searchTerm
               ? Prisma.sql`AND (
@@ -178,13 +180,39 @@ jsonDataRouter.get(
               : Prisma.sql``
           }
           ${
-            academicSessionValue
-              ? Prisma.sql`AND "value"->>'Academic Session' = ${academicSessionValue}`
+            sectionValue
+              ? Prisma.sql`AND "value"->>'Section' = ${sectionValue}`
+              : Prisma.sql``
+          }
+        `,
+        });
+        studentIds = studentsResult.data.map(({ value }) => (value as any).id);
+      }
+
+      const result = await jsonDataService.findByKeyLike({
+        key: getPopulatedKey(key, userEmail),
+        page,
+        perPage,
+        valueFilters: Prisma.sql`
+          ${
+            studentIds
+              ? Prisma.sql`AND (
+      ${
+        studentIds.length > 0
+          ? Prisma.sql`"value"->>'studentId' IN (${Prisma.join(studentIds)})`
+          : Prisma.sql`FALSE`
+      }
+      ${
+        searchTerm
+          ? Prisma.sql`OR "value"->>'id' = ${searchTerm}`
+          : Prisma.sql``
+      }
+    )`
               : Prisma.sql``
           }
           ${
-            sectionValue
-              ? Prisma.sql`AND "value"->>'Section' = ${sectionValue}`
+            academicSessionValue
+              ? Prisma.sql`AND "value"->>'Academic Session' = ${academicSessionValue}`
               : Prisma.sql``
           }
           ${
