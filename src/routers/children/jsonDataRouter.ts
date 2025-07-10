@@ -93,6 +93,52 @@ const reportCardKeyLikeSchema = keyLikeSchema.extend({
 });
 
 jsonDataRouter.get(
+  "/key-like/students",
+  checkAdminOperation({ keySource: "query", operationType: "read" }),
+  async (req, res, next) => {
+    try {
+      const { userEmail } = getProps<Middlewares.Authenticate>(
+        req,
+        Middlewares.Keys.Authenticate
+      );
+      const { key, page, perPage, searchTerm, classValue, sectionValue } =
+        reportCardKeyLikeSchema.parse(req.query);
+
+      const result = await jsonDataService.findByKeyLike({
+        key: getPopulatedKey(key, userEmail),
+        page,
+        perPage,
+        valueFilters: Prisma.sql`
+          ${
+            searchTerm
+              ? Prisma.sql`AND (
+      "value"->>'Student Name' ILIKE ${"%" + searchTerm + "%"}
+      OR "value"->>'Regn. No.' = ${searchTerm}
+      OR "value"->>'id' = ${searchTerm}
+    )`
+              : Prisma.sql``
+          }
+          ${
+            classValue
+              ? Prisma.sql`AND "value"->>'Class' = ${classValue}`
+              : Prisma.sql``
+          }
+         
+          ${
+            sectionValue
+              ? Prisma.sql`AND "value"->>'Section' = ${sectionValue}`
+              : Prisma.sql``
+          }
+         
+        `,
+      });
+      return res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+jsonDataRouter.get(
   "/key-like/report-cards",
   checkAdminOperation({ keySource: "query", operationType: "read" }),
   async (req, res, next) => {
