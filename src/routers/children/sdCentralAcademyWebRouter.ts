@@ -80,23 +80,44 @@ sdCentralAcademyWebRouter.post("/promote-students", async (req, res, next) => {
     const result = await jsonDataService.findByKeyLike({
       key: "sdCentralAcademyWeb/students/%",
     });
+
+    const currentYear = new Date().getFullYear();
     const promises: any[] = [];
+
     for (const entry of result.data) {
       const { value } = entry;
       const student = value as any;
+
       if (student["Class"]) {
-        const currentIndex = classOptions.indexOf(student["Class"]);
+        const currentClass = student["Class"];
+        const currentIndex = classOptions.indexOf(currentClass);
+
+        // Case 1: Normal class promotion
         if (currentIndex !== -1) {
           student["Class"] =
             currentIndex === classOptions.length - 1
-              ? `${new Date().getFullYear()} Passout`
+              ? `${currentYear} Passout`
               : classOptions[currentIndex + 1];
-          promises.push(
-            jsonDataService.createOrUpdate({ key: entry.key, value: student })
-          );
         }
+
+        // Case 2: Already a "YYYY Passout" → increment year
+        else if (
+          typeof currentClass === "string" &&
+          currentClass.endsWith("Passout")
+        ) {
+          const match = currentClass.match(/^(\d{4}) Passout$/);
+          if (match) {
+            const year = parseInt(match[1]);
+            student["Class"] = `${year + 1} Passout`;
+          }
+        }
+
+        promises.push(
+          jsonDataService.createOrUpdate({ key: entry.key, value: student })
+        );
       }
     }
+
     await Promise.all(promises);
     return res.json({ message: "all students promoted successfully" });
   } catch (err) {
