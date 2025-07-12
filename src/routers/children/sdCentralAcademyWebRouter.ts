@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
 import { db } from "../../lib/db.js";
+import { jsonDataService } from "./jsonDataService.js";
 
 const sdCentralAcademyWebRouter = Router();
 
@@ -58,5 +59,56 @@ WHERE key LIKE 'sdCentralAcademyWeb/classDetails1/%'
     return next(err);
   }
 });
+
+export const classOptions = [
+  "PRE-NURSERY",
+  "NURSERY",
+  "LKG",
+  "UKG",
+  "I",
+  "II",
+  "III",
+  "IV",
+  "V",
+  "VI",
+  "VII",
+  "VIII",
+];
+
+sdCentralAcademyWebRouter.post("/promote-students", async (req, res, next) => {
+  try {
+    const result = await jsonDataService.findByKeyLike({
+      key: "sdCentralAcademyWeb/students/%",
+    });
+    const promises: any[] = [];
+    for (const entry of result.data) {
+      const { value } = entry;
+      const student = value as any;
+      if (student["Class"]) {
+        const currentIndex = classOptions.indexOf(student["Class"]);
+        if (currentIndex !== -1) {
+          student["Class"] =
+            currentIndex === classOptions.length - 1
+              ? `${new Date().getFullYear()} Passout`
+              : classOptions[currentIndex + 1];
+          promises.push(
+            jsonDataService.createOrUpdate({ key: entry.key, value: student })
+          );
+        }
+      }
+    }
+    await Promise.all(promises);
+    return res.json({ message: "all students promoted successfully" });
+  } catch (err) {
+    return next(err);
+  }
+});
+// sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
+//   try {
+//     // complete this function
+//   } catch (err) {
+//     return next(err);
+//   }
+// });
 
 export default sdCentralAcademyWebRouter;
