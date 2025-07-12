@@ -42,6 +42,7 @@ const getClassDetailsQuerySchema = z.object({
   academicSession: z.string(),
   classValue: z.string(),
 });
+
 sdCentralAcademyWebRouter.get("/class-details", async (req, res, next) => {
   try {
     const { academicSession, classValue } = getClassDetailsQuerySchema.parse(
@@ -60,7 +61,7 @@ WHERE key LIKE 'sdCentralAcademyWeb/classDetails1/%'
   }
 });
 
-export const classOptions = [
+export const knownClassOrder = [
   "PRE-NURSERY",
   "NURSERY",
   "LKG",
@@ -91,13 +92,13 @@ sdCentralAcademyWebRouter.post("/promote-students", async (req, res, next) => {
       if (!student["Class"]) continue;
 
       const currentClass = student["Class"];
-      const classIndex = classOptions.indexOf(currentClass);
+      const classIndex = knownClassOrder.indexOf(currentClass);
 
       if (classIndex !== -1) {
         student["Class"] =
-          classIndex === classOptions.length - 1
+          classIndex === knownClassOrder.length - 1
             ? `${currentYear} Passout`
-            : classOptions[classIndex + 1];
+            : knownClassOrder[classIndex + 1];
       } else if (
         typeof currentClass === "string" &&
         currentClass.endsWith("Passout")
@@ -148,11 +149,11 @@ sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
       if (!student["Class"]) continue;
 
       const currentClass = student["Class"];
-      const classIndex = classOptions.indexOf(currentClass);
+      const classIndex = knownClassOrder.indexOf(currentClass);
 
       // Case 1: Regular class demotion
       if (classIndex > 0) {
-        student["Class"] = classOptions[classIndex - 1];
+        student["Class"] = knownClassOrder[classIndex - 1];
       }
 
       // Case 2: PRE-NURSERY → PRE-NURSERY MINUS 1
@@ -178,7 +179,7 @@ sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
         if (match) {
           const passoutYear = parseInt(match[1], 10);
           if (passoutYear === currentYear) {
-            student["Class"] = classOptions[classOptions.length - 1]; // demote to VIII
+            student["Class"] = knownClassOrder[knownClassOrder.length - 1]; // demote to VIII
           } else if (passoutYear > currentYear) {
             student["Class"] = `${passoutYear - 1} Passout`;
           }
@@ -192,6 +193,53 @@ sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
 
     await Promise.all(promises);
     return res.json({ message: "all students demoted successfully" });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+sdCentralAcademyWebRouter.get("/assigned-classes", async (req, res, next) => {
+  try {
+    const classesSet = new Set<string>(knownClassOrder); // standard classes should always be available
+
+    const result = await jsonDataService.findByKeyLike({
+      key: "sdCentralAcademyWeb/students/%",
+    });
+
+    for (const entry of result.data) {
+      const student = entry.value as any;
+      if (student["Class"]) {
+        classesSet.add(student["Class"]);
+      }
+    }
+
+    const classes = Array.from(classesSet);
+
+    const sorted = classes.sort((a, b) => {
+      const getRank = (cls: string): number => {
+        // PRE-NURSERY MINUS N (higher N comes first → lower rank)
+        const minusMatch = cls.match(/^PRE-NURSERY MINUS (\d+)$/);
+        if (minusMatch) return -parseInt(minusMatch[1]) * 10;
+
+        // Exact match for PRE-NURSERY
+        if (cls === "PRE-NURSERY") return 0;
+
+        // Known class ordering
+        const knownIndex = knownClassOrder.indexOf(cls);
+        if (knownIndex !== -1) return 100 + knownIndex;
+
+        // Passouts
+        const passoutMatch = cls.match(/^(\d{4}) Passout$/);
+        if (passoutMatch) return 1000 + parseInt(passoutMatch[1]);
+
+        // Unknowns last
+        return 9999;
+      };
+
+      return getRank(a) - getRank(b);
+    });
+
+    return res.json(sorted);
   } catch (err) {
     return next(err);
   }
