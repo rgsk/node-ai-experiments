@@ -103,12 +103,67 @@ sdCentralAcademyWebRouter.post("/promote-students", async (req, res, next) => {
     return next(err);
   }
 });
-// sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
-//   try {
-//     // complete this function
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
+sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
+  try {
+    const result = await jsonDataService.findByKeyLike({
+      key: "sdCentralAcademyWeb/students/%",
+    });
+
+    const currentYear = new Date().getFullYear();
+    const promises: any[] = [];
+
+    for (const entry of result.data) {
+      const { value } = entry;
+      const student = value as any;
+
+      if (student["Class"]) {
+        const currentClass = student["Class"];
+        const currentIndex = classOptions.indexOf(currentClass);
+
+        // Case 1: Valid class (e.g., I, II, ..., VIII)
+        if (currentIndex > 0) {
+          student["Class"] = classOptions[currentIndex - 1];
+        }
+
+        // Case 2: Was "PRE-NURSERY", can't demote
+        else if (currentIndex === 0) {
+          continue; // skip demotion
+        }
+
+        // Case 3: Year Passout string, e.g., "2025 Passout"
+        else if (
+          typeof currentClass === "string" &&
+          currentClass.endsWith("Passout")
+        ) {
+          const match = currentClass.match(/^(\d{4}) Passout$/);
+          if (match) {
+            const passoutYear = parseInt(match[1]);
+
+            if (passoutYear === currentYear) {
+              // Move to last class
+              student["Class"] = classOptions[classOptions.length - 1];
+            } else if (passoutYear > currentYear) {
+              // Reduce passout year by 1
+              student["Class"] = `${passoutYear - 1} Passout`;
+            } else {
+              continue; // Ignore outdated passouts
+            }
+          }
+        } else {
+          continue; // Skip unknown values
+        }
+
+        promises.push(
+          jsonDataService.createOrUpdate({ key: entry.key, value: student })
+        );
+      }
+    }
+
+    await Promise.all(promises);
+    return res.json({ message: "all students demoted successfully" });
+  } catch (err) {
+    return next(err);
+  }
+});
 
 export default sdCentralAcademyWebRouter;
