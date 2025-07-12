@@ -88,34 +88,41 @@ sdCentralAcademyWebRouter.post("/promote-students", async (req, res, next) => {
       const { value } = entry;
       const student = value as any;
 
-      if (student["Class"]) {
-        const currentClass = student["Class"];
-        const currentIndex = classOptions.indexOf(currentClass);
+      if (!student["Class"]) continue;
 
-        // Case 1: Normal class promotion
-        if (currentIndex !== -1) {
-          student["Class"] =
-            currentIndex === classOptions.length - 1
-              ? `${currentYear} Passout`
-              : classOptions[currentIndex + 1];
+      const currentClass = student["Class"];
+      const classIndex = classOptions.indexOf(currentClass);
+
+      if (classIndex !== -1) {
+        student["Class"] =
+          classIndex === classOptions.length - 1
+            ? `${currentYear} Passout`
+            : classOptions[classIndex + 1];
+      } else if (
+        typeof currentClass === "string" &&
+        currentClass.endsWith("Passout")
+      ) {
+        const match = currentClass.match(/^(\d{4}) Passout$/);
+        if (match) {
+          const year = parseInt(match[1]);
+          student["Class"] = `${year + 1} Passout`;
         }
-
-        // Case 2: Already a "YYYY Passout" → increment year
-        else if (
-          typeof currentClass === "string" &&
-          currentClass.endsWith("Passout")
-        ) {
-          const match = currentClass.match(/^(\d{4}) Passout$/);
-          if (match) {
-            const year = parseInt(match[1]);
-            student["Class"] = `${year + 1} Passout`;
+      } else {
+        // Handle PRE-NURSERY MINUS N → promote toward PRE-NURSERY
+        const match = currentClass.match(/^PRE-NURSERY MINUS (\d+)$/);
+        if (match) {
+          const level = parseInt(match[1]);
+          if (level === 1) {
+            student["Class"] = "PRE-NURSERY";
+          } else {
+            student["Class"] = `PRE-NURSERY MINUS ${level - 1}`;
           }
         }
-
-        promises.push(
-          jsonDataService.createOrUpdate({ key: entry.key, value: student })
-        );
       }
+
+      promises.push(
+        jsonDataService.createOrUpdate({ key: entry.key, value: student })
+      );
     }
 
     await Promise.all(promises);
@@ -124,6 +131,7 @@ sdCentralAcademyWebRouter.post("/promote-students", async (req, res, next) => {
     return next(err);
   }
 });
+
 sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
   try {
     const result = await jsonDataService.findByKeyLike({
@@ -137,47 +145,49 @@ sdCentralAcademyWebRouter.post("/demote-students", async (req, res, next) => {
       const { value } = entry;
       const student = value as any;
 
-      if (student["Class"]) {
-        const currentClass = student["Class"];
-        const currentIndex = classOptions.indexOf(currentClass);
+      if (!student["Class"]) continue;
 
-        // Case 1: Valid class (e.g., I, II, ..., VIII)
-        if (currentIndex > 0) {
-          student["Class"] = classOptions[currentIndex - 1];
-        }
+      const currentClass = student["Class"];
+      const classIndex = classOptions.indexOf(currentClass);
 
-        // Case 2: Was "PRE-NURSERY", can't demote
-        else if (currentIndex === 0) {
-          continue; // skip demotion
-        }
-
-        // Case 3: Year Passout string, e.g., "2025 Passout"
-        else if (
-          typeof currentClass === "string" &&
-          currentClass.endsWith("Passout")
-        ) {
-          const match = currentClass.match(/^(\d{4}) Passout$/);
-          if (match) {
-            const passoutYear = parseInt(match[1]);
-
-            if (passoutYear === currentYear) {
-              // Move to last class
-              student["Class"] = classOptions[classOptions.length - 1];
-            } else if (passoutYear > currentYear) {
-              // Reduce passout year by 1
-              student["Class"] = `${passoutYear - 1} Passout`;
-            } else {
-              continue; // Ignore outdated passouts
-            }
-          }
-        } else {
-          continue; // Skip unknown values
-        }
-
-        promises.push(
-          jsonDataService.createOrUpdate({ key: entry.key, value: student })
-        );
+      // Case 1: Regular class demotion
+      if (classIndex > 0) {
+        student["Class"] = classOptions[classIndex - 1];
       }
+
+      // Case 2: PRE-NURSERY → PRE-NURSERY MINUS 1
+      else if (currentClass === "PRE-NURSERY") {
+        student["Class"] = "PRE-NURSERY MINUS 1";
+      }
+
+      // Case 3: PRE-NURSERY MINUS N → PRE-NURSERY MINUS N+1
+      else if (/^PRE-NURSERY MINUS \d+$/.test(currentClass)) {
+        const match = currentClass.match(/^PRE-NURSERY MINUS (\d+)$/);
+        if (match) {
+          const level = parseInt(match[1], 10);
+          student["Class"] = `PRE-NURSERY MINUS ${level + 1}`;
+        }
+      }
+
+      // Case 4: Passout demotion
+      else if (
+        typeof currentClass === "string" &&
+        currentClass.endsWith("Passout")
+      ) {
+        const match = currentClass.match(/^(\d{4}) Passout$/);
+        if (match) {
+          const passoutYear = parseInt(match[1], 10);
+          if (passoutYear === currentYear) {
+            student["Class"] = classOptions[classOptions.length - 1]; // demote to VIII
+          } else if (passoutYear > currentYear) {
+            student["Class"] = `${passoutYear - 1} Passout`;
+          }
+        }
+      }
+
+      promises.push(
+        jsonDataService.createOrUpdate({ key: entry.key, value: student })
+      );
     }
 
     await Promise.all(promises);
