@@ -84,12 +84,74 @@ jsonDataRouter.get(
   }
 );
 
-const reportCardKeyLikeSchema = keyLikeSchema.extend({
+const dateSheetsKeyLikeSchema = keyLikeSchema.extend({
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
-  academicSessionValue: z.string().optional(),
+  sessionValue: z.string().optional(),
+  termValue: z.string().optional(),
+});
+
+jsonDataRouter.get(
+  "/key-like/date-sheets",
+  checkAdminOperation({ keySource: "query", operationType: "read" }),
+  async (req, res, next) => {
+    try {
+      const { userEmail } = getProps<Middlewares.Authenticate>(
+        req,
+        Middlewares.Keys.Authenticate
+      );
+      const {
+        key,
+        page,
+        perPage,
+        searchTerm,
+        classValue,
+        sessionValue,
+        termValue,
+      } = dateSheetsKeyLikeSchema.parse(req.query);
+
+      const result = await jsonDataService.findByKeyLike({
+        key: getPopulatedKey(key, userEmail),
+        page,
+        perPage,
+        valueFilters: Prisma.sql`
+          ${
+            searchTerm
+              ? Prisma.sql`AND (
+      "value"->>'id' = ${searchTerm}
+    )`
+              : Prisma.sql``
+          }
+          ${
+            classValue
+              ? Prisma.sql`AND "value"->>'Class' = ${classValue}`
+              : Prisma.sql``
+          }
+         
+          ${
+            sessionValue
+              ? Prisma.sql`AND "value"->>'Session' = ${sessionValue}`
+              : Prisma.sql``
+          }
+          ${
+            termValue
+              ? Prisma.sql`AND "value"->>'Term' = ${termValue}`
+              : Prisma.sql``
+          }
+         
+        `,
+      });
+      return res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+const studentsKeyLikeSchema = keyLikeSchema.extend({
+  searchTerm: z.string().optional(),
+  classValue: z.string().optional(),
   sectionValue: z.string().optional(),
-  createdBy: z.string().optional(),
 });
 
 jsonDataRouter.get(
@@ -102,7 +164,7 @@ jsonDataRouter.get(
         Middlewares.Keys.Authenticate
       );
       const { key, page, perPage, searchTerm, classValue, sectionValue } =
-        reportCardKeyLikeSchema.parse(req.query);
+        studentsKeyLikeSchema.parse(req.query);
 
       const result = await jsonDataService.findByKeyLike({
         key: getPopulatedKey(key, userEmail),
@@ -138,6 +200,15 @@ jsonDataRouter.get(
     }
   }
 );
+
+const reportCardsKeyLikeSchema = keyLikeSchema.extend({
+  searchTerm: z.string().optional(),
+  classValue: z.string().optional(),
+  academicSessionValue: z.string().optional(),
+  sectionValue: z.string().optional(),
+  createdBy: z.string().optional(),
+});
+
 jsonDataRouter.get(
   "/key-like/report-cards",
   checkAdminOperation({ keySource: "query", operationType: "read" }),
@@ -156,7 +227,7 @@ jsonDataRouter.get(
         sectionValue,
         createdBy,
         academicSessionValue,
-      } = reportCardKeyLikeSchema.parse(req.query);
+      } = reportCardsKeyLikeSchema.parse(req.query);
       let studentIds: string[] | undefined;
       if (searchTerm || classValue || sectionValue) {
         const studentsResult = await jsonDataService.findByKeyLike({
