@@ -337,4 +337,42 @@ experimentsRouter.get("/run-python", async (req, res, next) => {
     return next(err);
   }
 });
+
+experimentsRouter.post("/execute-cpp", async (req, res, next) => {
+  try {
+    const cppCode: string = req.body.code;
+    if (!cppCode) {
+      return res.status(400).json({ error: "No C++ code provided" });
+    }
+
+    // Setup paths
+    const tempDir = "temp";
+    const srcDir = path.join(tempDir, "src");
+    const distDir = path.join(tempDir, "dist");
+
+    const cppPath = path.join(srcDir, "main.cpp");
+    const outputPath = path.join(distDir, "main");
+
+    // Ensure folders exist
+    await fs.promises.mkdir(srcDir, { recursive: true });
+    await fs.promises.mkdir(distDir, { recursive: true });
+
+    // Write C++ code to temp file
+    await fs.promises.writeFile(cppPath, cppCode, "utf8");
+
+    const command = `g++-15 ${cppPath} -Wall -Wno-sign-compare -std=c++20 -o ${outputPath} && ${outputPath}`;
+
+    // Execute the compile + run command
+    exec(command, { timeout: 5000 }, (error, stdout, stderr) => {
+      if (error) {
+        return res.status(500).json({ error: stderr || error.message });
+      }
+
+      return res.json({ output: stdout });
+    });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export default experimentsRouter;
