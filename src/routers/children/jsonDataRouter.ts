@@ -89,6 +89,7 @@ const dateSheetsKeyLikeSchema = keyLikeSchema.extend({
   classValue: z.string().optional(),
   sessionValue: z.string().optional(),
   termValue: z.string().optional(),
+  selectedIds: z.string().array().optional(),
 });
 
 jsonDataRouter.get(
@@ -108,6 +109,7 @@ jsonDataRouter.get(
         classValue,
         sessionValue,
         termValue,
+        selectedIds,
       } = dateSheetsKeyLikeSchema.parse(req.query);
 
       const result = await jsonDataService.findByKeyLike({
@@ -122,6 +124,13 @@ jsonDataRouter.get(
     )`
               : Prisma.sql``
           }
+            ${
+              !!selectedIds && selectedIds.length > 0
+                ? Prisma.sql`AND "value"->>'id' IN (${Prisma.join(
+                    selectedIds
+                  )})`
+                : Prisma.sql``
+            }
           ${
             classValue
               ? Prisma.sql`AND "value"->>'Class' = ${classValue}`
