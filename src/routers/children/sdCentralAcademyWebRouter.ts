@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { Router } from "express";
 import { z } from "zod";
 import { db } from "../../lib/db.js";
@@ -22,18 +23,31 @@ WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
 
 const getReportCardsSchema = z.object({
   registrationNumber: z.string(),
+  sessionValue: z.string(),
 });
 
 sdCentralAcademyWebRouter.get("/report-cards", async (req, res, next) => {
   try {
-    const { registrationNumber } = getReportCardsSchema.parse(req.query);
-    const result = await db.$queryRaw`
+    const { registrationNumber, sessionValue } = getReportCardsSchema.parse(
+      req.query
+    );
+    const studentsResult: any = await db.$queryRaw`
     SELECT *
 FROM "JsonData"
-WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
+WHERE key LIKE 'sdCentralAcademyWeb/students/%'
   AND value->>'Regn. No.' = ${registrationNumber};
     `;
-    return res.json(result);
+    const studentIds = studentsResult.map(
+      ({ value }: any) => (value as any).id
+    );
+    const reportCardsResult = await db.$queryRaw`
+        SELECT *
+    FROM "JsonData"
+    WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
+      AND value->>'studentId' IN (${Prisma.join(studentIds)})
+      AND value->>'Academic Session' = ${sessionValue};
+`;
+    return res.json(reportCardsResult);
   } catch (err) {
     return next(err);
   }
