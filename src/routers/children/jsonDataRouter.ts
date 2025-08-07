@@ -152,6 +152,7 @@ const studentsKeyLikeSchema = keyLikeSchema.extend({
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
   sectionValue: z.string().optional(),
+  selectedIds: z.string().array().optional(),
 });
 
 jsonDataRouter.get(
@@ -163,8 +164,15 @@ jsonDataRouter.get(
         req,
         Middlewares.Keys.Authenticate
       );
-      const { key, page, perPage, searchTerm, classValue, sectionValue } =
-        studentsKeyLikeSchema.parse(req.query);
+      const {
+        key,
+        page,
+        perPage,
+        searchTerm,
+        classValue,
+        sectionValue,
+        selectedIds,
+      } = studentsKeyLikeSchema.parse(req.query);
 
       const result = await jsonDataService.findByKeyLike({
         key: getPopulatedKey(key, userEmail),
@@ -180,6 +188,11 @@ jsonDataRouter.get(
     )`
               : Prisma.sql``
           }
+           ${
+             !!selectedIds && selectedIds.length > 0
+               ? Prisma.sql`AND "value"->>'id' IN (${Prisma.join(selectedIds)})`
+               : Prisma.sql``
+           }
           ${
             classValue
               ? Prisma.sql`AND "value"->>'Class' = ${classValue}`
