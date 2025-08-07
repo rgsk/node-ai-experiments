@@ -83,13 +83,19 @@ jsonDataRouter.get(
     }
   }
 );
+const selectedIdsSchema = z
+  .preprocess((val) => {
+    if (typeof val === "string") return [val]; // wrap single string in array
+    return val; // otherwise leave it as is
+  }, z.string().array())
+  .optional();
 
 const dateSheetsKeyLikeSchema = keyLikeSchema.extend({
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
   sessionValue: z.string().optional(),
   termValue: z.string().optional(),
-  selectedIds: z.string().array().optional(),
+  selectedIds: selectedIdsSchema,
 });
 
 jsonDataRouter.get(
@@ -161,7 +167,7 @@ const studentsKeyLikeSchema = keyLikeSchema.extend({
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
   sectionValue: z.string().optional(),
-  selectedIds: z.string().array().optional(),
+  selectedIds: selectedIdsSchema,
 });
 
 jsonDataRouter.get(
@@ -224,7 +230,7 @@ jsonDataRouter.get(
 );
 
 const reportCardsKeyLikeSchema = keyLikeSchema.extend({
-  selectedIds: z.string().array().optional(),
+  selectedIds: selectedIdsSchema,
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
   academicSessionValue: z.string().optional(),
