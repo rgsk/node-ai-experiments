@@ -38,6 +38,25 @@ WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
     return next(err);
   }
 });
+
+const getStudentsSchema = z.object({
+  registrationNumber: z.string(),
+});
+
+sdCentralAcademyWebRouter.get("/students", async (req, res, next) => {
+  try {
+    const { registrationNumber } = getStudentsSchema.parse(req.query);
+    const result = await db.$queryRaw`
+    SELECT *
+FROM "JsonData"
+WHERE key LIKE 'sdCentralAcademyWeb/students/%'
+  AND value->>'Regn. No.' = ${registrationNumber};
+    `;
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
 const getClassDetailsQuerySchema = z.object({
   academicSession: z.string(),
   classValue: z.string(),
