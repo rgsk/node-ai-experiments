@@ -202,6 +202,7 @@ jsonDataRouter.get(
 );
 
 const reportCardsKeyLikeSchema = keyLikeSchema.extend({
+  selectedIds: z.string().array().optional(),
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
   academicSessionValue: z.string().optional(),
@@ -227,7 +228,9 @@ jsonDataRouter.get(
         sectionValue,
         createdBy,
         academicSessionValue,
+        selectedIds,
       } = reportCardsKeyLikeSchema.parse(req.query);
+
       let studentIds: string[] | undefined;
       if (searchTerm || classValue || sectionValue) {
         const studentsResult = await jsonDataService.findByKeyLike({
@@ -279,6 +282,11 @@ jsonDataRouter.get(
           : Prisma.sql``
       }
     )`
+              : Prisma.sql``
+          }
+          ${
+            !!selectedIds && selectedIds.length > 0
+              ? Prisma.sql`AND "value"->>'id' IN (${Prisma.join(selectedIds)})`
               : Prisma.sql``
           }
           ${
