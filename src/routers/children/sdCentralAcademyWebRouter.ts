@@ -61,6 +61,31 @@ WHERE key LIKE 'sdCentralAcademyWeb/classDetails1/%'
   }
 });
 
+const getDateSheetsSchema = z.object({
+  classValue: z.string(),
+  sessionValue: z.string(),
+  termValue: z.string(),
+});
+
+sdCentralAcademyWebRouter.get("/date-sheets", async (req, res, next) => {
+  try {
+    const { classValue, sessionValue, termValue } = getDateSheetsSchema.parse(
+      req.query
+    );
+    const result = await db.$queryRaw`
+    SELECT *
+FROM "JsonData"
+WHERE key LIKE 'sdCentralAcademyWeb/dateSheets/%'
+  AND value->>'Class' = ${classValue}
+  AND value->>'Session' = ${sessionValue}
+  AND value->>'Term' = ${termValue};
+    `;
+    return res.json(result);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export const knownClassOrder = [
   "PRE-NURSERY",
   "NURSERY",
