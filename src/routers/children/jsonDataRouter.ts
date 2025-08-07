@@ -426,4 +426,36 @@ jsonDataRouter.delete(
   }
 );
 
+const deleteKeysSchema = z.object({
+  keys: z.string().array(),
+});
+
+jsonDataRouter.delete(
+  "/keys",
+  checkAdminOperation({
+    keySource: "body",
+    operationType: "write",
+    bulk: true,
+    getKeys: (req) => {
+      const { keys } = deleteKeysSchema.parse(req.body);
+      return keys;
+    },
+  }),
+  async (req, res, next) => {
+    try {
+      const { userEmail } = getProps<Middlewares.Authenticate>(
+        req,
+        Middlewares.Keys.Authenticate
+      );
+      const { keys } = deleteKeysSchema.parse(req.body);
+      const { count } = await jsonDataService.deleteKeys(
+        keys.map((key) => getPopulatedKey(key, userEmail))
+      );
+      return res.json({ deletedCount: count });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 export default jsonDataRouter;

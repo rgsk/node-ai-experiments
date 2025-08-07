@@ -126,6 +126,12 @@ WHERE "key" = ${key};
     })) as JsonDataValue<T>;
   },
 
+  async deleteKeys<T>(keys: string[]) {
+    return await db.jsonData.deleteMany({
+      where: { key: { in: keys } },
+    });
+  },
+
   async deleteByKeyLike(key: string) {
     return await db.$executeRaw`
       DELETE FROM "JsonData"

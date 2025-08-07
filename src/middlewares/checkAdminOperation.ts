@@ -24,10 +24,12 @@ const checkAdminOperation =
     keySource,
     operationType,
     bulk,
+    getKeys,
   }: {
     keySource: "query" | "body";
     operationType: "read" | "write";
     bulk?: boolean;
+    getKeys?: (req: Request) => string[];
   }) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -39,7 +41,9 @@ const checkAdminOperation =
       let key: string | undefined;
       if (bulk) {
         if (keySource === "body") {
-          const keys: string[] = req.body.data.map((entry: any) => entry.key);
+          const keys: string[] = getKeys
+            ? getKeys(req)
+            : req.body.data.map((entry: any) => entry.key);
           // check if private key exists
           key = keys.find(
             (k) => k.includes("admin") && !k.includes("admin/public")
