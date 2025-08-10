@@ -233,6 +233,7 @@ const reportCardsKeyLikeSchema = keyLikeSchema.extend({
   selectedIds: selectedIdsSchema,
   searchTerm: z.string().optional(),
   classValue: z.string().optional(),
+  termValue: z.string().optional(),
   academicSessionValue: z.string().optional(),
   sectionValue: z.string().optional(),
   createdBy: z.string().optional(),
@@ -253,6 +254,7 @@ jsonDataRouter.get(
         perPage,
         searchTerm,
         classValue,
+        termValue,
         sectionValue,
         createdBy,
         academicSessionValue,
@@ -315,6 +317,11 @@ jsonDataRouter.get(
           ${
             !!selectedIds && selectedIds.length > 0
               ? Prisma.sql`AND "value"->>'id' IN (${Prisma.join(selectedIds)})`
+              : Prisma.sql``
+          }
+          ${
+            termValue
+              ? Prisma.sql`AND "value"->>'Term' = ${termValue}`
               : Prisma.sql``
           }
           ${
