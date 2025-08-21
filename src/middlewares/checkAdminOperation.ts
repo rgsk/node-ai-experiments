@@ -110,16 +110,26 @@ const sdCentralAcademyWebChecks = async ({
 }: {
   userEmail: string;
 }) => {
-  const result = await jsonDataService.findByKey<string[]>(
-    `sdCentralAcademyWeb/admin/private/emailsWithDashboardAccess`
-  );
-  const emailsWithDashboardAccess = result?.value;
+  const { value: emailsWithDashboardAccess } =
+    (await jsonDataService.findByKey<string[]>(
+      `sdCentralAcademyWeb/admin/private/emailsWithDashboardAccess`
+    )) ?? {};
   if (!emailsWithDashboardAccess) {
     throw new Error("emailsWithDashboardAccess not present");
   }
-
   if (emailsWithDashboardAccess.includes(userEmail)) {
     return;
   }
+  const { value: emailsWithTeacherAccess } =
+    (await jsonDataService.findByKey<
+      { email: string; classValue: string; sectionValue: string }[]
+    >(`sdCentralAcademyWeb/admin/public/emailsWithTeacherAccess`)) ?? {};
+  if (!emailsWithTeacherAccess) {
+    throw new Error("emailsWithTeacherAccess not present");
+  }
+  if (emailsWithTeacherAccess.some((e) => e.email === userEmail)) {
+    return;
+  }
+
   throw new Error("no access");
 };
