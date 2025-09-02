@@ -193,6 +193,7 @@ jsonDataRouter.get(
         key: getPopulatedKey(key, userEmail),
         page,
         perPage,
+        orderBy: Prisma.sql`"value"->>'Student Name' ASC`,
         valueFilters: Prisma.sql`
           ${
             searchTerm

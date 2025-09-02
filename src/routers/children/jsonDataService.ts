@@ -14,11 +14,13 @@ export const jsonDataService = {
     page,
     perPage,
     valueFilters,
+    orderBy,
   }: {
     key: string;
     page?: number;
     perPage?: number;
     valueFilters?: Sql;
+    orderBy?: Sql;
   }) {
     const res = await db.$queryRaw<{ count: number }[]>`
     SELECT COUNT(*) AS count FROM "JsonData"
@@ -32,7 +34,7 @@ export const jsonDataService = {
       SELECT * FROM "JsonData"
       WHERE "key" LIKE ${key}
       ${valueFilters ?? Prisma.sql``}
-      ORDER BY "createdAt" DESC
+      ORDER BY ${orderBy ?? Prisma.sql`"createdAt" DESC`}
       
       ${
         page !== undefined
