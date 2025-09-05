@@ -31,5 +31,6 @@ export const examMarksByStudentId = async () => {
         records: newRecords,
       },
     });
+    console.log("examMarksByStudentId migration script ran successfully");
   }
 };
