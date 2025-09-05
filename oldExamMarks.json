@@ -1,0 +1,2510 @@
+{
+  "records": {
+    "SDCA": {
+      "GK": "97",
+      "HINDI": "76",
+      "DRAWING": "97",
+      "ENGLISH": "68",
+      "MATHEMATICS": "78"
+    },
+    "SDCA16": {
+      "HINDI": "98",
+      "SANSKRIT": "88"
+    },
+    "SDCA18": {
+      "HINDI": ""
+    },
+    "SDCA33": {
+      "GK": "65",
+      "HINDI": "91",
+      "ENGLISH": "90",
+      "SCIENCE": "76",
+      "COMPUTER": "67",
+      "MATHEMATICS": "82",
+      "SOCIAL SCIENCE": "56"
+    },
+    "SDCA37": {
+      "HINDI": "82",
+      "ENGLISH": "99",
+      "SCIENCE": "77",
+      "MATHEMATICS": "78",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA39": {
+      "GK": "72",
+      "HINDI": "86",
+      "ENGLISH": "93",
+      "SCIENCE": "84",
+      "COMPUTER": "99",
+      "MATHEMATICS": "82",
+      "SOCIAL SCIENCE": "68"
+    },
+    "SDCA45": {
+      "GK": "40",
+      "HINDI": "56",
+      "ENGLISH": "67",
+      "SCIENCE": "68",
+      "COMPUTER": "56",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA51": {
+      "GK": "70",
+      "HINDI": "78",
+      "ENGLISH": "81",
+      "SCIENCE": "71",
+      "COMPUTER": "75",
+      "MATHEMATICS": "86",
+      "SOCIAL SCIENCE": "32"
+    },
+    "SDCA56": {
+      "GK": "63",
+      "HINDI": "75",
+      "ENGLISH": "81",
+      "SCIENCE": "45",
+      "COMPUTER": "95",
+      "MATHEMATICS": "59",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA65": {
+      "HINDI": "93",
+      "SANSKRIT": "94"
+    },
+    "SDCA67": {
+      "HINDI": "60",
+      "DRAWING": "86"
+    },
+    "SDCA75": {
+      "HINDI": "84",
+      "SANSKRIT": "48"
+    },
+    "SDCA80": {
+      "HINDI": "77",
+      "SANSKRIT": "54"
+    },
+    "SDCA82": {
+      "HINDI": "70",
+      "DRAWING": "70"
+    },
+    "SDCA110": {
+      "GK": "99",
+      "HINDI": "87",
+      "DRAWING": "86",
+      "ENGLISH": "94",
+      "SCIENCE": "81",
+      "COMPUTER": "78",
+      "SANSKRIT": "68",
+      "DRAWING54": "85",
+      "MATHEMATICS": "88",
+      "SOCIAL SCIENCE": "85",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA112": {
+      "GK": "67",
+      "HINDI": "75",
+      "ENGLISH": "78",
+      "SCIENCE": "67",
+      "COMPUTER": "93",
+      "MATHEMATICS": "71",
+      "SOCIAL SCIENCE": "47"
+    },
+    "SDCA113": {
+      "GK": "97",
+      "HINDI": "97",
+      "DRAWING": "97",
+      "ENGLISH": "96",
+      "SCIENCE": "89",
+      "COMPUTER": "88",
+      "SANSKRIT": "99",
+      "DRAWING54": "93",
+      "MATHEMATICS": "90",
+      "SOCIAL SCIENCE": "94",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA115": {
+      "HINDI": "65",
+      "DRAWING": "73",
+      "ENGLISH": "88"
+    },
+    "SDCA116": {
+      "GK": "86",
+      "HINDI": "92",
+      "DRAWING": "60",
+      "ENGLISH": "90",
+      "SCIENCE": "80",
+      "COMPUTER": "80",
+      "SANSKRIT": "88",
+      "DRAWING54": "83",
+      "MATHEMATICS": "88",
+      "SOCIAL SCIENCE": "89",
+      "PHYSICAL EDUCATION": "40"
+    },
+    "SDCA123": {
+      "HINDI": "78",
+      "ENGLISH": "83",
+      "SCIENCE": "51",
+      "MATHEMATICS": "76",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA128": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "56",
+      "ENGLISH": "50",
+      "SCIENCE": "48",
+      "COMPUTER": "49",
+      "SANSKRIT": "40",
+      "DRAWING54": "50",
+      "MATHEMATICS": "45",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "91"
+    },
+    "SDCA154": {
+      "GK": "71",
+      "HINDI": "97",
+      "ENGLISH": "99",
+      "SCIENCE": "86",
+      "MATHEMATICS": "56",
+      "SOCIAL SCIENCE": "70"
+    },
+    "SDCA162": {
+      "GK": "56",
+      "HINDI": "48",
+      "DRAWING": "57",
+      "ENGLISH": "58",
+      "SCIENCE": "59",
+      "COMPUTER": "46",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "67",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA163": {
+      "HINDI": "99",
+      "SANSKRIT": "76"
+    },
+    "SDCA166": {
+      "HINDI": "45",
+      "ENGLISH": "62",
+      "SCIENCE": "41",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA167": {
+      "GK": "64",
+      "HINDI": "65",
+      "DRAWING": "84",
+      "ENGLISH": "63",
+      "SCIENCE": "84",
+      "COMPUTER": "54",
+      "SANSKRIT": "72",
+      "MATHEMATICS": "77",
+      "SOCIAL SCIENCE": "67",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA172": {
+      "GK": "64",
+      "HINDI": "69",
+      "ENGLISH": "72",
+      "SCIENCE": "60",
+      "COMPUTER": "87",
+      "MATHEMATICS": "64",
+      "SOCIAL SCIENCE": "43"
+    },
+    "SDCA176": {
+      "HINDI": "45",
+      "ENGLISH": "51",
+      "SCIENCE": "40",
+      "MATHEMATICS": "33",
+      "SOCIAL SCIENCE": "46"
+    },
+    "SDCA179": {
+      "GK": "67",
+      "HINDI": "61",
+      "DRAWING": "56",
+      "ENGLISH": "78",
+      "SCIENCE": "54",
+      "COMPUTER": "70",
+      "SANSKRIT": "40",
+      "DRAWING54": "56",
+      "MATHEMATICS": "45",
+      "SOCIAL SCIENCE": "50",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA180": {
+      "GK": "48",
+      "HINDI": "58",
+      "DRAWING": "84",
+      "ENGLISH": "50",
+      "SCIENCE": "47",
+      "COMPUTER": "51",
+      "SANSKRIT": "46",
+      "DRAWING54": "60",
+      "MATHEMATICS": "58",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA183": {
+      "HINDI": "45",
+      "DRAWING": "78"
+    },
+    "SDCA186": {
+      "HINDI": "58",
+      "DRAWING": "60",
+      "ENGLISH": "70",
+      "S0CIAL SCIENCE": "62"
+    },
+    "SDCA188": {
+      "HINDI": "93",
+      "DRAWING": "81"
+    },
+    "SDCA191": {
+      "GK": "65",
+      "HINDI": "63",
+      "DRAWING": "83",
+      "ENGLISH": "56",
+      "SCIENCE": "92",
+      "COMPUTER": "78",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "51",
+      "SOCIAL SCIENCE": "74",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA192": {
+      "HINDI": "56",
+      "DRAWING": "60",
+      "S0CIAL SCIENCE": ""
+    },
+    "SDCA193": {
+      "GK": "43",
+      "HINDI": "40",
+      "DRAWING": "63",
+      "ENGLISH": "44",
+      "SCIENCE": "84",
+      "COMPUTER": "67",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "52",
+      "SOCIAL SCIENCE": "45",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA194": {
+      "HINDI": "45",
+      "DRAWING": "60",
+      "ENGLISH": "54",
+      "S0CIAL SCIENCE": "59"
+    },
+    "SDCA195": {
+      "GK": "40",
+      "HINDI": "45",
+      "DRAWING": "56",
+      "ENGLISH": "46",
+      "SCIENCE": "54",
+      "COMPUTER": "40",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "45",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "40"
+    },
+    "SDCA198": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "42",
+      "ENGLISH": "40",
+      "SCIENCE": "58",
+      "COMPUTER": "56",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA199": {
+      "GK": "43",
+      "HINDI": "49",
+      "DRAWING": "77",
+      "ENGLISH": "54",
+      "SCIENCE": "67",
+      "COMPUTER": "45",
+      "SANSKRIT": "40",
+      "DRAWING54": "77",
+      "MATHEMATICS": "53",
+      "SOCIAL SCIENCE": "47",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA200": {
+      "HINDI": "54",
+      "DRAWING": "76",
+      "ENGLISH": "58",
+      "S0CIAL SCIENCE": "79"
+    },
+    "SDCA201": {
+      "GK": "63",
+      "HINDI": "57",
+      "DRAWING": "75",
+      "ENGLISH": "55",
+      "SCIENCE": "71",
+      "COMPUTER": "80",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "50",
+      "SOCIAL SCIENCE": "77",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA205": {
+      "GK": "70",
+      "HINDI": "60",
+      "DRAWING": "80",
+      "ENGLISH": "54",
+      "SCIENCE": "61",
+      "COMPUTER": "58",
+      "SANSKRIT": "43",
+      "DRAWING54": "69",
+      "MATHEMATICS": "90",
+      "SOCIAL SCIENCE": "57",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA206": {
+      "GK": "94",
+      "HINDI": "86",
+      "DRAWING": "92",
+      "ENGLISH": "90",
+      "SCIENCE": "80",
+      "COMPUTER": "72",
+      "SANSKRIT": "74",
+      "DRAWING54": "93",
+      "MATHEMATICS": "85",
+      "SOCIAL SCIENCE": "75",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA210": {
+      "GK": "54",
+      "HINDI": "55",
+      "DRAWING": "70",
+      "ENGLISH": "56",
+      "SCIENCE": "58",
+      "COMPUTER": "58",
+      "SANSKRIT": "43",
+      "DRAWING54": "71",
+      "MATHEMATICS": "60",
+      "SOCIAL SCIENCE": "50",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA211": {
+      "HINDI": "43",
+      "DRAWING": "64",
+      "ENGLISH": "51",
+      "S0CIAL SCIENCE": "33"
+    },
+    "SDCA212": {
+      "HINDI": "48",
+      "SANSKRIT": "41"
+    },
+    "SDCA213": {
+      "HINDI": "61",
+      "DRAWING": "60"
+    },
+    "SDCA216": {
+      "HINDI": "45",
+      "DRAWING": "68",
+      "ENGLISH": "47",
+      "S0CIAL SCIENCE": "54"
+    },
+    "SDCA218": {
+      "HINDI": "53",
+      "DRAWING": "50"
+    },
+    "SDCA220": {
+      "GK": "45",
+      "HINDI": "65",
+      "DRAWING": "67",
+      "ENGLISH": "73",
+      "SCIENCE": "43",
+      "COMPUTER": "53",
+      "SANSKRIT": "40",
+      "DRAWING54": "50",
+      "MATHEMATICS": "74",
+      "SOCIAL SCIENCE": "42",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA225": {
+      "GK": "84",
+      "HINDI": "45",
+      "DRAWING": "90",
+      "ENGLISH": "58",
+      "SCIENCE": "83",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "50",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA226": {
+      "HINDI": "93",
+      "ENGLISH": "91",
+      "SCIENCE": "80",
+      "MATHEMATICS": "91",
+      "SOCIAL SCIENCE": "49"
+    },
+    "SDCA229": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "65",
+      "ENGLISH": "40",
+      "SCIENCE": "62",
+      "COMPUTER": "83",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA234": {
+      "GK": "62",
+      "HINDI": "75",
+      "DRAWING": "75",
+      "ENGLISH": "54",
+      "SCIENCE": "87",
+      "COMPUTER": "78",
+      "SANSKRIT": "43",
+      "MATHEMATICS": "50",
+      "SOCIAL SCIENCE": "60",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA241": {
+      "GK": "53",
+      "HINDI": "46",
+      "DRAWING": "78",
+      "ENGLISH": "45",
+      "SCIENCE": "45",
+      "COMPUTER": "45",
+      "SANSKRIT": "40",
+      "DRAWING54": "67",
+      "MATHEMATICS": "44",
+      "SOCIAL SCIENCE": "45",
+      "PHYSICAL EDUCATION": "70"
+    },
+    "SDCA242": {
+      "GK": "85",
+      "HINDI": "50",
+      "DRAWING": "91",
+      "ENGLISH": "76",
+      "SCIENCE": "91",
+      "SANSKRIT": "46",
+      "MATHEMATICS": "65",
+      "SOCAIL SCENCE": "66",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA243": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "62",
+      "ENGLISH": "40",
+      "SCIENCE": "62",
+      "COMPUTER": "50",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA244": {
+      "HINDI": "89",
+      "SANSKRIT": "78"
+    },
+    "SDCA245": {
+      "GK": "94",
+      "HINDI": "74",
+      "DRAWING": "95",
+      "ENGLISH": "67",
+      "SCIENCE": "91",
+      "SANSKRIT": "79",
+      "MATHEMATICS": "67",
+      "SOCAIL SCENCE": "60",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA247": {
+      "GK": "40",
+      "HINDI": "90",
+      "DRAWING": "57",
+      "ENGLISH": "56",
+      "SCIENCE": "58",
+      "COMPUTER": "67",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA250": {
+      "GK": "48",
+      "HINDI": "60",
+      "DRAWING": "65",
+      "ENGLISH": "67",
+      "SCIENCE": "69",
+      "COMPUTER": "48",
+      "SANSKRIT": "60",
+      "MATHEMATICS": "56",
+      "SOCIAL SCIENCE": "45",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA253": {
+      "GK": "65",
+      "HINDI": "75",
+      "DRAWING": "84",
+      "ENGLISH": "73",
+      "SCIENCE": "90",
+      "COMPUTER": "82",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "74",
+      "SOCIAL SCIENCE": "67",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA256": {
+      "ENGLISH": "",
+      "SANSKRIT": "50",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA257": {
+      "GK": "72",
+      "HINDI": "45",
+      "DRAWING": "94",
+      "ENGLISH": "46",
+      "SCIENCE": "67",
+      "SANSKRIT": "57",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "56",
+      "PHYSICAL EDUCATION": "87"
+    },
+    "SDCA259": {
+      "HINDI": "43",
+      "DRAWING": "75"
+    },
+    "SDCA260": {
+      "SANSKRIT": ""
+    },
+    "SDCA261": {
+      "GK": "86",
+      "HINDI": "77",
+      "DRAWING": "100",
+      "ENGLISH": "57",
+      "SCIENCE": "91",
+      "SANSKRIT": "70",
+      "MATHEMATICS": "61",
+      "SOCAIL SCENCE": "67",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA264": {
+      "GK": "46",
+      "HINDI": "60",
+      "DRAWING": "80",
+      "ENGLISH": "80",
+      "SCIENCE": "75",
+      "COMPUTER": "56",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "67",
+      "SOCIAL SCIENCE": "49",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA265": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "54",
+      "ENGLISH": "40",
+      "SCIENCE": "72",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "51",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA270": {
+      "GK": "67",
+      "Math": "45",
+      "HINDI": "82",
+      "Hindi": "10",
+      "DRAWING": "81",
+      "ENGLISH": "71",
+      "SCIENCE": "96",
+      "COMPUTER": "89",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "80",
+      "SOCIAL SCIENCE": "61",
+      "PHYSICAL EDUCATION": "98",
+      "Physical Education": "20"
+    },
+    "SDCA272": {
+      "SANSKRIT": "63"
+    },
+    "SDCA273": {
+      "GK": "56",
+      "HINDI": "51",
+      "DRAWING": "84",
+      "ENGLISH": "40",
+      "SCIENCE": "58",
+      "SANSKRIT": "65",
+      "MATHEMATICS": "47",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA278": {
+      "HINDI": ""
+    },
+    "SDCA287": {
+      "GK": "43",
+      "HINDI": "42",
+      "DRAWING": "55",
+      "ENGLISH": "40",
+      "SCIENCE": "63",
+      "COMPUTER": "58",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "43",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA288": {
+      "GK": "94",
+      "HINDI": "83",
+      "DRAWING": "95",
+      "ENGLISH": "70",
+      "SCIENCE": "91",
+      "SANSKRIT": "50",
+      "MATHEMATICS": "100",
+      "SOCIAL SCIENCE": "91",
+      "PHYSICAL EDUCATION": "99"
+    },
+    "SDCA294": {
+      "HINDI": "69",
+      "DRAWING": "65"
+    },
+    "SDCA295": {
+      "HINDI": "91",
+      "DRAWING": "80"
+    },
+    "SDCA296": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "69",
+      "ENGLISH": "40",
+      "SCIENCE": "58",
+      "SANSKRIT": "42",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "59",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA299": {
+      "GK": "61",
+      "HINDI": "55",
+      "DRAWING": "85",
+      "ENGLISH": "40",
+      "SCIENCE": "71",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "97",
+      "SOCIAL SCIENCE": "72",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA300": {
+      "SANSKRIT": "69",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA301": {
+      "HINDI": "45",
+      "DRAWING": "67",
+      "ENGLISH": "67",
+      "S0CIAL SCIENCE": "52"
+    },
+    "SDCA303": {
+      "GK": "72",
+      "HINDI": "93",
+      "ENGLISH": "100",
+      "SCIENCE": "85",
+      "COMPUTER": "99",
+      "MATHEMATICS": "91",
+      "SOCIAL SCIENCE": "63"
+    },
+    "SDCA307": {
+      "GK": "62",
+      "HINDI": "64",
+      "ENGLISH": "68",
+      "SCIENCE": "61",
+      "COMPUTER": "92",
+      "MATHEMATICS": "74",
+      "SOCIAL SCIENCE": "53"
+    },
+    "SDCA308": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "64",
+      "ENGLISH": "45",
+      "SCIENCE": "87",
+      "COMPUTER": "67",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "58",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA310": {
+      "GK": "40",
+      "HINDI": "54",
+      "DRAWING": "45",
+      "ENGLISH": "45",
+      "SCIENCE": "48",
+      "COMPUTER": "40",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "45",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA314": {
+      "GK": "47",
+      "HINDI": "46",
+      "DRAWING": "66",
+      "ENGLISH": "50",
+      "SCIENCE": "68",
+      "COMPUTER": "48",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "58",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA316": {
+      "GK": "91",
+      "HINDI": "46",
+      "DRAWING": "99",
+      "ENGLISH": "54",
+      "SCIENCE": "88",
+      "SANSKRIT": "68",
+      "MATHEMATICS": "48",
+      "SOCAIL SCENCE": "57",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA319": {
+      "HINDI": "",
+      "ENGLISH": "",
+      "SCIENCE": "",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA320": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "55",
+      "ENGLISH": "40",
+      "SCIENCE": "40",
+      "COMPUTER": "45",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA324": {
+      "GK": "58",
+      "HINDI": "42",
+      "DRAWING": "72",
+      "ENGLISH": "46",
+      "SCIENCE": "65",
+      "SANSKRIT": "50",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "50",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA325": {
+      "HINDI": "55",
+      "SANSKRIT": "50"
+    },
+    "SDCA331": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "61",
+      "ENGLISH": "40",
+      "SCIENCE": "66",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "48",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "97"
+    },
+    "SDCA332": {
+      "HINDI": "54",
+      "DRAWING": "57",
+      "ENGLISH": "70",
+      "S0CIAL SCIENCE": "79"
+    },
+    "SDCA333": {
+      "GK": "67",
+      "HINDI": "40",
+      "DRAWING": "80",
+      "ENGLISH": "40",
+      "SCIENCE": "63",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "92",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA334": {
+      "HINDI": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA336": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "70",
+      "ENGLISH": "40",
+      "SCIENCE": "53",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA338": {
+      "GK": "47",
+      "HINDI": "50",
+      "DRAWING": "56",
+      "ENGLISH": "47",
+      "SCIENCE": "67",
+      "COMPUTER": "54",
+      "SANSKRIT": "53",
+      "MATHEMATICS": "79",
+      "SOCIAL SCIENCE": "50",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA340": {
+      "HINDI": "40",
+      "DRAWING": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "56",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA341": {
+      "GK": "40",
+      "HINDI": "42",
+      "DRAWING": "47",
+      "ENGLISH": "40",
+      "SCIENCE": "55",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "41",
+      "SOCIAL SCIENCE": "49",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA343": {
+      "HINDI": "50",
+      "ENGLISH": "43",
+      "SCIENCE": "40",
+      "MATHEMATICS": "34",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA344": {
+      "GK": "45",
+      "HINDI": "43",
+      "DRAWING": "75",
+      "ENGLISH": "45",
+      "SCIENCE": "45",
+      "COMPUTER": "49",
+      "SANSKRIT": "42",
+      "DRAWING54": "50",
+      "MATHEMATICS": "56",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA351": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "62",
+      "SANSKRIT": "43",
+      "MATHEMATICS": "72",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA352": {
+      "GK": "40",
+      "HINDI": "41",
+      "DRAWING": "58",
+      "ENGLISH": "42",
+      "SCIENCE": "79",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "46",
+      "SOCIAL SCIENCE": "54",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA355": {
+      "GK": "61",
+      "HINDI": "46",
+      "ENGLISH": "87",
+      "SCIENCE": "55",
+      "MATHEMATICS": "56",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA356": {
+      "GK": "40",
+      "HINDI": "42",
+      "DRAWING": "77",
+      "ENGLISH": "40",
+      "SCIENCE": "51",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "55",
+      "SOCIAL SCIENCE": "47",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA359": {
+      "GK": "84",
+      "HINDI": "40",
+      "DRAWING": "94",
+      "ENGLISH": "40",
+      "SCIENCE": "78",
+      "SANSKRIT": "41",
+      "MATHEMATICS": "64",
+      "SOCIAL SCIENCE": "62",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA360": {
+      "GK": "40",
+      "HINDI": "66",
+      "DRAWING": "60",
+      "ENGLISH": "41",
+      "SCIENCE": "60",
+      "COMPUTER": "54",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "54",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA361": {
+      "GK": "40",
+      "HINDI": "79",
+      "DRAWING": "60",
+      "ENGLISH": "40",
+      "SCIENCE": "65",
+      "COMPUTER": "67",
+      "SANSKRIT": "40",
+      "DRAWING54": "65",
+      "MATHEMATICS": "68",
+      "SOCIAL SCIENCE": "60",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA363": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "58",
+      "ENGLISH": "40",
+      "SCIENCE": "55",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA364": {
+      "GK": "52",
+      "HINDI": "65",
+      "DRAWING": "78",
+      "ENGLISH": "65",
+      "SCIENCE": "87",
+      "SANSKRIT": "47",
+      "MATHEMATICS": "65",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA365": {
+      "GK": "77",
+      "HINDI": "53",
+      "DRAWING": "92",
+      "ENGLISH": "40",
+      "SCIENCE": "77",
+      "SANSKRIT": "50",
+      "MATHEMATICS": "84",
+      "SOCIAL SCIENCE": "78",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA366": {
+      "HINDI": "53",
+      "DRAWING": "54"
+    },
+    "SDCA370": {
+      "GK": "67",
+      "HINDI": "92",
+      "DRAWING": "86",
+      "ENGLISH": "65",
+      "SCIENCE": "94",
+      "COMPUTER": "78",
+      "SANSKRIT": "44",
+      "MATHEMATICS": "92",
+      "SOCIAL SCIENCE": "87",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA372": {
+      "HINDI": "95",
+      "SANSKRIT": "61"
+    },
+    "SDCA376": {
+      "HINDI": "60",
+      "SANSKRIT": "40"
+    },
+    "SDCA380": {
+      "GK": "73",
+      "HINDI": "45",
+      "DRAWING": "97",
+      "ENGLISH": "57",
+      "SCIENCE": "86",
+      "SANSKRIT": "76",
+      "MATHEMATICS": "59",
+      "SOCAIL SCENCE": "57",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA386": {
+      "GK": "44",
+      "HINDI": "40",
+      "DRAWING": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "40",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "70",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "89"
+    },
+    "SDCA387": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "53",
+      "ENGLISH": "40",
+      "SCIENCE": "51",
+      "SANSKRIT": "46",
+      "MATHEMATICS": "51",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA392": {
+      "GK": "44",
+      "HINDI": "46",
+      "DRAWING": "67",
+      "ENGLISH": "56",
+      "SCIENCE": "52",
+      "COMPUTER": "54",
+      "SANSKRIT": "40",
+      "DRAWING54": "50",
+      "MATHEMATICS": "44",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA394": {
+      "GK": "70",
+      "HINDI": "43",
+      "DRAWING": "73",
+      "ENGLISH": "47",
+      "SCIENCE": "67",
+      "SANSKRIT": "50",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "56",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA397": {
+      "GK": "48",
+      "HINDI": "53",
+      "DRAWING": "70",
+      "ENGLISH": "58",
+      "SCIENCE": "83",
+      "COMPUTER": "45",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "80",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA398": {
+      "GK": "97",
+      "HINDI": "98",
+      "DRAWING": "97",
+      "ENGLISH": "92",
+      "MATHEMATICS": "93"
+    },
+    "SDCA400": {
+      "GK": "40",
+      "HINDI": "45",
+      "DRAWING": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "40",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA401": {
+      "GK": "94",
+      "HINDI": "80",
+      "DRAWING": "93",
+      "ENGLISH": "85",
+      "MATHEMATICS": "90"
+    },
+    "SDCA402": {
+      "GK": "98",
+      "HINDI": "99",
+      "DRAWING": "100",
+      "ENGLISH": "87",
+      "MATHEMATICS": "100"
+    },
+    "SDCA404": {
+      "GK": "91",
+      "HINDI": "83",
+      "DRAWING": "94",
+      "ENGLISH": "72",
+      "SCIENCE": "80",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "92",
+      "SOCIAL SCIENCE": "77",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA405": {
+      "GK": "70",
+      "HINDI": "82",
+      "DRAWING": "90",
+      "ENGLISH": "85",
+      "SCIENCE": "67",
+      "COMPUTER": "73",
+      "SANSKRIT": "68",
+      "DRAWING54": "90",
+      "MATHEMATICS": "80",
+      "SOCIAL SCIENCE": "70",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA407": {
+      "GK": "94",
+      "HINDI": "98",
+      "DRAWING": "60",
+      "ENGLISH": "68",
+      "MATHEMATICS": "97"
+    },
+    "SDCA408": {
+      "GK": "68",
+      "HINDI": "45",
+      "DRAWING": "60",
+      "ENGLISH": "55",
+      "SCIENCE": "65",
+      "COMPUTER": "50",
+      "SANSKRIT": "84",
+      "MATHEMATICS": "57",
+      "SOCIAL SCIENCE": "44",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA409": {
+      "GK": "69",
+      "HINDI": "74",
+      "DRAWING": "71",
+      "ENGLISH": "53",
+      "MATHEMATICS": "73"
+    },
+    "SDCA410": {
+      "GK": "86",
+      "HINDI": "87",
+      "DRAWING": "81",
+      "ENGLISH": "71",
+      "MATHEMATICS": "89"
+    },
+    "SDCA413": {
+      "GK": "35",
+      "HINDI": "67",
+      "DRAWING": "66",
+      "ENGLISH": "55",
+      "SCIENCE": "70",
+      "COMPUTER": "45",
+      "SANSKRIT": "70",
+      "MATHEMATICS": "72",
+      "SOCIAL SCIENCE": "43",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA414": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "58",
+      "ENGLISH": "40",
+      "SCIENCE": "53",
+      "COMPUTER": "50",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "42",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA419": {
+      "GK": "63",
+      "HINDI": "40",
+      "DRAWING": "77",
+      "ENGLISH": "40",
+      "SCIENCE": "64",
+      "COMPUTER": "56",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "42",
+      "SOCIAL SCIENCE": "48",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA421": {
+      "GK": "87",
+      "HINDI": "71",
+      "DRAWING": "83",
+      "ENGLISH": "75",
+      "MATHEMATICS": "87"
+    },
+    "SDCA424": {
+      "GK": "71",
+      "HINDI": "88",
+      "DRAWING": "92",
+      "ENGLISH": "68",
+      "MATHEMATICS": "82"
+    },
+    "SDCA425": {
+      "GK": "88",
+      "HINDI": "86",
+      "DRAWING": "70",
+      "ENGLISH": "74",
+      "MATHEMATICS": "80"
+    },
+    "SDCA428": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "55",
+      "ENGLISH": "40",
+      "SCIENCE": "52",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA430": {
+      "HINDI": "63",
+      "SANSKRIT": "40"
+    },
+    "SDCA431": {
+      "HINDI": "46",
+      "DRAWING": "64",
+      "ENGLISH": "58",
+      "SCIENCE": "53",
+      "MATHEMATICS": "69",
+      "SOCIAL SCIENCE": "53"
+    },
+    "SDCA433": {
+      "GK": "49",
+      "HINDI": "57",
+      "ENGLISH": "63",
+      "SCIENCE": "41",
+      "MATHEMATICS": "47",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA434": {
+      "GK": "47",
+      "HINDI": "54",
+      "DRAWING": "97",
+      "ENGLISH": "87",
+      "SCIENCE": "76",
+      "COMPUTER": "47",
+      "SANSKRIT": "64",
+      "MATHEMATICS": "56",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA436": {
+      "GK": "90",
+      "HINDI": "78",
+      "DRAWING": "90",
+      "ENGLISH": "89",
+      "SCIENCE": "67",
+      "COMPUTER": "50",
+      "SANSKRIT": "42",
+      "MATHEMATICS": "66",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA439": {
+      "GK": "96",
+      "HINDI": "95",
+      "DRAWING": "98",
+      "ENGLISH": "73",
+      "MATHEMATICS": "92"
+    },
+    "SDCA443": {
+      "GK": "53",
+      "HINDI": "53",
+      "DRAWING": "70",
+      "ENGLISH": "41",
+      "SCIENCE": "79",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "41",
+      "SOCIAL SCIENCE": "63",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA444": {
+      "GK": "48",
+      "HINDI": "77",
+      "DRAWING": "79",
+      "ENGLISH": "74",
+      "SCIENCE": "67",
+      "COMPUTER": "48",
+      "SANSKRIT": "63",
+      "MATHEMATICS": "66",
+      "SOCIAL SCIENCE": "60",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA447": {
+      "GK": "98",
+      "HINDI": "86",
+      "DRAWING": "70",
+      "ENGLISH": "78",
+      "MATHEMATICS": "89"
+    },
+    "SDCA448": {
+      "GK": "53",
+      "HINDI": "40",
+      "DRAWING": "55",
+      "ENGLISH": "40",
+      "SCIENCE": "53",
+      "SANSKRIT": "50",
+      "MATHEMATICS": "52",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA450": {
+      "GK": "80",
+      "HINDI": "92",
+      "DRAWING": "86",
+      "ENGLISH": "69",
+      "MATHEMATICS": "82"
+    },
+    "SDCA451": {
+      "HINDI": "67",
+      "ENGLISH": "62",
+      "SCIENCE": "46",
+      "MATHEMATICS": "74",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA452": {
+      "HINDI": "72",
+      "DRAWING": "74",
+      "ENGLISH": "91",
+      "S0CIAL SCIENCE": "83"
+    },
+    "SDCA455": {
+      "GK": "54",
+      "HINDI": "59",
+      "DRAWING": "76",
+      "ENGLISH": "67",
+      "SCIENCE": "58",
+      "COMPUTER": "48",
+      "SANSKRIT": "40",
+      "DRAWING54": "76",
+      "MATHEMATICS": "65",
+      "SOCIAL SCIENCE": "56",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA456": {
+      "GK": "97",
+      "HINDI": "98",
+      "DRAWING": "100",
+      "ENGLISH": "95",
+      "SCIENCE": "96",
+      "COMPUTER": "46",
+      "SANSKRIT": "46",
+      "MATHEMATICS": "99",
+      "SOCIAL SCIENCE": "58",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA458": {
+      "GK": "76",
+      "HINDI": "81",
+      "DRAWING": "77",
+      "ENGLISH": "40",
+      "SCIENCE": "77",
+      "SANSKRIT": "46",
+      "MATHEMATICS": "67",
+      "SOCIAL SCIENCE": "55",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA459": {
+      "HINDI": "88",
+      "SANSKRIT": "48"
+    },
+    "SDCA460": {
+      "GK": "44",
+      "HINDI": "49",
+      "DRAWING": "68",
+      "ENGLISH": "63",
+      "SCIENCE": "52",
+      "COMPUTER": "46",
+      "SANSKRIT": "40",
+      "DRAWING54": "50",
+      "MATHEMATICS": "63",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA461": {
+      "HINDI": "45",
+      "DRAWING": "55"
+    },
+    "SDCA464": {
+      "GK": "63",
+      "HINDI": "43",
+      "DRAWING": "94",
+      "ENGLISH": "40",
+      "SCIENCE": "73",
+      "SANSKRIT": "46",
+      "MATHEMATICS": "57",
+      "SOCIAL SCIENCE": "55",
+      "PHYSICAL EDUCATION": "97"
+    },
+    "SDCA470": {
+      "GK": "74",
+      "HINDI": "71",
+      "DRAWING": "70",
+      "ENGLISH": "60",
+      "MATHEMATICS": "48"
+    },
+    "SDCA471": {
+      "GK": "73",
+      "HINDI": "50",
+      "DRAWING": "46",
+      "ENGLISH": "56",
+      "MATHEMATICS": "45"
+    },
+    "SDCA474": {
+      "GK": "45",
+      "HINDI": "61",
+      "DRAWING": "74",
+      "ENGLISH": "55",
+      "SCIENCE": "75",
+      "COMPUTER": "45",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "76",
+      "SOCIAL SCIENCE": "45",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA480": {
+      "GK": "78",
+      "HINDI": "45",
+      "DRAWING": "53",
+      "ENGLISH": "43",
+      "SCIENCE": "70",
+      "COMPUTER": "60",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "64",
+      "SOCIAL SCIENCE": "58",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA486": {
+      "GK": "89",
+      "HINDI": "90",
+      "DRAWING": "90",
+      "ENGLISH": "78",
+      "MATHEMATICS": "87"
+    },
+    "SDCA487": {
+      "GK": "78",
+      "HINDI": "89",
+      "DRAWING": "74",
+      "ENGLISH": "65",
+      "SCIENCE": "74",
+      "COMPUTER": "75",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "54",
+      "SOCIAL SCIENCE": "54",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA488": {
+      "GK": "78",
+      "HINDI": "40",
+      "DRAWING": "79",
+      "ENGLISH": "48",
+      "SCIENCE": "50",
+      "SANSKRIT": "60",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "50",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA489": {
+      "GK": "88",
+      "HINDI": "96",
+      "DRAWING": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "55",
+      "SANSKRIT": "54",
+      "MATHEMATICS": "85",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "97"
+    },
+    "SDCA490": {
+      "GK": "70",
+      "HINDI": "67",
+      "DRAWING": "84",
+      "ENGLISH": "92",
+      "SCIENCE": "45",
+      "COMPUTER": "54",
+      "SANSKRIT": "40",
+      "DRAWING54": "63",
+      "MATHEMATICS": "67",
+      "SOCIAL SCIENCE": "49",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA491": {
+      "GK": "97",
+      "HINDI": "100",
+      "DRAWING": "90",
+      "ENGLISH": "70",
+      "MATHEMATICS": "94"
+    },
+    "SDCA492": {
+      "GK": "96",
+      "HINDI": "95",
+      "DRAWING": "99",
+      "ENGLISH": "100",
+      "MATHEMATICS": "99"
+    },
+    "SDCA493": {
+      "GK": "98",
+      "HINDI": "96",
+      "DRAWING": "90",
+      "ENGLISH": "97",
+      "MATHEMATICS": "83"
+    },
+    "SDCA494": {
+      "GK": "46",
+      "HINDI": "56",
+      "DRAWING": "56",
+      "ENGLISH": "46",
+      "SCIENCE": "69",
+      "COMPUTER": "65",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "56",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA495": {
+      "GK": "41",
+      "HINDI": "43",
+      "DRAWING": "60",
+      "ENGLISH": "40",
+      "SCIENCE": "57",
+      "SANSKRIT": "41",
+      "MATHEMATICS": "42",
+      "SOCIAL SCIENCE": "56",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA496": {
+      "GK": "93",
+      "HINDI": "92",
+      "DRAWING": "96",
+      "ENGLISH": "93",
+      "MATHEMATICS": "81"
+    },
+    "SDCA499": {
+      "GK": "90",
+      "HINDI": "45",
+      "DRAWING": "87",
+      "ENGLISH": "55",
+      "SCIENCE": "73",
+      "SANSKRIT": "68",
+      "MATHEMATICS": "50",
+      "SOCAIL SCENCE": "55",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA500": {
+      "GK": "47",
+      "HINDI": "49",
+      "DRAWING": "73",
+      "ENGLISH": "40",
+      "SCIENCE": "70",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "58",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA501": {
+      "GK": "40",
+      "HINDI": "59",
+      "DRAWING": "46",
+      "ENGLISH": "42",
+      "SCIENCE": "56",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA502": {
+      "HINDI": "43",
+      "DRAWING": "69",
+      "ENGLISH": "47",
+      "S0CIAL SCIENCE": "43"
+    },
+    "SDCA504": {
+      "GK": "85",
+      "HINDI": "46",
+      "DRAWING": "95",
+      "ENGLISH": "54",
+      "SCIENCE": "72",
+      "SANSKRIT": "58",
+      "MATHEMATICS": "48",
+      "SOCAIL SCENCE": "53",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA505": {
+      "GK": "96",
+      "HINDI": "94",
+      "DRAWING": "100",
+      "ENGLISH": "100",
+      "MATHEMATICS": "89"
+    },
+    "SDCA507": {
+      "HINDI": "57",
+      "SANSKRIT": "44"
+    },
+    "SDCA508": {
+      "GK": "92",
+      "HINDI": "78",
+      "DRAWING": "95",
+      "ENGLISH": "98",
+      "MATHEMATICS": "93"
+    },
+    "SDCA509": {
+      "HINDI": "50",
+      "ENGLISH": "50",
+      "SCIENCE": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA510": {
+      "GK": "64",
+      "HINDI": "50",
+      "DRAWING": "83",
+      "ENGLISH": "55",
+      "SCIENCE": "65",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "71",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA511": {
+      "GK": "65",
+      "HINDI": "69",
+      "DRAWING": "70",
+      "ENGLISH": "78",
+      "MATHEMATICS": "64"
+    },
+    "SDCA512": {
+      "GK": "45",
+      "HINDI": "56",
+      "DRAWING": "68",
+      "ENGLISH": "45",
+      "SCIENCE": "68",
+      "COMPUTER": "40",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "65",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA513": {
+      "GK": "91",
+      "HINDI": "87",
+      "DRAWING": "78",
+      "ENGLISH": "92",
+      "MATHEMATICS": "81"
+    },
+    "SDCA516": {
+      "GK": "45",
+      "HINDI": "40",
+      "DRAWING": "67",
+      "ENGLISH": "64",
+      "SCIENCE": "43",
+      "COMPUTER": "69",
+      "SANSKRIT": "40",
+      "DRAWING54": "50",
+      "MATHEMATICS": "54",
+      "SOCIAL SCIENCE": "50",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA517": {
+      "GK": "85",
+      "HINDI": "87",
+      "DRAWING": "85",
+      "ENGLISH": "95",
+      "MATHEMATICS": "67"
+    },
+    "SDCA518": {
+      "GK": "40",
+      "HINDI": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "37",
+      "COMPUTER": "61",
+      "MATHEMATICS": "41",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA520": {
+      "GK": "72",
+      "HINDI": "46",
+      "DRAWING": "83",
+      "ENGLISH": "54",
+      "SCIENCE": "56",
+      "SANSKRIT": "65",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "46",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA521": {
+      "ENGLISH": ""
+    },
+    "SDCA522": {
+      "GK": "92",
+      "HINDI": "94",
+      "DRAWING": "98",
+      "ENGLISH": "100",
+      "MATHEMATICS": "85"
+    },
+    "SDCA523": {
+      "GK": "96",
+      "HINDI": "93",
+      "DRAWING": "99",
+      "ENGLISH": "100",
+      "MATHEMATICS": "87"
+    },
+    "SDCA524": {
+      "GK": "94",
+      "HINDI": "95",
+      "DRAWING": "96",
+      "ENGLISH": "74",
+      "MATHEMATICS": "83"
+    },
+    "SDCA525": {
+      "GK": "57",
+      "HINDI": "40",
+      "DRAWING": "95",
+      "ENGLISH": "40",
+      "SCIENCE": "72",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "49",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA526": {
+      "HINDI": "89",
+      "DRAWING": "88",
+      "ENGLISH": "82",
+      "MATHEMATICS": "71"
+    },
+    "SDCA527": {
+      "GK": "40",
+      "HINDI": "43",
+      "DRAWING": "60",
+      "ENGLISH": "40",
+      "SCIENCE": "57",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "45",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA528": {
+      "GK": "60",
+      "HINDI": "40",
+      "DRAWING": "70",
+      "ENGLISH": "46",
+      "SCIENCE": "50",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "54",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA529": {
+      "HINDI": "95",
+      "SANSKRIT": "88"
+    },
+    "SDCA530": {
+      "GK": "54",
+      "HINDI": "71",
+      "DRAWING": "40",
+      "ENGLISH": "76",
+      "MATHEMATICS": "50"
+    },
+    "SDCA531": {
+      "GK": "40",
+      "HINDI": "45",
+      "DRAWING": "53",
+      "ENGLISH": "41",
+      "SCIENCE": "44",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA532": {
+      "GK": "70",
+      "HINDI": "70",
+      "DRAWING": "70",
+      "ENGLISH": "70",
+      "MATHEMATICS": "50"
+    },
+    "SDCA533": {
+      "GK": "68",
+      "HINDI": "40",
+      "DRAWING": "88",
+      "ENGLISH": "40",
+      "SCIENCE": "64",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "59",
+      "SOCIAL SCIENCE": "49",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA534": {
+      "GK": "89",
+      "HINDI": "83",
+      "DRAWING": "95",
+      "ENGLISH": "71",
+      "MATHEMATICS": "79"
+    },
+    "SDCA541": {
+      "GK": "73",
+      "HINDI": "87",
+      "DRAWING": "89",
+      "ENGLISH": "89",
+      "MATHEMATICS": "81"
+    },
+    "SDCA543": {
+      "GK": "93",
+      "HINDI": "46",
+      "DRAWING": "83",
+      "ENGLISH": "67",
+      "MATHEMATICS": "85"
+    },
+    "SDCA544": {
+      "GK": "40",
+      "HINDI": "43",
+      "DRAWING": "61",
+      "ENGLISH": "40",
+      "SCIENCE": "61",
+      "SANSKRIT": "58",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "40"
+    },
+    "SDCA545": {
+      "GK": "79",
+      "HINDI": "46",
+      "DRAWING": "94",
+      "ENGLISH": "45",
+      "SCIENCE": "74",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "43",
+      "SOCAIL SCENCE": "43",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA546": {
+      "GK": "65",
+      "HINDI": "40",
+      "DRAWING": "85",
+      "ENGLISH": "48",
+      "SCIENCE": "81",
+      "SANSKRIT": "50",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "60",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA547": {
+      "GK": "86",
+      "HINDI": "91",
+      "DRAWING": "88",
+      "ENGLISH": "56",
+      "SCIENCE": "83",
+      "SANSKRIT": "56",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "45",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA548": {
+      "GK": "78",
+      "HINDI": "42",
+      "DRAWING": "93",
+      "ENGLISH": "48",
+      "SCIENCE": "79",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "45",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA549": {
+      "GK": "56",
+      "HINDI": "40",
+      "DRAWING": "86",
+      "ENGLISH": "47",
+      "SCIENCE": "62",
+      "SANSKRIT": "46",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "50",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA550": {
+      "GK": "56",
+      "HINDI": "45",
+      "DRAWING": "86",
+      "ENGLISH": "51",
+      "SCIENCE": "43",
+      "SANSKRIT": "54",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "50",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA552": {
+      "MATHEMATICS": ""
+    },
+    "SDCA556": {
+      "GK": "54",
+      "HINDI": "79",
+      "DRAWING": "45",
+      "ENGLISH": "65",
+      "MATHEMATICS": "76"
+    },
+    "SDCA558": {
+      "GK": "81",
+      "HINDI": "80",
+      "DRAWING": "82",
+      "ENGLISH": "93",
+      "MATHEMATICS": "67"
+    },
+    "SDCA559": {
+      "GK": "66",
+      "HINDI": "89",
+      "DRAWING": "75",
+      "ENGLISH": "91",
+      "MATHEMATICS": "57"
+    },
+    "SDCA560": {
+      "GK": "93",
+      "HINDI": "95",
+      "DRAWING": "89",
+      "ENGLISH": "85",
+      "MATHEMATICS": "90"
+    },
+    "SDCA561": {
+      "GK": "78",
+      "HINDI": "89",
+      "DRAWING": "84",
+      "ENGLISH": "89",
+      "MATHEMATICS": "70"
+    },
+    "SDCA562": {
+      "GK": "91",
+      "HINDI": "80",
+      "DRAWING": "99",
+      "ENGLISH": "98",
+      "MATHEMATICS": "94"
+    },
+    "SDCA563": {
+      "GK": "48",
+      "HINDI": "45",
+      "DRAWING": "56",
+      "ENGLISH": "58",
+      "SCIENCE": "47",
+      "COMPUTER": "47",
+      "SANSKRIT": "40",
+      "DRAWING54": "50",
+      "MATHEMATICS": "43",
+      "SOCIAL SCIENCE": "43",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA565": {
+      "GK": "67",
+      "HINDI": "90",
+      "DRAWING": "80",
+      "ENGLISH": "77",
+      "MATHEMATICS": "70"
+    },
+    "SDCA566": {
+      "GK": "75",
+      "HINDI": "85",
+      "DRAWING": "80",
+      "ENGLISH": "92",
+      "MATHEMATICS": "54"
+    },
+    "SDCA568": {
+      "GK": "78",
+      "HINDI": "74",
+      "DRAWING": "97",
+      "ENGLISH": "57",
+      "MATHEMATICS": "79"
+    },
+    "SDCA569": {
+      "GK": "80",
+      "HINDI": "80",
+      "DRAWING": "80",
+      "ENGLISH": "74",
+      "MATHEMATICS": "64"
+    },
+    "SDCA570": {
+      "HINDI": "88",
+      "DRAWING": "93",
+      "ENGLISH": "80",
+      "MATHEMATICS": "80"
+    },
+    "SDCA571": {
+      "HINDI": "86",
+      "DRAWING": "88",
+      "ENGLISH": "91",
+      "MATHEMATICS": "99"
+    },
+    "SDCA572": {
+      "HINDI": "92",
+      "DRAWING": "75",
+      "ENGLISH": "89",
+      "MATHEMATICS": "92"
+    },
+    "SDCA573": {
+      "GK": "43",
+      "HINDI": "45",
+      "DRAWING": "45",
+      "ENGLISH": "81",
+      "SCIENCE": "75",
+      "COMPUTER": "43",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "86",
+      "SOCIAL SCIENCE": "45",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA574": {
+      "GK": "93",
+      "HINDI": "54",
+      "DRAWING": "91",
+      "ENGLISH": "40",
+      "SCIENCE": "80",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "85",
+      "SOCIAL SCIENCE": "72",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA575": {
+      "GK": "50",
+      "HINDI": "60",
+      "DRAWING": "59",
+      "ENGLISH": "79",
+      "SCIENCE": "77",
+      "COMPUTER": "49",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "78",
+      "SOCIAL SCIENCE": "51",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA576": {
+      "GK": "74",
+      "HINDI": "63",
+      "DRAWING": "86",
+      "ENGLISH": "40",
+      "SCIENCE": "53",
+      "SANSKRIT": "48",
+      "MATHEMATICS": "78",
+      "SOCIAL SCIENCE": "66",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA577": {
+      "GK": "40",
+      "HINDI": "53",
+      "DRAWING": "54",
+      "ENGLISH": "40",
+      "SCIENCE": "70",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "46",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA578": {
+      "HINDI": "76",
+      "DRAWING": "75",
+      "ENGLISH": "90",
+      "MATHEMATICS": "93"
+    },
+    "SDCA579": {
+      "GK": "80",
+      "HINDI": "85",
+      "DRAWING": "81",
+      "ENGLISH": "72",
+      "MATHEMATICS": "82"
+    },
+    "SDCA580": {
+      "GK": "79",
+      "HINDI": "100",
+      "ENGLISH": "100",
+      "SCIENCE": "99",
+      "MATHEMATICS": "98",
+      "SOCIAL SCIENCE": "74"
+    },
+    "SDCA581": {
+      "GK": "76",
+      "HINDI": "65",
+      "DRAWING": "65",
+      "ENGLISH": "50",
+      "SCIENCE": "67",
+      "COMPUTER": "45",
+      "SANSKRIT": "54",
+      "MATHEMATICS": "66",
+      "SOCIAL SCIENCE": "53",
+      "PHYSICAL EDUCATION": "94"
+    },
+    "SDCA582": {
+      "GK": "76",
+      "HINDI": "81",
+      "DRAWING": "93",
+      "ENGLISH": "72",
+      "SCIENCE": "80",
+      "COMPUTER": "50",
+      "SANSKRIT": "90",
+      "MATHEMATICS": "83",
+      "SOCIAL SCIENCE": "68",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA583": {
+      "GK": "93",
+      "HINDI": "97",
+      "DRAWING": "100",
+      "ENGLISH": "99",
+      "MATHEMATICS": "97"
+    },
+    "SDCA584": {
+      "HINDI": "91",
+      "DRAWING": "86",
+      "ENGLISH": "88",
+      "MATHEMATICS": "87"
+    },
+    "SDCA585": {
+      "GK": "80",
+      "HINDI": "54",
+      "DRAWING": "93",
+      "ENGLISH": "57",
+      "SCIENCE": "88",
+      "SANSKRIT": "57",
+      "MATHEMATICS": "45",
+      "SOCAIL SCENCE": "95",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA586": {
+      "GK": "54",
+      "HINDI": "46",
+      "DRAWING": "67",
+      "ENGLISH": "65",
+      "SCIENCE": "66",
+      "COMPUTER": "63",
+      "SANSKRIT": "40",
+      "DRAWING54": "60",
+      "MATHEMATICS": "88",
+      "SOCIAL SCIENCE": "58",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA587": {
+      "HINDI": "91",
+      "DRAWING": "86",
+      "ENGLISH": "95",
+      "MATHEMATICS": "96"
+    },
+    "SDCA588": {
+      "GK": "65",
+      "HINDI": "43",
+      "DRAWING": "92",
+      "ENGLISH": "46",
+      "SCIENCE": "45",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "48",
+      "SOCAIL SCENCE": "56",
+      "PHYSICAL EDUCATION": "95"
+    },
+    "SDCA589": {
+      "GK": "87",
+      "HINDI": "87",
+      "DRAWING": "56",
+      "ENGLISH": "80",
+      "MATHEMATICS": "87"
+    },
+    "SDCA590": {
+      "HINDI": "46",
+      "DRAWING": "68"
+    },
+    "SDCA591": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "59",
+      "ENGLISH": "40",
+      "SCIENCE": "53",
+      "SANSKRIT": "44",
+      "SOCIAL SCIENCE": "55",
+      "PHYSICAL EDUCATION": "92"
+    },
+    "SDCA592": {
+      "GK": "90",
+      "HINDI": "90",
+      "DRAWING": "93",
+      "ENGLISH": "89",
+      "MATHEMATICS": "78"
+    },
+    "SDCA593": {
+      "HINDI": "91",
+      "DRAWING": "92",
+      "ENGLISH": "92",
+      "MATHEMATICS": "87"
+    },
+    "SDCA594": {
+      "GK": "40",
+      "HINDI": "40",
+      "DRAWING": "47",
+      "ENGLISH": "40",
+      "SCIENCE": "54",
+      "COMPUTER": "76",
+      "SANSKRIT": "40",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "98"
+    },
+    "SDCA595": {
+      "HINDI": "43",
+      "DRAWING": "73",
+      "ENGLISH": "40"
+    },
+    "SDCA596": {
+      "GK": "95",
+      "HINDI": "95",
+      "DRAWING": "100",
+      "ENGLISH": "98",
+      "MATHEMATICS": "95"
+    },
+    "SDCA597": {
+      "HINDI": "75",
+      "DRAWING": "93",
+      "ENGLISH": "93",
+      "MATHEMATICS": "90"
+    },
+    "SDCA598": {
+      "HINDI": "56",
+      "DRAWING": "59"
+    },
+    "SDCA599": {
+      "HINDI": "87",
+      "ENGLISH": "80",
+      "SCIENCE": "50",
+      "MATHEMATICS": "45",
+      "SOCIAL SCIENCE": "40"
+    },
+    "SDCA601": {
+      "GK": "50",
+      "HINDI": "43",
+      "DRAWING": "84",
+      "ENGLISH": "40",
+      "SCIENCE": "73",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "56",
+      "SOCIAL SCIENCE": "52",
+      "PHYSICAL EDUCATION": "96"
+    },
+    "SDCA602": {
+      "HINDI": "85",
+      "DRAWING": "88",
+      "ENGLISH": "91",
+      "MATHEMATICS": "87"
+    },
+    "SDCA603": {
+      "GK": "78",
+      "HINDI": "90",
+      "DRAWING": "91",
+      "MATHEMATICS": "79"
+    },
+    "SDCA604": {
+      "GK": "40",
+      "HINDI": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "44",
+      "SANSKRIT": "43",
+      "MATHEMATICS": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA605": {
+      "HINDI": "86",
+      "DRAWING": "86",
+      "ENGLISH": "81",
+      "MATHEMATICS": "67"
+    },
+    "SDCA607": {
+      "GK": "40",
+      "DRAWING": "40",
+      "ENGLISH": "40",
+      "SCIENCE": "44",
+      "SANSKRIT": "40",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "97"
+    },
+    "SDCA608": {
+      "GK": "56",
+      "HINDI": "58",
+      "DRAWING": "45",
+      "ENGLISH": "59",
+      "MATHEMATICS": "46"
+    },
+    "SDCA609": {
+      "HINDI": "76",
+      "DRAWING": "89",
+      "ENGLISH": "96",
+      "MATHEMATICS": "80"
+    },
+    "SDCA610": {
+      "HINDI": "86",
+      "DRAWING": "86",
+      "ENGLISH": "84",
+      "MATHEMATICS": "68"
+    },
+    "SDCA611": {
+      "GK": "45",
+      "HINDI": "40",
+      "DRAWING": "45",
+      "ENGLISH": "46",
+      "SCIENCE": "80",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "79",
+      "PHYSICAL EDUCATION": "90"
+    },
+    "SDCA612": {
+      "GK": "56",
+      "HINDI": "70",
+      "DRAWING": "79",
+      "ENGLISH": "54",
+      "MATHEMATICS": "45"
+    },
+    "SDCA613": {
+      "GK": "76",
+      "HINDI": "68",
+      "DRAWING": "47",
+      "ENGLISH": "65",
+      "MATHEMATICS": "58"
+    },
+    "SDCA614": {
+      "GK": "59",
+      "HINDI": "45",
+      "DRAWING": "65",
+      "ENGLISH": "53",
+      "SCIENCE": "56",
+      "SANSKRIT": "67",
+      "MATHEMATICS": "40",
+      "SOCAIL SCENCE": "45",
+      "PHYSICAL EDUCATION": "93"
+    },
+    "SDCA615": {
+      "GK": "56",
+      "HINDI": "50",
+      "DRAWING": "79",
+      "ENGLISH": "57",
+      "MATHEMATICS": "75"
+    },
+    "SDCA616": {
+      "HINDI": "86",
+      "DRAWING": "88",
+      "ENGLISH": "88",
+      "MATHEMATICS": "59"
+    },
+    "SDCA617": {
+      "HINDI": "87",
+      "DRAWING": "75",
+      "ENGLISH": "85",
+      "MATHEMATICS": "74"
+    },
+    "SDCA618": {
+      "HINDI": "64",
+      "DRAWING": "84",
+      "ENGLISH": "84",
+      "MATHEMATICS": "65"
+    },
+    "SDCA619": {
+      "HINDI": "82",
+      "DRAWING": "87",
+      "ENGLISH": "83",
+      "MATHEMATICS": "76"
+    },
+    "SDCA620": {
+      "HINDI": "83",
+      "DRAWING": "85",
+      "ENGLISH": "68",
+      "MATHEMATICS": "74"
+    },
+    "SDCA621": {
+      "GK": "54",
+      "HINDI": "56",
+      "ENGLISH": "54",
+      "MATHEMATICS": "45"
+    },
+    "SDCA624": {
+      "GK": "56",
+      "HINDI": "76",
+      "DRAWING": "65",
+      "ENGLISH": "57",
+      "MATHEMATICS": "54"
+    },
+    "SDCA625": {
+      "HINDI": "78",
+      "DRAWING": "86",
+      "ENGLISH": "79",
+      "MATHEMATICS": "47"
+    },
+    "SDCA626": {
+      "GK": "54",
+      "HINDI": "70",
+      "DRAWING": "63",
+      "ENGLISH": "59",
+      "MATHEMATICS": "48"
+    },
+    "SDCA627": {
+      "HINDI": "76",
+      "DRAWING": "86",
+      "ENGLISH": "80",
+      "MATHEMATICS": "72"
+    },
+    "SDCA628": {
+      "GK": "54",
+      "HINDI": "65",
+      "DRAWING": "78",
+      "ENGLISH": "57",
+      "MATHEMATICS": "45"
+    },
+    "SDCA630": {
+      "HINDI": "76",
+      "DRAWING": "79",
+      "ENGLISH": "68",
+      "MATHEMATICS": "87"
+    },
+    "SDCA631": {
+      "ENGLISH": ""
+    },
+    "SDCA632": {
+      "DRAWING": "75"
+    },
+    "SDCA633": {
+      "GK": "79",
+      "HINDI": "67",
+      "DRAWING": "78",
+      "ENGLISH": "70",
+      "SCIENCE": "45",
+      "SANSKRIT": "45",
+      "MATHEMATICS": "75",
+      "SOCIAL SCIENCE": "40",
+      "PHYSICAL EDUCATION": "50"
+    },
+    "SDCA634": {
+      "GK": "90",
+      "HINDI": "78",
+      "DRAWING": "93",
+      "ENGLISH": "78",
+      "MATHEMATICS": "87"
+    },
+    "SDCA637": {
+      "HINDI": "87",
+      "DRAWING": "85",
+      "ENGLISH": "86",
+      "MATHEMATICS": "71"
+    },
+    "SDCA 600": {
+      "GK": "93",
+      "HINDI": "93",
+      "DRAWING": "96",
+      "ENGLISH": "95",
+      "MATHEMATICS": "79"
+    },
+    "SDCA6022": {
+      "GK": "80",
+      "HINDI": "78",
+      "DRAWING": "63",
+      "ENGLISH": "50",
+      "MATHEMATICS": "46"
+    },
+    "    SDCA606": {
+      "HINDI": "45",
+      "DRAWING": "60"
+    }
+  },
+  "termValue": "QUARTERLY",
+  "academicSessionValue": "2025-2026"
+}
