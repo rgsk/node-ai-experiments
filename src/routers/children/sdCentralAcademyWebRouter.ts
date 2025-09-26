@@ -54,6 +54,28 @@ WHERE key LIKE 'sdCentralAcademyWeb/students/%'
   }
 });
 
+const getExamMarksSchema = z.object({
+  sessionValue: z.string(),
+  termValue: z.string(),
+});
+
+sdCentralAcademyWebRouter.get("/exam-marks", async (req, res, next) => {
+  try {
+    const { sessionValue, termValue } = getExamMarksSchema.parse(req.query);
+
+    const examMarksResult = await db.$queryRaw`
+        SELECT *
+    FROM "JsonData"
+    WHERE key LIKE 'sdCentralAcademyWeb/examMarks/%'
+      AND value->>'academicSessionValue' = ${sessionValue}
+      AND value->>'termValue' = ${termValue};
+`;
+    return res.json(examMarksResult);
+  } catch (err) {
+    return next(err);
+  }
+});
+
 const getStudentsSchema = z.object({
   registrationNumber: z.string(),
 });
