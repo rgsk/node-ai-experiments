@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { Router } from "express";
+import { v4 } from "uuid";
 import { z } from "zod";
 import { db } from "../../lib/db.js";
 import { jsonDataService } from "./jsonDataService.js";
@@ -325,5 +326,73 @@ sdCentralAcademyWebRouter.get("/assigned-classes", async (req, res, next) => {
     return next(err);
   }
 });
+
+const createReportCardsIfNotExistsSchema = z
+  .object({
+    classValue: z.string().optional(),
+    studentIds: z.array(z.string()).optional(),
+    sessionValue: z.string(),
+    termValue: z.string(),
+  })
+  .refine(
+    (data) =>
+      (data.classValue && !data.studentIds) ||
+      (!data.classValue && data.studentIds),
+    {
+      message:
+        "Either classValue OR studentIds must be provided, but not both.",
+      path: ["classValue", "studentIds"], // error appears on these fields
+    }
+  );
+sdCentralAcademyWebRouter.post(
+  "/create-report-cards-if-not-exists",
+  async (req, res, next) => {
+    try {
+      let { studentIds, classValue, sessionValue, termValue } =
+        createReportCardsIfNotExistsSchema.parse(req.body);
+      if (!studentIds) {
+        const result: any = await db.$queryRaw`
+    SELECT *
+FROM "JsonData"
+WHERE key LIKE 'sdCentralAcademyWeb/students/%'
+  AND value->>'Class' = ${classValue};`;
+        studentIds = result.map((r: any) => r.value.id) as string[];
+      }
+
+      // create report card for every student if not exists
+      const reportCardsResult: any = await db.$queryRaw`
+              SELECT *
+          FROM "JsonData"
+          WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
+            AND value->>'studentId' IN (${Prisma.join(studentIds)})
+            AND value->>'Academic Session' = ${sessionValue}
+            AND value->>'Term' = ${termValue};
+      `;
+      const studentsWithReportCards = new Set(
+        reportCardsResult.map((rc: any) => rc.value.studentId)
+      );
+      const result = await jsonDataService.createMany(
+        studentIds
+          .filter((id) => !studentsWithReportCards.has(id))
+          .map((studentId) => {
+            const id = v4();
+            return {
+              key: `sdCentralAcademyWeb/reportCards/${id}`,
+              value: {
+                id,
+                Term: termValue,
+                studentId: studentId,
+                "Academic Session": sessionValue,
+              },
+            };
+          })
+      );
+
+      return res.json(result);
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
 
 export default sdCentralAcademyWebRouter;

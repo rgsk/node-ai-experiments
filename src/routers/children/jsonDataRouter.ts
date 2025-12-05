@@ -280,6 +280,11 @@ jsonDataRouter.get(
               : Prisma.sql``
           }
           ${
+            !!selectedIds && selectedIds.length > 0
+              ? Prisma.sql`AND "value"->>'id' IN (${Prisma.join(selectedIds)})`
+              : Prisma.sql``
+          }
+          ${
             classValue
               ? Prisma.sql`AND "value"->>'Class' = ${classValue}`
               : Prisma.sql``
@@ -313,11 +318,6 @@ jsonDataRouter.get(
           : Prisma.sql``
       }
     )`
-              : Prisma.sql``
-          }
-          ${
-            !!selectedIds && selectedIds.length > 0
-              ? Prisma.sql`AND "value"->>'id' IN (${Prisma.join(selectedIds)})`
               : Prisma.sql``
           }
           ${
