@@ -108,7 +108,7 @@ sdCentralAcademyWebRouter.get("/class-details", async (req, res, next) => {
     const result = await db.$queryRaw`
     SELECT *
 FROM "JsonData"
-WHERE key LIKE 'sdCentralAcademyWeb/classDetails1/%'
+WHERE key LIKE 'sdCentralAcademyWeb/classDetails/%'
   AND value->>'Academic Session' = ${academicSession}
   AND value->>'Class' = ${classValue};
     `;
