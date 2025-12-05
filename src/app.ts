@@ -64,7 +64,7 @@ export const io = new SocketServer(httpServer, {
     origin: "*",
   },
 });
-app.use(express.json());
+app.use(express.json({ limit: "1gb" }));
 app.use(cors());
 
 // Define a route to render the EJS template
