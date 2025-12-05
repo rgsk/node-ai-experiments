@@ -12,3 +12,5 @@
 
 # Sentry Config File
 .sentryclirc
+
+envs
