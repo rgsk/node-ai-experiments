@@ -262,8 +262,8 @@ jsonDataRouter.get(
         selectedIds,
       } = reportCardsKeyLikeSchema.parse(req.query);
 
-      let studentIds: string[] | undefined;
-      if (searchTerm || classValue || sectionValue) {
+      let studentIds = selectedIds;
+      if (!studentIds) {
         const studentsResult = await jsonDataService.findByKeyLike({
           key: getPopulatedKey(key, userEmail).replace(
             "reportCards",
@@ -277,11 +277,6 @@ jsonDataRouter.get(
       OR "value"->>'Regn. No.' = ${searchTerm}
       OR "value"->>'id' = ${searchTerm}
     )`
-              : Prisma.sql``
-          }
-          ${
-            !!selectedIds && selectedIds.length > 0
-              ? Prisma.sql`AND "value"->>'id' IN (${Prisma.join(selectedIds)})`
               : Prisma.sql``
           }
           ${
