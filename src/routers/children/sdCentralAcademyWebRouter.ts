@@ -98,14 +98,12 @@ sdCentralAcademyWebRouter.get("/class-details", async (req, res, next) => {
     const { academicSession, classValue } = getClassDetailsQuerySchema.parse(
       req.query
     );
-    const result = await db.$queryRaw`
-    SELECT *
-FROM "JsonData"
-WHERE key LIKE 'sdCentralAcademyWeb/classDetails/%'
-  AND value->>'Academic Session' = ${academicSession}
-  AND value->>'Class' = ${classValue};
-    `;
-    return res.json(result);
+
+    const result = await jsonDataService.findByKey(
+      `sdCentralAcademyWeb/classDetails/${academicSession}/${classValue}`
+    );
+    const classDetails = result?.value ?? null;
+    return res.json(classDetails);
   } catch (err) {
     return next(err);
   }
