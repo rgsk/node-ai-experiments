@@ -23,29 +23,22 @@ WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
 });
 
 const getReportCardsSchema = z.object({
-  registrationNumber: z.string(),
+  studentId: z.string(),
   sessionValue: z.string(),
   termValue: z.string(),
 });
 
 sdCentralAcademyWebRouter.get("/report-cards", async (req, res, next) => {
   try {
-    const { registrationNumber, sessionValue, termValue } =
-      getReportCardsSchema.parse(req.query);
-    const studentsResult: any = await db.$queryRaw`
-    SELECT *
-FROM "JsonData"
-WHERE key LIKE 'sdCentralAcademyWeb/students/%'
-  AND value->>'Regn. No.' = ${registrationNumber};
-    `;
-    const studentIds = studentsResult.map(
-      ({ value }: any) => (value as any).id
+    const { studentId, sessionValue, termValue } = getReportCardsSchema.parse(
+      req.query
     );
+
     const reportCardsResult = await db.$queryRaw`
         SELECT *
     FROM "JsonData"
     WHERE key LIKE 'sdCentralAcademyWeb/reportCards/%'
-      AND value->>'studentId' IN (${Prisma.join(studentIds)})
+      AND value->>'studentId' = ${studentId}
       AND value->>'Academic Session' = ${sessionValue}
       AND value->>'Term' = ${termValue};
 `;
