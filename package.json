@@ -28,7 +28,8 @@
     "mcp-inspector": "CLIENT_PORT=8181 SERVER_PORT=9121 npx @modelcontextprotocol/inspector",
     "refresh:chrome": "osascript -e 'tell application \"Google Chrome\" to reload active tab of front window'",
     "watch:file:refresh:chrome": "nodemon -w views/test.ejs --exec \"yarn run:file src/examples/modifyPdf.ts && yarn refresh:chrome\"",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org ai-experiments --project node-express dist && sentry-cli sourcemaps upload --org ai-experiments --project node-express dist"
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org ai-experiments --project node-express dist && sentry-cli sourcemaps upload --org ai-experiments --project node-express dist",
+    "tunnel": "ngrok http 4004 --domain=deidre-boltlike-jemma.ngrok-free.dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.735.0",
