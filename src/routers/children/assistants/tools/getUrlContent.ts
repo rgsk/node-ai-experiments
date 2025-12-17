@@ -4,13 +4,12 @@ import json5 from "json5";
 import tesseract from "node-tesseract-ocr";
 // @ts-ignore
 import pdf from "pdf-parse/lib/pdf-parse.js";
-import { YoutubeTranscript } from "youtube-transcript";
 import { UrlContentType } from "../../../../lib/mcpServer.js";
 import { getOpenAIClient } from "../../../../lib/openAIClient.js";
 import pythonRunner from "../../../../lib/pythonRunner.js";
 import rag from "../../../../lib/rag.js";
 import { WebsiteMeta } from "../../../../lib/typesJsonData.js";
-import { extractVideoId } from "../../youtubeRouter.js";
+import { fetchYoutubeTranscriptCustom } from "../../youtubeRouter.js";
 // Function to determine if the URL is a PDF, ignoring query parameters and fragments
 const isPDF = (url: string): boolean => {
   try {
@@ -291,8 +290,7 @@ const fetchGoogleSheet = async (url: string) => {
   return fetchCSV(publicSheetUrl);
 };
 const fetchYoutubeTranscript = async (url: string) => {
-  const videoId = extractVideoId(url);
-  const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+  const transcript = await fetchYoutubeTranscriptCustom(url);
   const lines = transcript.map((i) => `${i.offset}-${i.text}`);
   const content = lines.join("");
   const pageTitle = await getPageTitle(url);

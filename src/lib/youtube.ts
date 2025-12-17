@@ -1,4 +1,4 @@
-import { YoutubeTranscript } from "youtube-transcript";
+import { TranscriptResponse } from "youtube-transcript";
 import { getOpenAIClient } from "./openAIClient.js";
 
 interface SummaryItem {
@@ -78,8 +78,7 @@ async function getChapters(summaries: string[]): Promise<ChapterItem[]> {
   }
 }
 
-export async function generateChapters(videoId: string) {
-  const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+export async function generateChapters(transcript: TranscriptResponse[]) {
   const lines = transcript.map((i) => `${i.offset}-${i.text}`);
   if (lines.length < 1000) {
     return getChapters(lines);
