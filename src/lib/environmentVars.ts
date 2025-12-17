@@ -8,8 +8,9 @@ const AppEnvironmentEnum = z.enum([
   "production",
   "test", // jest sets the environment as test so this is added
 ]);
-
 export type AppEnvironment = z.infer<typeof AppEnvironmentEnum>;
+const ServerLocationEnum = z.enum(["local", "cloud"]);
+export type ServerLocation = z.infer<typeof ServerLocationEnum>;
 
 const environmentVarsSchema = z.object({
   PORT: z.string(),
@@ -23,6 +24,7 @@ const environmentVarsSchema = z.object({
   OPENROUTER_API_KEY: z.string(),
   SENTRY_DSN: z.string(),
   PYTHON_EXPERIMENTS_SERVER_URL: z.string(),
+  SERVER_LOCATION: ServerLocationEnum,
 });
 
 const fields: z.infer<typeof environmentVarsSchema> = {
@@ -37,6 +39,7 @@ const fields: z.infer<typeof environmentVarsSchema> = {
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY!,
   SENTRY_DSN: process.env.SENTRY_DSN!,
   PYTHON_EXPERIMENTS_SERVER_URL: process.env.PYTHON_EXPERIMENTS_SERVER_URL!,
+  SERVER_LOCATION: process.env.SERVER_LOCATION! as ServerLocation,
 };
 
 const environmentVars = environmentVarsSchema.parse(fields);
