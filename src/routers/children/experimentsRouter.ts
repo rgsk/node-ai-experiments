@@ -384,37 +384,68 @@ experimentsRouter.post("/execute-cpp", async (req, res, next) => {
   }
 });
 
-const wordMeaningQuerySchema = z.object({
-  word: z.string().min(1, "word query parameter is required"),
+const Definition = z.object({
+  definition: z.string(),
+  examples: z.array(z.string()).min(3).max(4),
+  synonyms: z.array(z.string()).nullable(),
+  antonyms: z.array(z.string()).nullable(),
 });
 
-const CalendarEvent = z.object({
-  name: z.string(),
-  date: z.string(),
-  participants: z.array(z.string()),
+const MeaningByPartOfSpeech = z.object({
+  partOfSpeech: z.string(),
+  definitions: z.array(Definition),
+});
+
+const Pronunciation = z.object({
+  ipa: z.string().nullable(), // ✅ required but nullable
+  audioUrl: z.string().nullable(), // ✅ required but nullable
+});
+
+export const WordMeaning = z.object({
+  word: z.string(),
+  language: z.string(),
+  pronunciation: Pronunciation, // ✅ required object
+  meanings: z.array(MeaningByPartOfSpeech),
+  origin: z.string().nullable(),
+});
+
+const wordMeaningQuerySchema = z.object({
+  word: z.string().min(1, "word query parameter is required"),
 });
 
 experimentsRouter.get("/word-meaning", async (req, res, next) => {
   try {
     const { word } = wordMeaningQuerySchema.parse(req.query);
     const { openAIClient } = getOpenAIClient();
+
     const response = await openAIClient.responses.parse({
       model: "gpt-5.2",
       input: [
-        { role: "system", content: "Extract the event information." },
+        {
+          role: "system",
+          content: `
+            You are a dictionary API. 
+            Return a clear definition of the word with part of speech.
+            RULES:
+              - Every definition MUST include 3 to 4 example sentences.
+              - Do NOT return fewer than 3 examples.
+              - Do NOT return more than 4 examples.
+              - If unsure, generate exactly 3 examples.
+            `,
+        },
         {
           role: "user",
-          content: "Alice and Bob are going to a science fair on Friday.",
+          content: `Define the word: "${word}"`,
         },
       ],
       text: {
-        format: zodTextFormat(CalendarEvent, "event"),
+        format: zodTextFormat(WordMeaning, "wordMeaning"),
       },
     });
 
-    const output = response.output_parsed;
+    const wordMeaning = response.output_parsed;
 
-    return res.json(output);
+    return res.json(wordMeaning);
   } catch (err) {
     return next(err);
   }
