@@ -119,6 +119,8 @@ const initialSetupCode = async () => {
 };
 initialSetupCode()
   .then(() => {
+    exampleBase();
+
     httpServer.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
@@ -127,6 +129,3 @@ initialSetupCode()
     console.error("initialSetupCode error:");
     console.error(err);
   });
-
-exampleBase();
-// examMarksByStudentId();

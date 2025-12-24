@@ -28,6 +28,25 @@ export async function getUploadURL({
   return url;
 }
 
+export async function s3FileExists({
+  key,
+  bucket,
+}: {
+  key: string;
+  bucket: string;
+}) {
+  try {
+    const url = `https://${bucket}.s3.amazonaws.com/${key}`;
+    await axios.head(url);
+    return { fileExists: true, url };
+  } catch (err: any) {
+    if (err.response?.status === 403) {
+      return { fileExists: false };
+    }
+    throw err; // rethrow unexpected errors
+  }
+}
+
 export const getUrlFromUploadUrl = (uploadUrl: string) => {
   return uploadUrl.split("?")[0];
 };

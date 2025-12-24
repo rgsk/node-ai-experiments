@@ -15,6 +15,8 @@ import environmentVars from "../../lib/environmentVars.js";
 import { UrlContentTypeEnum } from "../../lib/mcpServer.js";
 import { getOpenAIClient } from "../../lib/openAIClient.js";
 import pythonRunner from "../../lib/pythonRunner.js";
+import { s3ClientBuckets } from "../../lib/s3Client.js";
+import { getUploadURL, s3FileExists } from "../../lib/s3Utils.js";
 import { upload } from "../../lib/upload.js";
 import executeCode, {
   executeCodeSchema,
@@ -384,6 +386,36 @@ experimentsRouter.post("/execute-cpp", async (req, res, next) => {
   }
 });
 
+async function getWordAudioFileUrl(word: string) {
+  const debug = false && environmentVars.NODE_ENV === "development";
+  const key = `words/${word}.mp3`;
+  const bucket = s3ClientBuckets.public;
+  const { fileExists, url } = await s3FileExists({ key, bucket });
+  if (fileExists) {
+    if (debug) {
+      console.log(`word audio for "${word}" exists exiting early`);
+    }
+    return { url: url! };
+  }
+  if (debug) {
+    console.log(`word audio for "${word}" doesn't exist fetching from openai`);
+  }
+  const { openAIClient } = getOpenAIClient();
+  const mp3 = await openAIClient.audio.speech.create({
+    model: "gpt-4o-mini-tts",
+    voice: "alloy",
+    input: word,
+  });
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+  const uploadUrl = await getUploadURL({
+    key,
+    bucket,
+  });
+  await axios.put(uploadUrl, buffer);
+  const downloadUrl = uploadUrl.split("?")[0];
+  return { url: downloadUrl };
+}
+
 const Definition = z.object({
   definition: z.string(),
   examples: z.array(z.string()).min(3).max(4),
@@ -425,6 +457,7 @@ experimentsRouter.get("/word-meaning", async (req, res, next) => {
           role: "system",
           content: `
             You are a dictionary API. 
+            If you feel there's a mis-spelling auto correct it.
             Return a clear definition of the word with part of speech.
             RULES:
               - Every definition MUST include 3 to 4 example sentences.
@@ -444,6 +477,13 @@ experimentsRouter.get("/word-meaning", async (req, res, next) => {
     });
 
     const wordMeaning = response.output_parsed;
+    if (wordMeaning) {
+      // here we use openai word
+      // it returns consistent words (auto-corrected, lowercased & hyphenated)
+      // so we avoid creating extra audio files
+      const { url } = await getWordAudioFileUrl(wordMeaning.word);
+      wordMeaning.pronunciation.audioUrl = url;
+    }
 
     return res.json(wordMeaning);
   } catch (err) {
