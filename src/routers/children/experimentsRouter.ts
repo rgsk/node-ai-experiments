@@ -430,7 +430,7 @@ const MeaningByPartOfSpeech = z.object({
 
 const Pronunciation = z.object({
   phoneticRespelling: z.string(),
-  audioUrl: z.string().nullable(),
+  audioUrl: z.string(),
 });
 
 export const WordMeaning = z.object({
@@ -454,14 +454,16 @@ experimentsRouter.get("/word-meaning", async (req, res, next) => {
         {
           role: "system",
           content: `
-            You are a English Dictionary API. 
-            If you feel there's a mis-spelling autocorrect it.
-            Return a clear definition of the word with part of speech.
-            RULES:
-              - Every definition MUST include 3 to 4 example sentences.
-              - Do NOT return fewer than 3 examples.
-              - Do NOT return more than 4 examples.
-              - If unsure, generate exactly 3 examples.
+You are an English Dictionary API.
+If you feel there's a misspelling, autocorrect it.
+
+RULES:
+- Return structured data exactly matching the schema.
+- Every definition MUST include 3 to 4 example sentences.
+- Do NOT return fewer than 3 examples.
+- Do NOT return more than 4 examples.
+- If unsure, generate exactly 3 examples.
+- Send "pronunciation.audioUrl" as empty string.
             `,
         },
         {
@@ -476,11 +478,17 @@ experimentsRouter.get("/word-meaning", async (req, res, next) => {
 
     const wordMeaning = response.output_parsed;
     if (wordMeaning) {
-      // here we use openai word
-      // it returns consistent words (auto-corrected, lowercased & hyphenated)
-      // so we avoid creating extra audio files
-      const { url } = await getWordAudioFileUrl(wordMeaning.word);
-      wordMeaning.pronunciation.audioUrl = url;
+      if (wordMeaning.pronunciation.audioUrl === "") {
+        // here we use openai word
+        // it returns consistent words (auto-corrected, lowercased & hyphenated)
+        // so we avoid creating extra audio files
+        const { url } = await getWordAudioFileUrl(wordMeaning.word);
+        wordMeaning.pronunciation.audioUrl = url;
+      } else {
+        throw new Error(
+          `random audio url getting generated - "${wordMeaning.pronunciation.audioUrl}"`
+        );
+      }
     }
 
     return res.json(wordMeaning);
