@@ -5,7 +5,7 @@ import {
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import axios from "axios";
 import { v4 } from "uuid";
-import { z } from "zod";
+import { z } from "zod/v3";
 import getUrlContent from "../routers/children/assistants/tools/getUrlContent.js";
 import { jsonDataService } from "../routers/children/jsonDataService.js";
 import aiService from "./aiService.js";

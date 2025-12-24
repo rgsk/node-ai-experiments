@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
-import { z } from "zod";
+import { z } from "zod/v3";
 import { html } from "../../../../lib/utils.js";
 export const executeCodeSchema = {
   code: z.string({

@@ -6,12 +6,14 @@ import fs from "fs";
 import { JSDOM } from "jsdom";
 import tesseract from "node-tesseract-ocr";
 import ogs from "open-graph-scraper";
+import { zodTextFormat } from "openai/helpers/zod";
 import path from "path";
 import puppeteer from "puppeteer";
 import { v4 } from "uuid";
-import { z } from "zod";
+import { z } from "zod/v3";
 import environmentVars from "../../lib/environmentVars.js";
 import { UrlContentTypeEnum } from "../../lib/mcpServer.js";
+import { getOpenAIClient } from "../../lib/openAIClient.js";
 import pythonRunner from "../../lib/pythonRunner.js";
 import { upload } from "../../lib/upload.js";
 import executeCode, {
@@ -377,6 +379,42 @@ experimentsRouter.post("/execute-cpp", async (req, res, next) => {
 
       return res.json({ output: stdout });
     });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+const wordMeaningQuerySchema = z.object({
+  word: z.string().min(1, "word query parameter is required"),
+});
+
+const CalendarEvent = z.object({
+  name: z.string(),
+  date: z.string(),
+  participants: z.array(z.string()),
+});
+
+experimentsRouter.get("/word-meaning", async (req, res, next) => {
+  try {
+    const { word } = wordMeaningQuerySchema.parse(req.query);
+    const { openAIClient } = getOpenAIClient();
+    const response = await openAIClient.responses.parse({
+      model: "gpt-5.2",
+      input: [
+        { role: "system", content: "Extract the event information." },
+        {
+          role: "user",
+          content: "Alice and Bob are going to a science fair on Friday.",
+        },
+      ],
+      text: {
+        format: zodTextFormat(CalendarEvent, "event"),
+      },
+    });
+
+    const output = response.output_parsed;
+
+    return res.json(output);
   } catch (err) {
     return next(err);
   }

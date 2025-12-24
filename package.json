@@ -36,7 +36,7 @@
     "@aws-sdk/client-secrets-manager": "^3.810.0",
     "@aws-sdk/s3-request-presigner": "^3.735.0",
     "@langchain/core": "^0.3.42",
-    "@modelcontextprotocol/sdk": "^1.6.1",
+    "@modelcontextprotocol/sdk": "^1.25.1",
     "@pdf-lib/fontkit": "^1.1.1",
     "@prisma/client": "^5.16.1",
     "@sentry/cli": "^2.43.0",
@@ -61,7 +61,7 @@
     "multer": "^1.4.5-lts.1",
     "node-tesseract-ocr": "^2.2.1",
     "open-graph-scraper": "^6.9.0",
-    "openai": "^4.52.3",
+    "openai": "^6.15.0",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
     "prisma": "^5.16.1",
@@ -74,7 +74,7 @@
     "uuid": "^11.1.0",
     "youtube-transcript": "^1.2.1",
     "youtube-transcript-plus": "^1.1.1",
-    "zod": "^3.23.8"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",

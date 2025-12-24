@@ -13,11 +13,7 @@ const mcpClient = new Client(
     version: "1.0.0",
   },
   {
-    capabilities: {
-      prompts: {},
-      resources: {},
-      tools: {},
-    },
+    capabilities: {},
   }
 );
 
