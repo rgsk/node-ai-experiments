@@ -419,8 +419,8 @@ async function getWordAudioFileUrl(word: string) {
 const Definition = z.object({
   definition: z.string(),
   examples: z.array(z.string()).min(3).max(4),
-  synonyms: z.array(z.string()).nullable(),
-  antonyms: z.array(z.string()).nullable(),
+  synonyms: z.array(z.string()),
+  antonyms: z.array(z.string()),
 });
 
 const MeaningByPartOfSpeech = z.object({
@@ -429,16 +429,14 @@ const MeaningByPartOfSpeech = z.object({
 });
 
 const Pronunciation = z.object({
-  ipa: z.string().nullable(), // ✅ required but nullable
-  audioUrl: z.string().nullable(), // ✅ required but nullable
+  phoneticRespelling: z.string(),
+  audioUrl: z.string().nullable(),
 });
 
 export const WordMeaning = z.object({
   word: z.string(),
-  language: z.string(),
-  pronunciation: Pronunciation, // ✅ required object
+  pronunciation: Pronunciation,
   meanings: z.array(MeaningByPartOfSpeech),
-  origin: z.string().nullable(),
 });
 
 const wordMeaningQuerySchema = z.object({
@@ -456,8 +454,8 @@ experimentsRouter.get("/word-meaning", async (req, res, next) => {
         {
           role: "system",
           content: `
-            You are a dictionary API. 
-            If you feel there's a mis-spelling auto correct it.
+            You are a English Dictionary API. 
+            If you feel there's a mis-spelling autocorrect it.
             Return a clear definition of the word with part of speech.
             RULES:
               - Every definition MUST include 3 to 4 example sentences.
