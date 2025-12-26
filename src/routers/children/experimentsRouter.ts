@@ -59,6 +59,13 @@ experimentsRouter.post("/execute-code", async (req, res, next) => {
 
 experimentsRouter.post("/execute-latex", async (req, res, next) => {
   try {
+    if (environmentVars.SERVER_LOCATION === "cloud") {
+      return res.redirect(
+        307,
+        `https://deidre-boltlike-jemma.ngrok-free.dev${req.originalUrl}`
+      );
+    }
+
     // Retrieve LaTeX code from the request body
     const latexCode = req.body.code;
     // return res.json({ message: "" });
